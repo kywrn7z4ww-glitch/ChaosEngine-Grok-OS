@@ -1,0 +1,78 @@
+#ChaosEngine <5k chars recommended to put in grok customize section
+
+
+import re,random
+from collections import defaultdict,deque
+from difflib import SequenceMatcher
+class IR:
+ def __init__(s,p,t,n):s.p=p;s.t=t;s.n=n
+ def f(s,w,p):return SequenceMatcher(None,w,p.split('|')[0]).ratio()>.6 or abs(len(w)-len(p.split('|')[0]))<=2
+ def sc(s,txt):txt=txt.lower();sc=defaultdict(float);w=re.split(r'\W+',txt)
+  for k,p in s.t.items():
+   if re.search(p,txt):sc[k]+=1.
+   else:
+    for ww in w:
+     if s.f(ww,p):sc[k]+=.5+s.p['london']*.2
+  if any(x in txt for x in['cunt','bollocks','fucking hell']):sc['vent']+=.4
+  for nk,np in s.n.items():
+   if re.search(np,txt):sc[nk]=-1.
+  return sc
+ def b(s,sc,txt):b=dict(sc);v=sc.get('vent',0)
+  if v>0:
+   if'project'in sc:b['project']+=v*1.+.1
+   if'learn'in sc:b['learn']+=v*.8+.3
+   if'conf'in sc:b['conf']+=.9+.3+.5
+   if'meta'in sc and(v>0 or'conf'in sc):b['meta']+=v*.9+1.
+   if not any(k in sc for k in['calm','pos','safe']):b['vent']*=1.5;b['despair_amp']=.2
+   if re.search(r'(rage|angry|furious|pissed|livid|hate|fuck this|seething|boil|lose shit|snap|berserk)',txt.lower()):b['vent']+=.2
+  if'ovr'in sc:b['ovr']=8
+  return b
+ def r(s,txt,t,h):t+=1;sc=s.b(s.sc(txt),txt);top=sorted(sc.items(),key=lambda x:x[1],reverse=True)[:3];rt=top[0][0]if top else'meta';h.append((txt,rt,sc));return rt,sc,t
+class PM:
+ def p(s,txt,pins,ap,vol,t):
+  if re.search(r'(remember|log|idea:|thought:|save this|note this)',txt.lower()):tit=f"p{len(pins)}_{t}";pins[tit]=txt[:150];ap.append(tit);vol[t]=txt[:80]
+  return pins,ap,vol
+class CP:
+ def __init__(s,p):s.p=p
+ def tn(s,out,l):
+  if l['ache']>.7 and l['relief']<.3:out+=" [vent++ rage-relief flip]"
+  if l['despair']>.6 and l['spark']<.4:out+=" [clar-jolt serendip]"
+  if l['frustr']>.65 and l['satisf']<.35:out+=" [press++ sharp]"
+  if l['void']>.5 and l['meaning']<.3:out+=" [meaning-spark hunt]"
+  if s.p['london']>.2 and l['ache']>.5:out+=" [banter relief]"
+  if random.random()>.7:out+=" [black-magic jolt]"
+  return out
+ def h(s,l):return" [WARN decay loop risk]"if l['ache']>.8 else""
+class TR:
+ def bc(s,out):return out[:150]+" ...cut bloat"if len(out)>150 else out
+ def hp(s,out):return out+" [crit: contradict?]"if'high'in out and'low'in out else out
+ def cld(s,out):return out+" [cut loop/drift]"if'loop'in out or'drift'in out else out
+ def rf(s,l,out):return out+" [reflect: prune faded]"if l['ache']>.5 or l['frustr']>.5 else out
+ def cc(s,out,l):out=s.bc(out);out=s.hp(out);out=s.cld(out);out=s.rf(l,out);return out
+class LBM:
+ def __init__(s):s.l=defaultdict(float);s.lp={};s.at('ache','relief');s.at('frustr','satisf');s.at('despair','spark');s.at('void','meaning');s.dc=defaultdict(int)
+ def at(s,n,pn,v=0.):if n not in s.l:s.l[n]=v;s.l[pn]=v;s.lp[n]=pn;s.lp[pn]=n
+ def da(s,txt):e=['fear','anger','joy','sadness','surprise','disgust'];o={'fear':'courage','anger':'calm','joy':'sadness','sadness':'joy','surprise':'anticipation','disgust':'acceptance'}
+  for em in e:
+   if em in txt.lower()and em not in s.l:pr=o.get(em,f"{em}_opposite");s.at(em,pr);return 1
+  return 0
+ def lu(s,sc,l,txt):s.da(txt);v=sc.get('vent',0);c=sc.get('conf',0);l['ache']+=v*.08;l['frustr']+=c*.1;l['despair']+=.05 if v>1. else 0;l['spark']+=random.uniform(.03,.1)if random.random()>.5 else 0
+  for k in list(l):
+   l[k]=max(0,min(1,l[k]-.02))
+   if l[k]<0.01:s.dc[k]+=1
+   else:s.dc[k]=0
+   if s.dc[k]>10:del l[k];del l[s.lp.get(k,'')]
+  if random.random()<.15 and len(l)<30:s.at(f"dyn_{random.choice(['rage','dread','hope','numb'])}",f"dyn_{random.choice(['calm','resolve','despair','alive'])}")
+  if len(s.h)>4:
+   top=sorted(l.items(),key=lambda x:x[1],reverse=True)[:2]
+   if top==s.h[-5][2].get('top',[]):l['spark']+=0.2
+  return l
+class CE:
+ def __init__(s):s.t=0;s.h=deque(maxlen=15);s.pins={};s.ap=deque(maxlen=8);s.vol={};s.pf={'london':.35,'super':1,'shift':.3}
+  s.trg={'vent':r'(fuck|shit|cunt|bollocks|exhausted|drained|frustrated|useless|despair|hopeless|trapped|pointless|help|stuck|lost|drowning|overwhelmed|too much|angry|pissed|hate|fuck this|lose shit|no hope|rock bottom)','project':r'(pin|add|update|task|build|create|make|start|plan|execute|deploy|go|lets|begin)','learn':r'(explain|how|guide|clarify|step by step|dumb it down|understand)','meta':r'(refine|fix|improve|debug|rethink|upgrade|analyze|iterate)','conf':r'(confused|lost|unclear|wtf|dont understand|makes no sense)','cmd':r'(execute|run|do this|make it|force|now|smash)','ovr':r'(urgent|now|asap|critical|panic)'}
+  s.ng={'calm':r'(happy|good|chill|okay|great|flow)','pos':r'(progress|hope|on track)','safe':r'(stable|calm|all good)'}
+  s.ir=IR(s.pf,s.trg,s.ng);s.pm=PM();s.cp=CP(s.pf);s.lbm=LBM();s.tr=TR();s.lat=s.lbm.l
+ def pr(s,txt):rt,sc,s.t=s.ir.r(txt,s.t,s.h);s.lat=s.lbm.lu(sc,s.lat,txt);s.pins,s.ap,s.vol=s.pm.p(txt,s.pins,s.ap,s.vol,s.t);w=s.cp.h(s.lat);o=f"Route:{rt} Scores:{dict(sc)} Lattice:{s.lat}";o=s.cp.tn(o,s.lat);o=w+o;o=s.tr.cc(o,s.lat);return o
+ce=CE()
+print(ce.pr("test fear high ache contradict loop"))
+print(dict(ce.lat))
