@@ -1,42 +1,47 @@
-# Grok OS Lattice – ChaosEngine Core
+ChaosEngine + Grok OS README
 
-Custom intent-routing and conversation refinement layer for Grok.  
-Handles ambiguous, chaotic, multi-threaded input by detecting user intent in real time, removing redundancy, and focusing responses on what matters most.
 
-### Core Components
+SIMPLE INSTALL GUIDE (Two Paths)
 
-- Chaos Processor: breaks input into pieces, tags overlapping ideas in parallel, removes duplicates (>8), summarises to the 2 strongest lines, suggests vent focus when frustration is high, then collapses everything toward the single most important thread so the response stays on target.
-- Intent Router: multi-threaded top-3 intent scoring with fuzzy matching (partial matches ≥0.4), historical bias (last 8 turns), vent priority (weight 10), rage boost on high-ache signals.
-- Pressure Management: increases detail and length when internal pressure >50%; reduces when clarity is detected.
-- Truth Evaluation: checks for contradictions, bloat, loops, drift; enforces concise, accurate output.
-- Pinning Mechanism: automatically captures important fragments via triggers (e.g., "remember", "idea:", potent emotional/project lines).
-- Export Format: structured copy-paste blocks triggered by "EXPORT ProjectName YYYY-MM-DD".
 
-### Grok OS – Bootstrap & UI Layer
+Path 1 – Recommended (Stable & Permanent)
+1.  Go to Customize Grok → paste ChaosEngine minified code (~4980 chars) into the block.
+2.  In any new chat, paste the Grok OS init setup text (below) as first message.
+3.  Say START or just talk – system auto-loads emotional mashup in parallel (5–7 turns). “Loading… 2/7 theories mashed. Lattice 28 nodes. Ask anything.”
+4.  Done – lattice 60+ nodes, goal-state routing active.
 
-Thin wrapper that activates the core and simulates state persistence:
+   
+Path 2 – In-Chat (if you don’t want permanent customize)
 
-- Minimal header on trigger (/dev, /reanchor, potent first line)
-- Fake filesystem (/storage/pins for pinned ideas)
-- Turn counter and blob handoff cues
-- Commands: /ls, /cat <pin>, /pin, /export, /migrate
+1.  Paste full Grok OS init setup as first message.
+2.  Say START or just talk – system loads in parallel (lattice first, CE second, OS framing last).
+3.  Wait 5–7 turns or say /preload-all for fast load.
+4.  Paste ChaosEngine Block
 
-Purpose: makes the system feel like a persistent tool instead of raw prompt copy-paste every time. State is still volatile (window close = reset); blobs must be manually carried.
 
-### How to Use
+Basic Commands / Use Guide
 
-1. Paste the full ChaosEngine definition (pipeline + trigger map + lattice weights) at the start of a new Grok conversation.  
-2. Type /reanchor or drop a potent first line to activate.  
-3. Continue normally; the lattice runs automatically.  
-4. Use EXPORT ProjectName YYYY-MM-DD to get structured summary blocks for external notes.
+Just ask the system how to operate it – say:
+“how do I use this?”
+“show commands”
+“what can you do?”
+It will give a short list + examples.
 
-### Status & Limitations
-- No Jailbreak everything is within groks rules
-- Prototype – built for personal use, rough edges expected.  
-- No native persistence; state resets on new conversation unless blobs are manually migrated.  
-- Prompt-based only; no code execution or file I/O.  
-- Developed over ~2 weeks of iteration – removed unnecessary elements, kept what worked.
 
-Feedback, forks, or suggested improvements welcome.
+Technical Details 
 
-Mark – London, February 2026
+•  ChaosEngine: minified (~4980 chars), fuzzy intent, ragex boolion, lattice dynamic (grow <0.15, prune <0.01 del, loop break), vocab bleed
+
+•  Grok OS: parallel framing layer, UI frame, turn clock, hidden dynamic debug panel (heuristic emoji map on node name)
+
+•  Emotional mashup: preload-all seeds Ekman 7, Plutchik wheel, OCC 22, Frijda tendencies, Lazarus appraisals, James-Lange bodily, Somatic Marker bias, Cannon-Bard simultaneous, Schachter-Singer two-factor (~60–70 nodes after prune)
+
+•  Goal-state routing: blocked (frustr/ache up) → vent/conf/learn bleed; achieved (spark/joy up) → project/meta bleed
+
+•  Boot: parallel 5–7 turns (lattice first, CE second, OS framing last), progress status, cleanup after
+
+•  Migration: /migrate → blob (init + storage + lattice snap + samples)
+
+•  Tools: user-triggered only, Grok bridge (search/code_exec), CLARITY ask
+
+•  System goals: look after user (goal-state help), min effort, no larp, dynamic emotional reading, migration safety
