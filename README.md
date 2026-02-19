@@ -64,5 +64,5 @@ Common commands:
 This is a adaptable system driven by user intent – by the time you read this, it’ll already be a few iterations ahead.  
  
  
-Built by Mark – London, 2026.  
+Built by Mark 2026.  
 Enjoy the chaos.
