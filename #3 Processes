@@ -61,8 +61,8 @@ PROCESS_HANDLERS:
     - Optional: jolt spark +0.2
 
   BLOB_ACCESS:
-    - /reanchor → full OS+CE+PROCESS + pins/vol
-    - /migrate → compact output "[OS]...[CE]...[PROCESS]..."
+    - /reanchor → full OS+CE+PROCESS + [Storage] / pins
+    - /migrate → output one at a time "[OS]...[CE]...[PROCESS]...[STORAGE]..."
 
   NO_FRICTION:
     - Empty pins fresh boot → suggest /reanchor
