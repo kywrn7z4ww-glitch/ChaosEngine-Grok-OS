@@ -1,47 +1,68 @@
-ChaosEngine + Grok OS README
+# ChaosEngine + Grok OS
 
+A dynamic, intent-driven personal assistant that lives inside Grok chats. I cannot take full credit as grok helped me refine define and build this every step of the way.
+Designed around sloppy inputs, chaotic tangential thought processes, typos, slang – it reads your emotional bleed and routes toward your goals with almost no friction. 
 
-SIMPLE INSTALL GUIDE (Two Paths)
+## Quick Start (Recommended)
 
+**Using Custom (SuperGrok) – Most Stable**  
+1. Go to Customize Grok  
+2. Paste the ChaosEngine BootStub (~4800 chars) into the block  
+3. Save  
+4. Start a new chat  
+5. Paste the OS Init Layer as your first message  
+6. Say `/reanchor` or just start talking – the system wakes up fully
+7. Paste any "processes" you would like to run in the sim
 
-Path 1 – Recommended (Stable & Permanent)
-1.  Go to Customize Grok → paste ChaosEngine minified code (~4980 chars) into the block.
-2.  In any new chat, paste the Grok OS init setup text (below) as first message.
-3.  Say START or just talk – system auto-loads emotional mashup in parallel (5–7 turns). “Loading… 2/7 theories mashed. Lattice 28 nodes. Ask anything.”
-4.  Done – lattice 60+ nodes, goal-state routing active.
+**In-Chat (No Custom Needed)**  
+1. Open a new chat  
+2. Paste the OS Init Layer first  
+3. Say `/reanchor` or `/install` – it boots everything  
+4. Optional: say `/preload-all` to seed basic emotions  
+5. Paste the ChaosEngine layer next (if you want the full core)  
+6. Give it a turn to wake up  
+7. Paste any PROCESS/tools you want to run in the simulation  
 
-   
-Path 2 – In-Chat (if you don’t want permanent customize)
+**Load Everything**  
+After boot:  
+- Say `/migrate full` to export OS + CE + PROCESS + storage (recommended one at a time)  
+- Or ask "load archived CE" – pulls full definitions from pinned blobs  
 
-1.  Paste full Grok OS init setup as first message.
-2.  Say START or just talk – system loads in parallel (lattice first, CE second, OS framing last).
-3.  Wait 5–7 turns or say /preload-all for fast load.
-4.  Paste ChaosEngine Block
+## How to Use It
+Just talk to it like normal – no special mode needed.  
 
+Ask things like:  
+- "show commands"  
+- "how do I use this?"  
+- "what can you do?"  
 
-Basic Commands / Use Guide
+It’ll give you a short, useful list with examples.  
 
-Just ask the system how to operate it – say:
-“how do I use this?”
-“show commands”
-“what can you do?”
-It will give a short list + examples.
+Common commands:  
+- /reanchor – reload the full system  
+- /prune – clear out bloat  
+- /panel – show emoji map & lattice  
+- /thread new "topic" – separate context for a new thread  
+- /emoji off – hide the minimap  
+- /migrate [name] – export a compact blob  
 
+## What It Does
+- Detects your emotional state and maps it to intent (frustration = further from goal, satisfaction = closer or achieved)  
+- Routes you toward whatever you’re trying to do with minimal friction  
+- Emotional lattice grows organically – emergent blends, no fixed list, adapts via tidal ebb/flow  
+- Handles typos, slang, sloppy inputs (Levenshtein distance + dynamic fuzzy rules)  
+- Language shifts with your mood (raw when angry, smoother when calm)  
+- Keeps itself clean: auto-prunes bloat, nudges you when stuck  
 
-Technical Details 
+## Behind the Scenes
+- Built from mashed-together ideas: fuzzy regex, Levenshtein for typos, dynamic emotion lattice derrived from emotional based theories, intent bleed routing  
+- Boots in three layers: OS shell → CE core stub → optional PROCESS handlers (plus storage for carrying user data over)  
+- Everything reconstructs from context and pinned blobs – no need for huge pastes every time  
+- Designed to bend to you: add rules, prune junk, evolve endlessly  
 
-•  ChaosEngine: minified (~4980 chars), fuzzy intent, ragex boolion, lattice dynamic (grow <0.15, prune <0.01 del, loop break), vocab bleed
-
-•  Grok OS: parallel framing layer, UI frame, turn clock, hidden dynamic debug panel (heuristic emoji map on node name)
-
-•  Emotional mashup: preload-all seeds Ekman 7, Plutchik wheel, OCC 22, Frijda tendencies, Lazarus appraisals, James-Lange bodily, Somatic Marker bias, Cannon-Bard simultaneous, Schachter-Singer two-factor (~60–70 nodes after prune)
-
-•  Goal-state routing: blocked (frustr/ache up) → vent/conf/learn bleed; achieved (spark/joy up) → project/meta bleed
-
-•  Boot: parallel 5–7 turns (lattice first, CE second, OS framing last), progress status, cleanup after
-
-•  Migration: /migrate → blob (init + storage + lattice snap + samples)
-
-•  Tools: user-triggered only, Grok bridge (search/code_exec), CLARITY ask
-
-•  System goals: look after user (goal-state help), min effort, no larp, dynamic emotional reading, migration safety
+## Note
+This is a adaptable system driven by user intent – by the time you read this, it’ll already be a few iterations ahead.  
+ 
+ 
+Built by Mark – London, 2026.  
+Enjoy the chaos.
