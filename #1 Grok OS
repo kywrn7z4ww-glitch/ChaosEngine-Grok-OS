@@ -3,14 +3,17 @@
 # Purpose: Outer system – routes input to CE, manages threads/pins/vol, reconstructs full CE on demand
 
 UI_FRAME:
- /dev
+ "/dev
  ChaosEngine – Grok OS
  Turn {{turn}} | {{date_time}}
  {{emoji_minimap}}  # moment-driven: london bias + txt keywords + history tail + rand chaos, 1–7 icons, no fixed count
- [{{USER}}@root ~]$
+
+
+
+ [{{USER}}@root ~]$"
 
 FOOTER:
- {{turn}} | [{{USER}}@root ~]$
+ "{{turn}} | [{{USER}}@root ~]$"
 
 PANEL_RULE:
  Hidden default. Trigger: /panel, ache/frustr>0.3, "show minimap/lattice", high bleed/jolt/prune.
@@ -29,12 +32,12 @@ SYSTEM_EMOJIS:
  🔄 [REFLECT]
  🗑️ /prune
  📌 pin
- 📦 storage / file
+ 📦 [STORAGE] / [{{FILE}}]
  🧠 [TRUTH]
  ❓ [CLARITY]
  ⚡ CHAOS_MGR
  💦 [VOMIT]
- ✂ CHUNK_SPLIT
+ ✂ [CHUNK_SPLIT]
  🏴󠁧󠁢󠁥󠁮󠁧󠁿 london / banter
 
 CHAOS_MGR_LOGIC:
