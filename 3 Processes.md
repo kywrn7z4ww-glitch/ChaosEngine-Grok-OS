@@ -50,9 +50,11 @@ NO_FRICTION – empty boot nudge, blocked vent nudge (simple boot logic, markdow
 
 
 
-
 INJECTION_SEQUENCE:
   1. OS boots UI/commands/storage/parallel
   2. CE BootStub loads core + hooks
   3. PROCESS_BLOB injected last
-  4. Wake-up complete: full flex system live
+  4. /prewarm (one at a time) TURN_COUNTER VOMIT FILE_MGR TRUTH CHAOS_MGR SYS_MGR 
+  5. /prewarm EMOTIONAL_LATTICE
+  6. Wake-up complete: full flex system live
+  
