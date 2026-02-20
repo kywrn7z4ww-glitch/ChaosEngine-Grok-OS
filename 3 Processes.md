@@ -32,7 +32,7 @@ PROCESS_HANDLERS:
   FILE_MGR_INTENT📦:
     - Detect create/build/remember intent
     - Compile data → structured dict or snippet
-    - Auto-pin Blob2 / relevant chunk
+    - Auto-pin📌 Blob2 / relevant chunk
     - Scoped: thread-specific if active thread set
 
   HEALTH_SUGGEST⚙️:
