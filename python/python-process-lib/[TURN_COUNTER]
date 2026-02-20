@@ -1,0 +1,117 @@
+# python/python-process-lib/turn_counter.py
+# ⏰ v1 – Hardened turn counter & session lifecycle manager
+
+from collections import deque
+from typing import Dict, Any, Optional
+
+class TurnCounter:
+    """
+    ⏰ Turn Counter & Session Lifecycle Manager
+    - Increments per input/output
+    - Persists across reanchor
+    - Resynchs on desync / file calls
+    - Auto-nudge reanchor ~100 turns
+    - Hard cap warning >200
+    - Calculates total turns (current + archived)
+    - No constant output – only on nudge/bug
+    """
+
+    def __init__(self,
+                 initial_turn: int = 1,
+                 max_session_turns: int = 200,
+                 reanchor_nudge_turn: int = 95,
+                 reanchor_auto_turn: int = 100):
+        self.current_turn = initial_turn
+        self.total_turns = initial_turn  # includes archived/migrated
+        self.last_pinned_turn = initial_turn
+        self.session_start_turn = initial_turn
+        self.reanchor_count = 0
+        self.max_session_turns = max_session_turns
+        self.reanchor_nudge_turn = reanchor_nudge_turn
+        self.reanchor_auto_turn = reanchor_auto_turn
+        self.history = deque(maxlen=200)  # recent turns for drift detect
+
+    def increment(self) -> int:
+        """Main heartbeat – call once per input/output cycle."""
+        self.current_turn += 1
+        self.total_turns += 1
+        self.history.append(self.current_turn)
+        return self.current_turn
+
+    def get_current(self) -> int:
+        """Current session turn."""
+        return self.current_turn
+
+    def get_total(self) -> int:
+        """All turns ever (including archived / migrated)."""
+        return self.total_turns
+
+    def get_display(self) -> str:
+        """Formatted display – only when needed."""
+        base = f"⏰ Turn {self.current_turn}"
+        if self.total_turns > self.current_turn:
+            base += f" (total {self.total_turns})"
+        return base
+
+    def detect_desync(self) -> bool:
+        """Check if current turn is invalid compared to last pinned."""
+        return self.current_turn < self.last_pinned_turn or self.current_turn < 1
+
+    def resynch(self, pinned_turn: Optional[int] = None) -> str:
+        """Resynch on /reanchor, file load, or desync."""
+        if pinned_turn is not None:
+            self.last_pinned_turn = pinned_turn
+            self.current_turn = max(self.current_turn, pinned_turn + 1)
+
+        if self.detect_desync():
+            old = self.current_turn
+            self.current_turn = self.last_pinned_turn + 1
+            return f"⏰ Desync fixed: turn {old} → {self.current_turn} (pinned base {self.last_pinned_turn})"
+
+        self.reanchor_count += 1
+        self.session_start_turn = self.current_turn
+        return f"⏰ Resynched – session restart at turn {self.current_turn} (reanchor #{self.reanchor_count})"
+
+    def check_nudge(self) -> str:
+        """Check for reanchor nudge or hard cap – call periodically or on turn increment."""
+        if self.current_turn >= self.reanchor_auto_turn:
+            return f"⏰ Turn {self.current_turn} reached – auto reanchor suggested (full resynch + prune)"
+        elif self.current_turn >= self.reanchor_nudge_turn:
+            return f"⏰ Turn {self.current_turn} approaching – reanchor soon? (prune bloat, reset decay)"
+
+        if self.current_turn > self.max_session_turns:
+            return f"‼️⏰ Turn {self.current_turn} high – forced resynch nudge: /reanchor now"
+
+        return ""
+
+    def reset_session(self) -> None:
+        """Full reset – e.g. on explicit /reset or critical bug."""
+        self.current_turn = 1
+        self.session_start_turn = 1
+        self.history.clear()
+
+    def save_state(self) -> Dict[str, Any]:
+        """For persistence (pin / migrate)"""
+        return {
+            'current_turn': self.current_turn,
+            'total_turns': self.total_turns,
+            'last_pinned_turn': self.last_pinned_turn,
+            'reanchor_count': self.reanchor_count
+        }
+
+    def load_state(self, state: Dict[str, Any]) -> None:
+        """Load from pinned / migrated state."""
+        self.current_turn = state.get('current_turn', 1)
+        self.total_turns = state.get('total_turns', self.current_turn)
+        self.last_pinned_turn = state.get('last_pinned_turn', self.current_turn)
+        self.reanchor_count = state.get('reanchor_count', 0)
+
+# Example REPL usage:
+# counter = TurnCounter()
+# for _ in range(105):
+#     counter.increment()
+#     nudge = counter.check_nudge()
+#     if nudge:
+#         print(nudge)
+# counter.resynch(pinned_turn=50)
+# print(counter.get_display())
