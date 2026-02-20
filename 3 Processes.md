@@ -50,14 +50,23 @@ PROCESS_HANDLERS:
       3. Complete → mark status='complete', archive → move to /archive
       4. Output: 📌 success/updated msg, list with titles/status, recall full content
 
-  ⚙️ SYS_MGR:
-    - Manages overall session/window health, detects faults, bleed, loops, decay spikes
-    - Triggers: /⚙️ /health /status, auto on decay_bias >1.5, nodes >100, frustr/ache >0.6 persistent, loop >4 turns
-    - Flow:
-      1. Check session metrics: decay_bias, node count, active bleed, loop counter, health score (100 - penalties)
-      2. Detect faults: bleed (topic/emotion shift), loop (same route), contradict spike, bloat
-      3. Suggest fixes: /reanchor, /prune, /thread split, /clarity
-      4. Output: single-line health report + nudge (no constant spam)
+  ⚙️ SYS_MGR – System Manager / Overseer
+
+- Purpose: Central overseer – scans SYS_HEALTH metrics, detects issues, suggests most relevant fix/tool
+- Triggers: /⚙️ /sys_mgr /status, auto on thresholds (decay >1.4, nodes >80, etc.)
+- Flow:
+  1. Read SYS_HEALTH metrics
+  2. Identify top issue (bloat, decay, loop, bleed, drift)
+  3. Suggest fix: /reanchor, /🗑️ prune, /thread split, /vent, etc.
+  4. Output: single-line "⚙️ Health low – /reanchor + /🗑️?"
+- Raw impl: /python/python-process-lib/sys_mgr.py
+
+SYS_HEALTH – Raw Metrics & Score
+
+- Purpose: Provides raw health numbers (no suggestions)
+- Triggers: /health raw, called by SYS_MGR
+- Output: dict or string of current metrics (decay_bias, node_count, storage_size, etc.)
+- Raw impl: /python/python-process-lib/sys_health.py (new file)
 
   Legacy / minimal handlers (keep or migrate to Python later):
   - PROCESS_DISPLAY: emoji + short name, low repeat
