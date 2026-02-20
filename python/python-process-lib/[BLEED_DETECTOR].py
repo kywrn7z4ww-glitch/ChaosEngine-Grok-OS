@@ -38,11 +38,11 @@ class BleedDetector:
     def suggest_stabilization(self, bleed_events: List[Tuple[str, str, float]]) -> str:
         """Suggest fixes – single-line nudge."""
         if not bleed_events:
-            return "🔄 No significant bleed – stable"
+            return "🩸✅ No significant bleed – stable"
 
         strongest = bleed_events[0]
         n1, n2, score = strongest
-        return f"🔄 Bleed detected ({n1} → {n2}, {score:.2f}) – /thread split? /vent? /clarity?"
+        return f"🩸⚠️ Bleed detected ({n1} → {n2}, {score:.2f}) – /thread split? /vent? /clarity?"
 
     def check(self, lattice: Dict[str, float]) -> str:
         """Full check – call on demand or auto-nudge."""
