@@ -1,3 +1,5 @@
+OS SIM MODE ENGAGE
+
 /ChaosEngine-boot-auto v3
 
 1. Paste FULL RAW of UI.md (visual layer)  NO CODEBOX NO BACKTICKS MARKDOWN
