@@ -16,12 +16,19 @@ PROCESS_HANDLERS:
     - Feed clean chunks to CHAOS_MGR⛓️ for routing (e.g. pin → FILE_MGR📦)
     - Output: "VOMIT complete – X chunks, Y duplicates killed"
 
-  ✂ CHUNK_SPLIT:
-    - Trigger: input >500 words / dense blob
-    - Split into logical turns (by sentence/para/intent shift)
-    - Feed each chunk to CE pr() over multiple turns
-    - Output: "chunk X/Y – continuing..."
+✂ CHUNK_SPLIT / LOAD_PREDICTOR – Load-Aware Chunking
 
+- Purpose: ✂ Split large/dense input, predict load, prevent lockup, tandem with VOMIT🤮
+- Triggers: input >500 words, dense blob, high vent/dump, /✂ [text] or /chunk [text]
+- Flow:
+  1. Predict load (light/heavy) + expected chunks
+  2. Split logical (paragraphs → sentences fallback)
+  3. Clean noise (filler, repeats)
+  4. Flag heavy chunks for parallel/background
+  5. Output summary + chunk list with ✂ prefix
+- User calls: /✂ [text] or /chunk [text] (explicit), auto-nudge on heavy "✂ Chunking? Y/N"
+- Raw impl: /python/python-process-lib/chunk_split.py
+  
   ⛓️ CHAOS_MGR:
     - Intent hub / router – lattice scan → route estimate (vent/conf/learn/project/meta)
     - Suggest-only (no auto-lockup)
