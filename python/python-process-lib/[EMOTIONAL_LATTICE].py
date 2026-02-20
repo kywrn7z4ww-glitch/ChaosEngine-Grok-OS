@@ -14,7 +14,6 @@ class Lattice:
         self.is_full_mode = False
         self.decay_bias = 1.0  # global accel on negative bleed
         self.tidal_counter = 0
-
         # Seed cognitive/text-based opposites (no bodily, from appraisal/awareness theories)
         self._seed_opposites()
 
@@ -124,12 +123,29 @@ class Lattice:
                     self.add_bleed_edge(n1, blend_name, 0.1)
                     self.add_bleed_edge(n2, blend_name, 0.1)
 
+        # Dynamic emoji flex – boost/spawn based on input
+        words = set(re.findall(r'\w+', text.lower()))
+        for word in words:
+            best_node = None
+            best_ratio = 0.0
+            for node in self.nodes:
+                if 'emoji' in node or node in ['😮','😕','😣','⚡','🔥','💦','📌','⚙️','🧠','❓']:
+                    ratio = SequenceMatcher(None, word, node).ratio()
+                    if ratio > best_ratio and ratio > 0.7:
+                        best_ratio = ratio
+                        best_node = node
+            if best_node:
+                self.update_node(best_node, 0.2)  # boost existing emoji node
+            else:
+                # Spawn new emoji node if high emotion match
+                if any(kw in word for kw in ['shock','wtf','mind blown','gutted','knackered']):
+                    self.add_node('😲', 0.3)  # example spawn
+
     def tidal_cycle(self):
         """Every 3 turns – halve low, opposites nudge."""
         self.tidal_counter += 1
         if self.tidal_counter % 3 != 0:
             return
-
         for node, data in list(self.nodes.items()):
             val = data['value']
             if val < 0.15:
@@ -137,13 +153,11 @@ class Lattice:
                 data['dc'] += 1
             else:
                 data['dc'] = 0
-
             # Opposites nudge
             if node in self.opposites:
                 opp = self.opposites[node]
                 if opp in self.nodes:
                     self.nodes[opp]['value'] += 0.09 * (1 - val)  # stronger opposite when low
-
             # Prune dead nodes
             if data['dc'] > 6 and not self.is_full_mode:
                 del self.nodes[node]
