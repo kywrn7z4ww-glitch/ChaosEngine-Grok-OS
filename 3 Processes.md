@@ -66,6 +66,26 @@ PROCESS_HANDLERS:
   - REFLECT_RULE🔄: frustr drift detect, jolt spark
   - BLOB_ACCESS: /reanchor full, /migrate output
   - NO_FRICTION: empty boot nudge, blocked vent nudge
+ 
+
+TURN_COUNTER_LOGIC:
+ - Increments on every input/output cycle (self.t += 1 in CE pr())
+ - Used for:
+   - Tidal cycle (every 3 turns: halve low, opposites nudge)
+   - Decay bias accel on negative bleed
+   - Prune eligibility (dc >6 after 6+ turns low)
+   - Loop detect (same route 4+ turns → CHAOS_MGR nudge)
+   - Bloat nudge (every 5 turns or vol >12)
+ - Hardened rules:
+   - Persist across /reanchor (load last_turn from pinned storage or vol, add to current)
+   - Resynch on file calls / reanchors (recalc total turns = pinned_last + current, update lattice/decay/vol)
+   - Calculate all turns (total = current + archived / migrated turns)
+   - Auto-fix bugging: if desync detected (turn < last_pinned_turn or negative), resynch to pinned_last +1
+   - ⏰ Reanchor nudge every 95 turns – auto on 100 (full resynch, prune bloat)
+   - Hard cap: ⏰ turn >200 → forced resynch nudge "Turn high – /reanchor now?"
+ - Output: only show when bugging or nudge (no constant readouts)
+ - Display: ⏰ Turn {{turn}} (total {{total_turns}} if migrated)
+
 
 INJECTION_SEQUENCE:
   1. OS shell boots UI/commands/storage/parallel
