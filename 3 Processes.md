@@ -14,7 +14,9 @@ PROCESS_HANDLERS (all backed by Python – pull raw when needed):
   📦 FILE_MGR – pin/update, projects, titles, paths, complete/archive  
   ⚙️ SYS_MGR – session health, fault/bleed/loop detect, maintenance nudge  
   ⚙️💗 SYS_HEALTH – raw metrics & score (decay, nodes, storage, emotion, loops, bleed) 
+  
   🩸 BLEED_DETECTOR – cross-node bleed monitor & stabilizer
+ 
   ⏰ TURN_COUNTER - Hardened Session Clock Increments per input/output cycl persists & resynchs across /reanchor Calculates total turns Display: ⏰ Turn {{turn}} (total {{total_turns}} if migrated)
 
 
