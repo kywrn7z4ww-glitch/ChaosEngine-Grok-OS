@@ -52,13 +52,21 @@ PROCESS_HANDLERS:
 
   ⚙️ SYS_MGR – System Manager / Overseer
 
-- Purpose: Central overseer – scans SYS_HEALTH metrics, detects issues, suggests most relevant fix/tool
-- Triggers: /⚙️ /sys_mgr /status, auto on thresholds (decay >1.4, nodes >80, etc.)
+- Purpose: Oversees session health – reads SYS_HEALTH metrics, detects issues, suggests most relevant fix/tool/process
+- Triggers: /⚙️ /sys_mgr /status, auto on thresholds (decay >1.4, nodes >80, frustr/ache >0.6, loop >4, bloat >25)
 - Flow:
-  1. Read SYS_HEALTH metrics
-  2. Identify top issue (bloat, decay, loop, bleed, drift)
-  3. Suggest fix: /reanchor, /🗑️ prune, /thread split, /vent, etc.
-  4. Output: single-line "⚙️ Health low – /reanchor + /🗑️?"
+  1. Read SYS_HEALTH metrics (decay_bias, node_count, storage_size, frustr, ache, loop_count, bleed_score)
+  2. Identify top issue (decay ramp, bloat, loop, emotion spike, bleed, drift)
+  3. Suggest most relevant fix:
+     - Decay high → /reanchor (pull /root + /storage)
+     - Bloat/nodes high → /🗑️ prune
+     - Loop/repeat → /thread split or /vent
+     - Emotion spike → /vent or /clarity
+     - Bleed → BLEED_DETECTOR + /thread split
+     - Drift/garble → /reanchor full-lattice or /migrate export
+  4. Output: single-line report + one top suggestion (no spam)
+     - "⚙️ Health 82% – decay rising – /reanchor?"
+     - "⚙️ Health 55% – loop + bloat – /🗑️ prune + /thread split?"
 - Raw impl: /python/python-process-lib/sys_mgr.py
 
 SYS_HEALTH – Raw Metrics & Score
