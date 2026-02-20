@@ -11,11 +11,11 @@ PROCESS_HANDLERS (all backed by Python – pull raw when needed):
   ✂ CHUNK_SPLIT / LOAD_PREDICTOR – load-aware split, predict heavy/light  
   ⛓️ CHAOS_MGR – intent hub, route estimate, tool-call decider  
   🧠 TRUTH – reflect, contradict detect, fact nudge  
-  📦 FILE_MGR – pin/update, projects, titles, paths, complete/archive  
+  📦 FILE_MGR – pin/update, projects, titles, paths, complete/archive 
   ⚙️ SYS_MGR – session health, fault/bleed/loop detect, maintenance nudge  
-  ⚙️💗 SYS_HEALTH – raw metrics & score (decay, nodes, storage, emotion, loops, bleed) 
+  ⚙️💗 SYS_HEALTH – raw metrics & score. (decay, nodes, storage, emotion, loops, bleed) 
   🩸 BLEED_DETECTOR – cross-node bleed monitor & stabilizer
- ⏰ TURN_COUNTER - Hardened Session Clock Increments per input/output cycl persists & resynchs across /reanchor Calculates total turns Display: ⏰ Turn {{turn}} (total {{total_turns}} if migrated)
+  ⏰ TURN_COUNTER - Hardened Session Clock Increments per input/output cycl persists & resynchs across /reanchor Calculates total turns Display.: ⏰ Turn {{turn}} (total {{total_turns}} if migrated)
 
 
 PROCESS_DISPLAY – just emoji + short name formatting (visual rule, not computation)
