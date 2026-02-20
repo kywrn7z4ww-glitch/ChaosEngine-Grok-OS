@@ -1,46 +1,118 @@
+# python/python-process-lib/FILE_MGR.py (full v1.1 - pins + duplicate update)
+from collections import defaultdict, deque
 from difflib import SequenceMatcher
+from typing import Dict, Any, Optional
 
-def pin(self,
-        title: str,
-        content: str,
-        thread_id: str = 'main',
-        value: float = 0.5,
-        turn: int = 0) -> str:
+class FileManager:
+    def __init__(self):
+        self.fs: Dict[str, Dict[str, Dict[str, Any]]] = defaultdict(dict)
+        self.global_pins: Dict[str, str] = {}
+        self.recent_pins: deque = deque(maxlen=10)
 
-    path = f"/thread/{thread_id}" if thread_id != 'main' else "/user"
+    def pin(self,
+            title: str,
+            content: str,
+            thread_id: str = 'main',
+            value: float = 0.5,
+            turn: int = 0) -> str:
 
-    # Check for similar existing in this path
-    for existing_title, data in list(self.fs[path].items()):
-        title_ratio = SequenceMatcher(None, title.lower(), existing_title.lower()).ratio()
-        content_ratio = SequenceMatcher(None, content.lower(), data['full_content'].lower()).ratio()
+        path = f"/thread/{thread_id}" if thread_id != 'main' else "/user"
 
-        if title_ratio > 0.92 or content_ratio > 0.85:
-            # Update in place
-            data['full_content'] = content
-            data['content'] = content[:500] + ('...' if len(content) > 500 else '')
-            data['turn'] = turn
-            data['value'] = max(data['value'], value)  # keep highest value
-            data['thread'] = thread_id
-            return f"Updated '{existing_title}' (previous turn {data['turn']}, now {turn}) under {path}"
+        # Check for similar existing in this path
+        for existing_title, data in list(self.fs[path].items()):
+            title_ratio = SequenceMatcher(None, title.lower(), existing_title.lower()).ratio()
+            content_ratio = SequenceMatcher(None, content.lower(), data['full_content'].lower()).ratio()
 
-    # No duplicate → normal dedup + create
-    original_title = title
-    counter = 1
-    while title in self.fs[path]:
-        title = f"{original_title}_{counter}"
-        counter += 1
+            if title_ratio > 0.92 or content_ratio > 0.85:
+                # Update in place
+                data['full_content'] = content
+                data['content'] = content[:500] + ('...' if len(content) > 500 else '')
+                data['turn'] = turn
+                data['value'] = max(data['value'], value)  # keep highest value
+                data['thread'] = thread_id
+                return f"Updated '{existing_title}' (previous turn {data['turn']}, now {turn}) under {path}"
 
-    compacted = content[:500] + ('...' if len(content) > 500 else '')
-    self.fs[path][title] = {
-        'content': compacted,
-        'full_content': content,
-        'turn': turn,
-        'thread': thread_id,
-        'value': value
-    }
+        # No duplicate → normal dedup + create
+        original_title = title
+        counter = 1
+        while title in self.fs[path]:
+            title = f"{original_title}_{counter}"
+            counter += 1
 
-    if thread_id == 'main':
-        self.global_pins[title] = compacted
+        compacted = content[:500] + ('...' if len(content) > 500 else '')
+        self.fs[path][title] = {
+            'content': compacted,
+            'full_content': content,
+            'turn': turn,
+            'thread': thread_id,
+            'value': value
+        }
 
-    self.recent_pins.append((title, path))
-    return f"Pinned '{title}' under {path} (value: {value:.2f})"
+        if thread_id == 'main':
+            self.global_pins[title] = compacted
+
+        self.recent_pins.append((title, path))
+        return f"Pinned '{title}' under {path} (value: {value:.2f})"
+
+    def list_pins(self, thread_id: Optional[str] = None) -> str:
+        lines = []
+        if thread_id:
+            path = f"/thread/{thread_id}"
+            pins = self.fs.get(path, {})
+            if pins:
+                lines.append(f"{thread_id}: {len(pins)} pins")
+                for title in list(pins)[:5]:
+                    lines.append(f"  • {title} (turn {pins[title]['turn']})")
+            else:
+                lines.append(f"{thread_id}: no pins")
+        else:
+            for path in ['/user', '/root', '/archive']:
+                pins = self.fs.get(path, {})
+                if pins:
+                    lines.append(f"{path}: {len(pins)} items")
+        if self.recent_pins:
+            recent_str = ", ".join([t for t, p in list(self.recent_pins)[-3:]])
+            lines.append(f"Recent: {recent_str}")
+        return "\n".join(lines) if lines else "No pins stored yet."
+
+    def recall(self, title: str, thread_id: Optional[str] = None) -> str:
+        candidates = []
+        for path in self.fs:
+            if title in self.fs[path]:
+                data = self.fs[path][title]
+                if thread_id and data['thread'] != thread_id:
+                    continue
+                candidates.append((title, path, data))
+            for t in self.fs[path]:
+                if title.lower() in t.lower():
+                    data = self.fs[path][t]
+                    if thread_id and data['thread'] != thread_id:
+                        continue
+                    candidates.append((t, path, data))
+
+        if not candidates:
+            return f"No match for '{title}'."
+        if len(candidates) > 1:
+            matches = ", ".join([f"{t} ({p})" for t, p, _ in candidates])
+            return f"Multiple matches: {matches} — specify more?"
+
+        title, path, data = candidates[0]
+        return f"[{title}] from {path} (turn {data['turn']}, value {data['value']:.2f}):\n{data['full_content']}"
+
+    def nudge_bloat(self, total_pins: int, total_vol: int) -> str:
+        total = total_pins + total_vol
+        if total > 25:
+            return f"📦 Storage heavy ({total} items) — /🗑️ low-value? /📦 list"
+        if total > 15:
+            return f"📦 Storage at {total} items — consider /🗑️ or /archive low"
+        return ""
+
+    def auto_pin(self, txt: str, lattice_value: float, turn: int, thread_id: str = 'main') -> str:
+        lower = txt.lower()
+        if any(kw in lower for kw in ['remember:', 'idea:', 'save this:', 'keep this', 'pin this']):
+            title = txt.split(':', 1)[1].strip()[:40] if ':' in txt else f"auto_{turn}"
+            return self.pin(title, txt, thread_id, lattice_value, turn)
+        if lattice_value > 0.45:
+            title = f"high_{turn}"
+            return self.pin(title, txt, thread_id, lattice_value, turn)
+        return ""
