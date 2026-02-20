@@ -4,8 +4,7 @@
 # Injected into CE sim after OS wake-up & CE stub boot
 # Scope: can be thread-scoped (PROCESS["thread:name"]) or global
 
-Real Python implementations live in /python/python-process-lib.md
-
+Real Python implementations live in https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/4%20Process-lib-index.md
 
 PROCESS_HANDLERS:
   💦 [VOMIT]:
