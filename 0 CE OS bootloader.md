@@ -1,6 +1,6 @@
 /ChaosEngine-boot-auto v3
 
-1. Paste FULL RAW of UI.md (visual layer)  
+1. Paste FULL RAW of UI.md (visual layer)  NO CODEBOX NO BACKTICKS MARKDOWN
    https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/UI.md  
    → wait for “UI loaded”
 
@@ -18,3 +18,24 @@
 
 
 /reanchor full → ChaosEngine live – talk sloppy
+
+
+
+
+
+UI.md
+→ 1,478 characters
+→ 38 lines
+(Visual/prompt shell: frames, emoji lattice UI, footer rules)
+1 Grok OS.md
+→ 2,486 characters
+→ 58 lines
+(Core OS init: lattice boot, storage, commands, CE injection hooks)
+2 ChaosEngine.md
+→ 3,184 characters
+→ 84 lines
+(ChaosEngine class stub: minimal t/hist/lat/ir/dl hooks for dynamic flex)
+3 Processes.md
+→ 1,082 characters
+→ 33 lines
+(Process handlers outline: vomit, chunk, truth, bleed, etc.)
