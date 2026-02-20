@@ -31,16 +31,25 @@ PROCESS_HANDLERS:
     - If fuzzy: suggest web_search or clarify
     - Blunt: "bollocks, fix" + truth nudge
 
-  FILE_MGR_INTENT📦:
-    - Detect create/build/remember intent
-    - Compile data → structured dict or snippet
-    - Auto-pin📌 Blob2 / relevant chunk
-    - Scoped: thread-specific if active thread set
+SYS_MGR⚙️ (System Manager / Window Health):
+  - Manages overall session/window health, detects faults, bleed, loops, decay spikes
+  - Triggers: /⚙️ /health /status, auto on decay_bias >1.5, nodes >100, frustr/ache >0.6 persistent, loop >4 turns
+  - Flow:
+    1. Check session metrics: decay_bias, node count, active bleed, loop counter, health score (100 - penalties)
+    2. Detect faults: bleed (topic/emotion shift), loop (same route), contradict spike, bloat
+    3. Suggest fixes: /reanchor, /prune, /thread split, /clarity
+    4. Output: single-line health report + nudge (no constant spam)
+  - Raw impl: /python/python-process-lib/sys_mgr.py
 
-  HEALTH_SUGGEST⚙️:
-    - Trigger: conf/lost/upset/ache>0.4
-    - Nudge: "/prune /reanchor /debug /panel /emoji off"
-    - If frustr>0.5 + loop: "Intent drift? Vent/learn?"
+FILE_MGR📦 (Project / Pin / Storage Manager):
+  - Manages persistent content: pinning, projects, titles, storage paths, archiving completed items
+  - Triggers: /📦 /pins /recall, remember:/idea:/save:/pin this:, high project/spark value
+  - Flow:
+    1. Pin/update on keyword/high value (duplicate update on similarity)
+    2. Organize in paths (/user, /thread/{id}, /archive/completed)
+    3. Complete → mark status='complete', archive → move to /archive
+    4. Output: 📌 success/updated msg, list with titles/status, recall full content
+  - Raw impl: /python/python-process-lib/FILE_MGR.py
 
   PROCESS_DISPLAY:
     - Format: emoji + [SHORTNAME] only (⚙️ [SYSTEM])
