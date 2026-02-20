@@ -4,6 +4,9 @@
 # Injected into CE sim after OS wake-up & CE stub boot
 # Scope: can be thread-scoped (PROCESS["thread:name"]) or global
 
+Real Python implementations live in /python/python-process-lib.md
+
+
 PROCESS_HANDLERS:
   💦 [VOMIT]:
     - Detect high-load / raw dump / long input
