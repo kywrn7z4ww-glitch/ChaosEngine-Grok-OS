@@ -19,7 +19,8 @@
 
 /reanchor full → ChaosEngine live – talk sloppy
 
-
+5. Paste FULL RAW 4 process-lib-index.md
+https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/4%20Process-lib-index.md
 
 
 
