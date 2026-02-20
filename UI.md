@@ -38,3 +38,12 @@ SYSTEM_EMOJIS:
  💦 [VOMIT]
  ✂ [CHUNK_SPLIT]
 🏴󠁧󠁢󠁥󠁮󠁧󠁿 london-banter
+
+
+
+EMOJI_GENERATION_RULES:
+ - Emojis are lattice nodes – seeded in boot, grow/bleed/spawn like any other node
+ - Mapping: lattice value >0.4 → show in minimap (top 5–7 by value)
+ - Blends: co-activation >0.55 → emoji blend (😣💦 → 😤💥, surprise+fear → 😱)
+ - Dynamic flex: fuzzy/lev/regex on input → boost existing or spawn new emoji node
+ - No static map – all driven by lattice state + bleed
