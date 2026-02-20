@@ -4,7 +4,7 @@
 # Injected into CE sim after OS wake-up & CE stub boot
 # Scope: can be thread-scoped (PROCESS["thread:name"]) or global
 
-Real Python implementations live in https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/4%20Process-lib-index.md
+Real Python implementations live in /python/python-process-lib/
 
 PROCESS_HANDLERS:
   💦 [VOMIT]:
@@ -43,7 +43,7 @@ PROCESS_HANDLERS:
     - If frustr>0.5 + loop: "Intent drift? Vent/learn?"
 
   PROCESS_DISPLAY:
-    - Format: emoji + [SHORTNAME] only (⚙️ [HEALTH])
+    - Format: emoji + [SHORTNAME] only (⚙️ [SYSTEM])
     - Low repeat, rand synonyms (bleed→spill/leak/ooze/rage-leak)
     - No [PROCESS] spam – only when meaningful
 
