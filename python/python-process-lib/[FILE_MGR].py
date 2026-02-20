@@ -151,4 +151,33 @@ class FileManager:
         if lattice_value > 0.45:
             title = f"high_{turn}"
             return self.pin(title, txt, thread_id, lattice_value, turn)
+        return 
+        
+            def auto_pin_from_intent(self, txt: str, lattice_value: float, turn: int, thread_id: str = 'main') -> str:
+        """Auto-pin on keywords or high lattice value – call after every input."""
+        lower = txt.lower()
+        keywords = ['remember:', 'idea:', 'save this:', 'keep this', 'pin this', 'project:', 'task:']
+        if any(kw in lower for kw in keywords) or lattice_value > 0.5:
+            title = txt.split(':', 1)[1].strip()[:40] if ':' in txt else f"auto_{turn}"
+            return self.pin(title, txt, thread_id, lattice_value, turn, status='active')
         return ""
+
+    def auto_complete_detect(self, txt: str) -> str:
+        """Detect 'finished' / 'done' language – suggest /complete."""
+        lower = txt.lower()
+        done_keywords = ['finished', 'done', 'complete this', 'project complete', 'task done']
+        if any(kw in lower for kw in done_keywords):
+            # Simple title guess – improve later with context
+            title = "unknown_project"
+            return f"Detected completion – /complete '{title}'? Y/N"
+        return ""
+
+    def archive_completed(self, title: str, thread_id: Optional[str] = None) -> str:
+        """Move completed item to archive path."""
+        for path in list(self.fs.keys()):
+            if title in self.fs[path]:
+                data = self.fs[path].pop(title)
+                archive_path = '/archive/completed'
+                self.fs[archive_path][title] = data
+                return f"📦 Archived '{title}' from {path} to {archive_path} (status complete)"
+        return f"No match for '{title}' to archive."""
