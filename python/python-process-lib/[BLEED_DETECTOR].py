@@ -1,5 +1,5 @@
 # python/python-process-lib/bleed_detector.py
-# 🔄 v1.1 – Cross-node bleed detector & stabilizer (variables, dynamic growth)
+# 🩸 v1.1 – Cross-node bleed detector & stabilizer (variables, dynamic growth)
 
 from typing import Dict, List, Tuple
 
