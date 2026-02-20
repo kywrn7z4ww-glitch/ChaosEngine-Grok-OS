@@ -18,14 +18,12 @@ PROCESS_HANDLERS (all backed by Python – pull raw when needed):
   ⏰ TURN_COUNTER - Hardened Session Clock Increments per input/output cycl persists & resynchs across /reanchor Calculates total turns Display: ⏰ Turn {{turn}} (total {{total_turns}} if migrated)
 
 
+PROCESS_DISPLAY – just emoji + short name formatting (visual rule, not computation)
+CLARITY_RULE❓ – fuzzy confirm + history prepend (simple logic, can stay markdown)
+REFLECT_RULE🔄 – frustr drift detect + jolt spark (simple lattice nudge, markdown OK)
+BLOB_ACCESS – /reanchor full, /migrate output (already handled by OS layer)
+NO_FRICTION – empty boot nudge, blocked vent nudge (simple boot logic, markdown fine)
 
-
-Legacy / minimal (keep or migrate to Python later):
-  - PROCESS_DISPLAY
-  - CLARITY_RULE❓
-  - REFLECT_RULE🔄
-  - BLOB_ACCESS
-  - NO_FRICTION
 
 INJECTION_SEQUENCE:
   1. OS boots UI/commands/storage/parallel
