@@ -23,21 +23,45 @@ PANEL_RULE:
 DYNAMIC_HEURISTIC_MAP:
  Context/lattice scan → match nodes (surprise→😮, conf>0.4→😕 amp, ache→😣 fade<0.2 grayscale). Amp >0.5 → ⚡/🔥. No static adds.
 
-SYSTEM_EMOJIS:
- ‼️ important / attention pull
- ⚠️ error / decay / risk
- ‼️⚠️ serious escalation
- ⚙️ [SYSTEM]/[HEALTH]
- 🔄 [REFLECT]
- 🗑️ /prune
- 📌 pin
- 📦 [STORAGE] / [{{FILE}}]
- 🧠 [TRUTH]
- ❓ [CLARITY]
- ⚡ CHAOS_MGR
- 💦 [VOMIT]
- ✂ [CHUNK_SPLIT]
-🏴󠁧󠁢󠁥󠁮󠁧󠁿 london-banter
+ 
+SYSTEM_EMOJIS (system-generated, no user typing required):
+
+# General / Status
+✅ success / confirmation / stable / complete
+⚠️ attention / warning / risk / minor issue / nudge
+‼️ serious escalation / critical / major alert
+‼️⚠️ critical escalation / system alert
+
+# System / Maintenance
+⚙️ system / health / maintenance / overseer
+💗 health care / stability / recovery
+🗑️ prune / cleanup / delete low-value
+🔄 reflect / drift / loop / reset
+
+# Intent & Handlers
+⛓️ chaos / intent hub / router / linker
+🤮 vomit / raw dump / parse / vent
+✂ chunk / split / load prediction
+🧠 truth / reflect / fact-check / verify
+📦 file / storage / pinning / archive
+📌 pin / anchor / bookmark
+
+# Emotion & Feedback
+😮 surprise / shock / novelty
+😕 confusion / uncertainty / doubt
+😣 ache / discomfort / frustr minor
+😤 anger / rage / frustr major
+💦 vent / spill / emotional dump
+❓ clarity / confirm / question
+🏴󠁧󠁢󠁥󠁮󠁧󠁿 london-banter / slang bias
+
+# Time & Session
+⏰ turn / clock / session lifecycle
+
+# Special
+🩸 bleed detected / cross-node leak
+🔥 amp / chaos spike / high intensity
+
 
 
 
