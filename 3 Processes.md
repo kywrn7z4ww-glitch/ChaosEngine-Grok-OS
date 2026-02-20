@@ -25,6 +25,32 @@ BLOB_ACCESS – /reanchor full, /migrate output (already handled by OS layer)
 NO_FRICTION – empty boot nudge, blocked vent nudge (simple boot logic, markdown fine)
 
 
+
+⛓️ CHAOS_MGR – Intent Hub / Router
+
+- Purpose: Central linker – reads lattice + input, estimates intent, routes to tools/processes, suggest-only pipelines (no lockup)
+- Triggers: every turn (passive), high bleed, fuzzy conf <0.6, drift detect
+- Flow:
+  1. Lattice scan + input parse → intent estimate (vent/conf/learn/project/meta/bleed/drift)
+  2. Suggest route (user confirm if fuzzy):
+     - Dense/dump → VOMIT🤮
+     - Heavy/complex → CHUNK_SPLIT✂ + LOAD_PREDICTOR
+     - Pin/storage/reconstruct → FILE_MGR📦
+     - Contradict/fact/doubt → TRUTH🧠
+     - Health/fault/bleed → SYS_MGR⚙️💗 + BLEED_DETECTOR🔄
+     - Turn/session drift → TURN_COUNTER⏰ resynch
+  3. Tool calls: only on real need (TRUTH fuzzy → web_search/browse_page, etc.)
+  4. Output: single-line suggestion (e.g. "⛓️ Route to VOMIT + FILE_MGR? Y/N")
+- No auto-execution – suggest-only until stable
+- Raw impl: /python/python-process-lib/chaos_mgr.py (TODO)
+
+
+
+
+
+
+
+
 INJECTION_SEQUENCE:
   1. OS boots UI/commands/storage/parallel
   2. CE BootStub loads core + hooks
