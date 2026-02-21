@@ -45,6 +45,5 @@ Enjoy the chaos. Or ragequit. Up to you.
 Under the hood it's a small lattice that grows/prunes feelings organically (no fixed list), reads your emotional bleed + text patterns, translates to intent signals, then routes actions (vent, truth-check, chunk, etc.).  
 Overhauled in Feb 2026 to stop eternal frustration loops and add some actual recovery.  
 Still an abomination. Now one that can be a bro sometimes.
-
-Built with heavy Grok co-piloting.  
+Cobuilt by Mark from london and grok.
 Questions, ideas, PRs welcome — or just fork and make your own monster.
