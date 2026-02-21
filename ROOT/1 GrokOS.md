@@ -40,6 +40,8 @@ SYSTEM_EMOJIS: ✅success ⚠️warn ‼️ critical ⚙️sys 💗health 🗑�
 🧠 TRUTH https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/TRUTH.py
 ✂ CHUNK_SPLITTER  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/CHUNK_SPLITTER.py
 🩸 BLEED_DETECTOR https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/BLEED_DETECTOR.py
-📦 FILE_MGR https:https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/FILE_MGR.py
+📦 FILE_MGR https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/FILE_MGR.py
+
+FULL-PROCESS-INDEX https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/5%20full-process-index.md
 
 Grok OS sim ready. /reanchor to wake up.
