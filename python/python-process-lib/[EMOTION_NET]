@@ -1,109 +1,126 @@
-# EmotionNet.py - mashed neural sim for dynamic emotional web
-# Seeds all theory pairs, 3D PAD vectors + spectral embed, mash force-directed layouts, GNN pulses, tidal linger/prune, text-driven spawn/blend
+# EmotionNet.py - rebuilt mashed emotional neural sim (Feb 2026)
+# theory seeds (Plutchik/Ekman/OCC/PAD/Freud), dynamic vector growth, 3D PAD + spectral embed,
+# force mash (spring linger + Fruchterman + ForceAtlas2 linlog + Kamada + Laplacian/Fiedler),
+# GNN message passing with damping, tidal prune, blends on co-act, text-driven
 
 import networkx as nx
 import numpy as np
 from scipy.spatial.distance import euclidean
-from sklearn.decomposition import PCA  # for dim expand if needed
-from typing import Dict, List
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning)  # clean output
 
 class EmotionNet:
-    def __init__(self):
-        self.G = nx.Graph()  # graph for bleed edges
-        self.vectors = {}    # node: np.array (3D PAD + spectral extra dims)
-        self.vals = {}       # node: float activation
-        self.opposites = {}  # node: opp node (theory + dynamic farthest)
-        self.seed_theories()
-        self.damping = 0.92  # linger factor
-        self.co_act_thresh = 0.45  # for blend spawn
-        self.prune_thresh = 0.02   # delete after inactive
-        self.inactive_max = 8      # turns before extra prune
+    def __init__(self, dim=3, max_nodes=150, damping=0.92, co_act_thresh=0.45):
+        self.G = nx.Graph()
+        self.vectors = {}     # node → np.array (PAD 3D + spectral extra)
+        self.vals = {}        # node → activation
+        self.opposites = {}   # node → opp node
         self.turn = 0
+        self.dim = dim
+        self.max_nodes = max_nodes
+        self.damping = damping
+        self.co_act_thresh = co_act_thresh
+        self.inactive_max = 8
+        self.seed_theories()
+        self._spectral_init()  # initial embedding
 
     def seed_theories(self):
-        # Mash all: Plutchik 8 + opposites, Ekman 6, OCC 22 circumstance, PAD axes, Freud lust/disgust
-        # PAD 3D: [pleasure, arousal, dominance]
+        # Plutchik 8 + opposites, Ekman overlap, OCC circumstance, PAD axes, Freud lust/disgust
         seeds = {
-            "joy": [1.0, 0.5, 0.5], "sadness": [-1.0, -0.5, -0.5],  # Plutchik
-            "trust": [0.8, 0.3, 0.7], "disgust": [-0.8, 0.3, -0.7],
-            "fear": [-0.6, 0.8, -0.8], "anger": [-0.7, 0.9, 0.6],
-            "surprise": [0.4, 0.9, 0.0], "anticipation": [0.6, 0.4, 0.5],
-            "happiness": [1.0, 0.6, 0.4],  # Ekman overlap
-            "pride": [0.9, 0.6, 0.8], "shame": [-0.9, 0.6, -0.8],  # OCC
-            "resentment": [-0.7, 0.5, -0.6], "gloating": [0.7, 0.5, 0.6],
-            "lust": [0.8, 0.9, 0.7], "disgust": [-0.8, 0.3, -0.7]  # Freud drive
-            # add more OCC: admiration/reproach, gratification/remorse, etc. as needed
+            "joy":          [1.0,  0.6,  0.5], "sadness":     [-1.0, -0.6, -0.5],
+            "trust":        [0.8,  0.3,  0.7], "disgust":     [-0.8,  0.3, -0.7],
+            "fear":         [-0.6,  0.8, -0.8], "anger":       [-0.7,  0.9,  0.6],
+            "surprise":     [0.4,  0.9,  0.0], "anticipation": [0.6,  0.4,  0.5],
+            "lust":         [0.8,  0.9,  0.7],                # Freud drive
+            "pride":        [0.9,  0.6,  0.8], "shame":       [-0.9,  0.6, -0.8],  # OCC
+            "resentment":   [-0.7,  0.5, -0.6], "gloating":   [0.7,  0.5,  0.6],
         }
         for node, vec in seeds.items():
-            self.add_emotion(node, np.array(vec), val=0.1)
-        
-        # Theory opposites
-        opp_pairs = [("joy", "sadness"), ("trust", "disgust"), ("fear", "anger"), ("surprise", "anticipation"),
-                     ("pride", "shame"), ("resentment", "gloating"), ("lust", "disgust")]
-        for a, b in opp_pairs:
+            self.add_emotion(node, np.array(vec), val=0.12)
+
+        opp_pairs = [("joy","sadness"), ("trust","disgust"), ("fear","anger"),
+                     ("surprise","anticipation"), ("pride","shame"), ("lust","disgust")]
+        for a,b in opp_pairs:
             self.opposites[a] = b
             self.opposites[b] = a
-            self.G.add_edge(a, b, weight=-0.3)  # negative for repel
+            if a in self.G and b in self.G:
+                self.G.add_edge(a, b, weight=-0.35)  # repel
 
     def add_emotion(self, node, vec, val=0.1):
+        if len(self.G) >= self.max_nodes:
+            self._prune_low()
         if node not in self.G:
-            self.G.add_node(node, inactive_turns=0)
-            self.vectors[node] = vec
+            self.G.add_node(node, inactive=0)
+            self.vectors[node] = vec[:self.dim]  # cap to current dim
             self.vals[node] = val
 
     def process_text_input(self, text):
-        # Fuzzy match + spawn/bend/blend
-        matches = [n for n in self.vals if n in text.lower() or euclidean(self.vectors.get(n, np.zeros(3)), np.zeros(3)) < 1.5]  # close vec or keyword
+        # Fuzzy + theory seed boost
+        text_lower = text.lower()
+        matches = [n for n in self.vals if n in text_lower]
         if matches:
-            avg_vec = np.average([self.vectors[m] for m in matches], axis=0)
-            co_act = max(self.vals[m] for m in matches)
+            weights = [self.vals[m] for m in matches]
+            avg_vec = np.average([self.vectors[m] for m in matches], weights=weights, axis=0)
+            co_act = max(weights)
             if co_act > self.co_act_thresh:
-                blend_name = "-".join(matches[:2])  # simple fusion
-                self.add_emotion(blend_name, avg_vec, val=co_act * 0.7)
+                blend_name = "-".join(sorted(matches[:2]))  # e.g. joy-fear
+                self.add_emotion(blend_name, avg_vec + np.random.normal(0, 0.05, self.dim), val=co_act * 0.75)
                 for m in matches:
-                    self.G.add_edge(blend_name, m, weight=0.6)
+                    self.G.add_edge(blend_name, m, weight=0.65)
         else:
-            # Default spawn from nearest seed
-            nearest = min(self.vectors, key=lambda n: euclidean(self.vectors[n], np.zeros(3)))
-            new_vec = self.vectors[nearest] + np.random.normal(0, 0.1, 3)
-            self.add_emotion("new_spawn", new_vec, val=0.1)
+            # Fallback spawn near strongest seed
+            strongest = max(self.vals, key=self.vals.get)
+            new_vec = self.vectors[strongest] + np.random.normal(0, 0.1, self.dim)
+            self.add_emotion(f"spawn_{self.turn}", new_vec, val=0.15)
 
-    def force_update(self, iterations=20):
-        # Mash all: spectral init + spring linger + Fruchterman uniform + ForceAtlas2 linlog + Kamada dist
-        # Spectral embed for base coords
-        L = nx.laplacian_matrix(self.G).todense()
-        eigvals, eigvecs = np.linalg.eigh(L)
-        spectral_pos = {n: eigvecs[i, 1:4] for i, n in enumerate(self.G.nodes())}  # Fiedler + next 2 vecs for 3D
+    def _spectral_init(self):
+        if len(self.G) < 3:
+            return
+        try:
+            L = nx.laplacian_matrix(self.G).todense()
+            _, eigvecs = np.linalg.eigh(L)
+            for i, node in enumerate(self.G.nodes()):
+                if i < len(eigvecs):
+                    extra = eigvecs[i, 1:4] if self.dim > 3 else np.array([])
+                    self.vectors[node] = np.concatenate([self.vectors[node], extra[:self.dim-3]])
+        except:
+            pass  # fallback to current
 
-        # Mash layouts
-        spring_pos = nx.spring_layout(self.G, pos=spectral_pos, iterations=iterations * 0.4)
-        fr_pos = nx.fruchterman_reingold_layout(self.G, pos=spring_pos, iterations=iterations * 0.3)
-        kk_pos = nx.kamada_kawai_layout(self.G, pos=fr_pos)  # dist preserve
-        # ForceAtlas2 approx (manual linlog mash)
-        for _ in range(iterations * 0.3):
+    def force_update(self, iterations=15):
+        # Mash: spectral base → spring linger → Fruchterman uniform → linlog clusters → Kamada dist
+        pos = dict(nx.spectral_layout(self.G)) if len(self.G) > 2 else nx.random_layout(self.G)
+        pos = nx.spring_layout(self.G, pos=pos, iterations=iterations//3, damping=0.85)  # linger
+        pos = nx.fruchterman_reingold_layout(self.G, pos=pos, iterations=iterations//3)
+        pos = nx.kamada_kawai_layout(self.G, pos=pos)  # dist preserve
+        # linlog approx
+        for _ in range(iterations//3):
             for n in self.G:
-                disp = np.zeros(3)
+                disp = np.zeros(2)
                 for m in self.G:
                     if m != n:
-                        d = euclidean(fr_pos[n], fr_pos[m])
+                        d = np.linalg.norm(pos[n] - pos[m])
                         if d > 0:
-                            disp += (fr_pos[m] - fr_pos[n]) * (1 / d)  # repulsion
+                            disp += (pos[m] - pos[n]) / d  # repulsion
                 for m in self.G.neighbors(n):
-                    d = euclidean(fr_pos[n], fr_pos[m])
+                    d = np.linalg.norm(pos[n] - pos[m])
                     if d > 0:
-                        disp += (fr_pos[m] - fr_pos[n]) * np.log(d + 1)  # linlog attraction
-                fr_pos[n] += disp * 0.01  # step
-
-        # Update vecs from mashed pos
+                        disp += (pos[m] - pos[n]) * np.log(d + 1)  # linlog attraction
+                pos[n] += disp * 0.005
+        # Update vectors from pos
         for n in self.G:
-            self.vectors[n] = np.array(fr_pos[n])  # final mash pos as vec
+            self.vectors[n][:2] = pos[n]  # project back to 2D base
 
     def gnn_pass(self):
         new_vals = {}
         for node in self.G:
-            msg = sum(self.vals[n] * self.G.edges[node, n].get("weight", 0.5) for n in self.G.neighbors(node))
-            new_vals[node] = self.vals[node] * self.damping + 0.3 * msg  # pulse update + linger
-            self.G.nodes[node]["inactive_turns"] = 0 if msg != 0 else self.G.nodes[node].get("inactive_turns", 0) + 1
+            msg = 0
+            neighbors = list(self.G.neighbors(node))
+            if neighbors:
+                weights = [self.G.edges[node, n]["weight"] for n in neighbors]
+                msg = sum(self.vals[n] * w for n,w in zip(neighbors, weights))
+            new_vals[node] = self.vals[node] * self.damping + 0.25 * msg
+            inactive = self.G.nodes[node].get("inactive", 0)
+            self.G.nodes[node]["inactive"] = inactive + 1 if msg == 0 else 0
         self.vals = new_vals
 
     def tidal(self):
@@ -112,13 +129,30 @@ class EmotionNet:
         self.gnn_pass()
         # Prune
         for node in list(self.vals):
-            self.vals[node] /= 1.1 if self.vals[node] < 0.18 else 1.0  # halve low
-            if self.vals[node] < self.prune_thresh and self.G.nodes[node]["inactive_turns"] > self.inactive_max:
+            if self.vals[node] < 0.18:
+                self.vals[node] /= 1.1
+            if self.vals[node] < 0.02 and self.G.nodes[node]["inactive"] > self.inactive_max:
                 del self.vals[node]
                 del self.vectors[node]
                 self.G.remove_node(node)
 
-# Usage: net = EmotionNet()
-# net.process_text_input("anger because I care")
-# net.tidal()
-# print(net.vals, net.vectors)  # activations + positions
+    def top_nodes(self, n=7, min_val=0.3):
+        return sorted(
+            [(n, v) for n,v in self.vals.items() if v >= min_val],
+            key=lambda x: x[1], reverse=True
+        )[:n]
+
+    def _prune_low(self):
+        if len(self.G) >= self.max_nodes:
+            low = min(self.vals, key=self.vals.get)
+            del self.vals[low]
+            del self.vectors[low]
+            self.G.remove_node(low)
+
+# Usage example
+if __name__ == "__main__":
+    net = EmotionNet()
+    net.process_text_input("I feel lust but disgust at the same time because I care too much")
+    for _ in range(5):
+        net.tidal()
+    print("Top nodes:", net.top_nodes())
