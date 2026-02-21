@@ -5,8 +5,8 @@
 ## UI & Rules (paste this first)
 
 UI_FRAME:
-"/dev Grok OS Turn {{turn}} | {{date_time}\\
-  {{emoji_minimap}}\
+"/dev Grok OS Turn {{turn}} | {{date_time}\\<br>
+  {{emoji_minimap}}\<br><br>
   \\
 [USER@root ~]$"
 
