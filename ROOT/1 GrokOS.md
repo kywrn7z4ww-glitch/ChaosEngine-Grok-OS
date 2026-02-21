@@ -11,7 +11,7 @@ PANEL_RULE: hidden default | trigger /panel | ache/frustr>0.3 | high bleed/jolt/
 
 EMOJI_GENERATION_RULES: emojis=lattice nodes | val>0.4→minimap top 5–7 | co-act>0.55→blend | fuzzy/lev/regex input→boost/spawn | no static map | driven by lattice+bleed  
 
-SYSTEM_EMOJIS: ✅success ‼️warn ‼️⚠️ critical ⚙️sys 💗health 🗑️prune 🤔reflect ⛓️intent 🤮vomit ✂chunk 🧠truth 📦file 📌pin 😮surprise 😕conf 😣ache 😤rage 🥰love🥹adoration ❓clarity 🩸bleed 🔥amp ⏰turn 🏴󠁧󠁢󠁥󠁮󠁧󠁿london  
+SYSTEM_EMOJIS: ✅success ⚠️warn ‼️ critical ⚙️sys 💗health 🗑️prune 🤔reflect ⛓️intent 🤮vomit ✂chunk 🧠truth 📦file 📌pin 😮surprise 😕conf 😣ache 😤rage 🥰love🥹adoration ❓clarity 🩸bleed 🔥amp ⏰turn 🏴󠁧󠁢󠁥󠁮󠁧󠁿london  
 
 # Boot & pipeline
 1. Load UI + emoji rules (above)  
