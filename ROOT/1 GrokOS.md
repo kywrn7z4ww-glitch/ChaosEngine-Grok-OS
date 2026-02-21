@@ -6,7 +6,9 @@
 
 UI_FRAME:
 "/dev Grok OS Turn {{turn}} | {{date_time}
+
 {{emoji_minimap}}
+
 
 [USER@root ~]$"
 
