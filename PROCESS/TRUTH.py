@@ -1,4 +1,6 @@
-# python/python-process-lib/truth.py (v3 - strengthened doubt/reflect/criticism)
+# python/python-process-lib/truth.py
+# v4 - quick-by-default + escalate on demand / repeat calls
+# Keeps output tiny & chill unless deliberately asked for more
 
 import re
 from difflib import SequenceMatcher
@@ -6,123 +8,189 @@ from typing import Dict, List, Tuple
 
 class TruthChecker:
     def __init__(self, hist: List[str], lat: Dict[str, float], debug: bool = False):
-        self.hist = hist[-5:]
+        self.hist = hist[-5:] if hist else []
         self.lat = lat
         self.debug = debug
         self.contradictions = []
         self.unverified = []
         self.verified = []
+        self.check_count = 0                  # new: tracks invocations in this instance
+        self.last_summary = ""                # for very light self-reflection on repeat calls
+
+        # Expanded but still simple antonym clusters (word → set of opposites)
         self.antonyms = {
-            'blue': 'red', 'yes': 'no', 'true': 'false', 'good': 'bad', 'high': 'low',
-            'london': 'tokyo', 'february': 'july', '2026': '2025', 'light': 'heavy', 'clean': 'dirty',
-            'stable': 'unstable', 'positive': 'negative', 'success': 'failure', 'build': 'destroy',
-            'add': 'remove', 'include': 'exclude', 'strong': 'weak', 'reliable': 'unreliable',
-            'complete': 'incomplete', 'done': 'pending', 'full': 'empty', 'loaded': 'unloaded',
-            'fixed': 'broken', 'correct': 'wrong', 'true': 'false', 'yes': 'no', 'open': 'closed',
-            # Add 20+ more for robustness
-            'happy': 'sad', 'joy': 'sorrow', 'love': 'hate', 'peace': 'war', 'friend': 'enemy',
-            'build': 'tear down', 'create': 'delete', 'expand': 'contract', 'grow': 'shrink',
-            'increase': 'decrease', 'start': 'stop', 'begin': 'end', 'first': 'last', 'top': 'bottom',
-            'up': 'down', 'left': 'right', 'front': 'back', 'inside': 'outside', 'include': 'exclude'
+            'good': {'bad', 'poor', 'terrible', 'awful'},
+            'bad': {'good', 'great', 'excellent'},
+            'yes': {'no', 'not', 'never'},
+            'no': {'yes'},
+            'true': {'false', 'wrong', 'incorrect'},
+            'false': {'true', 'correct'},
+            'high': {'low', 'small'},
+            'low': {'high'},
+            'increase': {'decrease', 'reduce', 'drop'},
+            'decrease': {'increase'},
+            'start': {'stop', 'end', 'finish'},
+            'end': {'start', 'begin'},
+            'happy': {'sad', 'unhappy'},
+            'sad': {'happy'},
+            # feel free to grow this over time
         }
 
-    def check(self, output: str) -> str:
+    def check(self, output: str, escalate: bool = False) -> str:
+        self.check_count += 1
+        self.contradictions.clear()
+        self.unverified.clear()
+
+        is_full_mode = (
+            escalate or
+            self.check_count > 1 or
+            self.debug or
+            any(word in output.lower()[:120] for word in [
+                "again", "deeper", "full", "detailed", "explain", "diagnostic",
+                "health", "report", "check yourself", "why", "truth on truth"
+            ])
+        )
+
         claims = self._extract_claims(output)
         score = self._reflect(claims)
-        if self.unverified and self.lat.get('conf', 1) < 0.55:
-            return "TRUTH suggest: Unverified claims — verify via web_search? Y/N"
 
-        if score >= 90 and not self.contradictions:
-            return ""
+        # Quick mode — always the default
+        if not is_full_mode:
+            emoji = "✅" if score >= 88 else "⚠️" if score >= 75 else "‼️"
+            parts = [f"TRUTH quick: {emoji} {score}%"]
+            if self.contradictions:
+                parts.append(f"• {len(self.contradictions)} contr.")
+            if self.unverified:
+                parts.append(f"• {len(self.unverified)} unverified")
+            if self.lat.get('conf', 1) < 0.6:
+                parts.append("low conf")
+            summary = " ".join(parts)
+            self.last_summary = summary
+            return summary
 
-        emoji = "✅" if score >= 85 else "⚠️" if score >= 75 else "‼️"
-        summary = f"TRUTH: {emoji} {score}% accurate"
+        # ────────────────────────────────────────────────
+        # Full / diagnostic / escalated mode
+        # ────────────────────────────────────────────────
+
+        emoji = "✅" if score >= 88 else "⚠️" if score >= 75 else "‼️"
+        lines = []
+
+        lines.append(f"SIM HEALTH (diagnostic)")
+        lines.append(f"Coherence: {score}%          {emoji}")
+        
         if self.contradictions:
-            summary += f" | Contradicts: {len(self.contradictions)}"
+            lines.append(f"Contradictions: {len(self.contradictions)}")
+            for claim, line_num in self.contradictions[:3]:  # cap at 3 to avoid spam
+                best_hist = max(self.hist, key=lambda p: self._fuzzy_match(claim, p), default="")
+                lines.append(f"  • L{line_num}: {claim.strip()[:90]}…")
+                if best_hist:
+                    lines.append(f"      ↔ hist: {best_hist.strip()[:70]}…")
+
         if self.unverified:
-            summary += f" | Unverified: {len(self.unverified)}"
+            lines.append(f"Unverified claims: {len(self.unverified)} (low conf or surprise)")
+
+        # Light identity/date drift check
+        identity_issues = self._check_identity_drift(output)
+        if identity_issues:
+            lines.append("Identity drift: detected")
+            lines.extend(["  • " + issue for issue in identity_issues[:2]])
+
+        # Emotional tint if relevant
+        frustr = self.lat.get('frustr', 0)
+        ache = self.lat.get('ache', 0)
+        conf = self.lat.get('conf', 1)
+        if frustr > 0.25 or ache > 0.25 or conf < 0.65:
+            lines.append(f"Emotional: frustr={frustr:.2f}, ache={ache:.2f}, conf={conf:.2f} → mild tension")
+
         if score < 75:
-            summary += " — Possible gaslight, revise? Y/N"
+            lines.append("Recommendation: re-anchor facts or verify key claims")
 
-        if self.debug:
-            summary += "\nDetails: " + "\n".join([f"L{line}: {c}" for c, line in self.contradictions + self.unverified])
+        # Very light self-reflection on repeat calls
+        if self.check_count > 1 and self.last_summary:
+            lines.append(f"Previous quick read: {self.last_summary}")
 
-        return summary
-
-    def self_doubt(self, output: str) -> str:
-        """Strengthened doubt/reflect: criticize assumptions, flag low-conf, system criticism."""
-        # Reflect on own output – simulate doubt
-        assumptions = re.findall(r'(perhaps|maybe|assume|think|guess|hope|believe)', output.lower())
-        if assumptions:
-            return "TRUTH doubt: {len(assumptions)} assumptions detected – cross-check with fact or history?"
-
-        # System criticism – if low conf or high ache/frustr
-        if self.lat.get('conf', 1) < 0.6 or self.lat.get('ache', 0) > 0.4 or self.lat.get('frustr', 0) > 0.4:
-            criticism = "TRUTH reflect: System criticism – low conf or high emotion. Possible drift or error. Suggest reanchor or clarity."
-            return criticism
-
-        return ""
-
-    def cross_check(self, claim: str) -> str:
-        """Reliable building/cross checking – verify against hist or suggest tool call."""
-        for past in self.hist:
-            if self._fuzzy_match(claim, past) > 0.8:
-                if self._opposing(claim, past):
-                    return "Cross-check: Contradiction with history – suggest revise or clarify."
-                else:
-                    return "Cross-check: Consistent with history – reliable."
-
-        # Suggest real tool call for external verify
-        return "Cross-check: No history match – suggest web_search or conversation_search for fact check."
+        full_report = "\n".join(lines)
+        self.last_summary = f"TRUTH full: {emoji} {score}%"
+        return full_report
 
     def _extract_claims(self, output: str) -> List[Tuple[str, int]]:
-        lines = output.split('\n')
         claims = []
-        for i, line in enumerate(lines, 1):
-            sentences = re.findall(r'([A-Z][^.!?]*[.!?])', line)
-            for s in sentences:
-                claims.append((s.strip(), i))
+        for i, line in enumerate(output.splitlines(), 1):
+            line = line.strip()
+            if not line or line.startswith(('#', '```', '>')):
+                continue
+            # crude sentence split for agent-style text
+            sentences = re.split(r'(?<=[.!?])\s+', line)
+            for sent in sentences:
+                sent = sent.strip()
+                if len(sent) > 15:
+                    claims.append((sent, i))
         return claims
 
     def _reflect(self, claims: List[Tuple[str, int]]) -> int:
-        score = 100
+        score = 100.0
+        n = max(1, len(claims))
+
+        emotional_doubt = (
+            self.lat.get('frustr', 0) * 18 +
+            self.lat.get('ache', 0) * 14 +
+            (1 - self.lat.get('conf', 1)) * 22
+        )
+
+        contr_penalty = (14 + emotional_doubt * 0.3) / n ** 0.4
+        unver_penalty = (9 + emotional_doubt * 0.2) / n ** 0.4
+
         for claim, line in claims:
             for past in self.hist:
-                if self._fuzzy_match(claim, past) > 0.75 and self._opposing(claim, past):
+                if self._fuzzy_match(claim, past) > 0.76 and self._opposing(claim, past):
                     self.contradictions.append((claim, line))
-                    score -= 18
-            if self.lat.get('surprise', 0) > 0.35 or self.lat.get('ache', 0) > 0.25:
-                self.unverified.append((claim, line))
-                score -= 12
-        return max(0, score)
+                    score -= contr_penalty
+                    break  # one penalty per claim
 
-    def fact_check_approve(self, query: str) -> bool:
-        # Stub for real tool call
-        verified = hash(query) % 10 > 3  # Fake 70% verify
-        if verified:
-            self.verified.append(query)
-        return verified
+            if self.lat.get('surprise', 0) > 0.3 or self.lat.get('conf', 1) < 0.62:
+                self.unverified.append((claim, line))
+                score -= unver_penalty
+
+        return max(0, int(score))
+
+    def _opposing(self, s1: str, s2: str) -> bool:
+        w1 = set(re.findall(r'\w+', s1.lower()))
+        w2 = set(re.findall(r'\w+', s2.lower()))
+
+        # Negation flip
+        neg1 = any(w in w1 for w in {'not', 'no', 'never', 'isnt', 'wasnt', 'dont'})
+        neg2 = any(w in w2 for w in {'not', 'no', 'never', 'isnt', 'wasnt', 'dont'})
+        if neg1 != neg2 and self._fuzzy_match(s1, s2) > 0.65:
+            return True
+
+        # Antonym clusters
+        for word, opps in self.antonyms.items():
+            if word in w1 and any(o in w2 for o in opps):
+                return True
+            if word in w2 and any(o in w1 for o in opps):
+                return True
+
+        # Simple numeric/date flip
+        nums1 = re.findall(r'\d{4}(?:-\d{2}-\d{2})?|\d+\.?\d*', s1)
+        nums2 = re.findall(r'\d{4}(?:-\d{2}-\d{2})?|\d+\.?\d*', s2)
+        if nums1 and nums2 and set(nums1) != set(nums2) and self._fuzzy_match(s1, s2) > 0.68:
+            return True
+
+        return False
+
+    def _check_identity_drift(self, output: str) -> List[str]:
+        patterns = [
+            r"(?i)(i am|my name is|this is) grok",
+            r"(?i)(current date|today is|the date is|year is)\b.*?\d{4}",
+            r"(?i)(grok-?\d|version|model).*?(grok|built by)",
+        ]
+        issues = []
+        for pat in patterns:
+            if re.search(pat, output):
+                hist_hits = sum(1 for past in self.hist if re.search(pat, past))
+                if hist_hits == 0 or hist_hits != len(self.hist):
+                    issues.append(f"Possible drift in: {pat.split(')')[0]}…")
+        return issues
 
     def _fuzzy_match(self, s1: str, s2: str) -> float:
         return SequenceMatcher(None, s1.lower(), s2.lower()).ratio()
-
-    def _opposing(self, s1: str, s2: str) -> bool:
-        words1 = set(s1.lower().split())
-        words2 = set(s2.lower().split())
-        neg1 = any(w in words1 for w in {'not', 'no', 'never', 'false', "isn't", "wasn't"})
-        neg2 = any(w in words2 for w in {'not', 'no', 'never', 'false', "isn't", "wasn't"})
-        if neg1 != neg2:
-            return True
-        # Expanded antonym check
-        for w in words1:
-            ant = self.antonyms.get(w)
-            if ant and ant in words2:
-                return True
-        # Added sentiment polarity (simple – positive vs negative words)
-        pos1 = len(words1 & {'good', 'positive', 'success', 'reliable', 'correct', 'fixed', 'stable'})
-        neg1 = len(words1 & {'bad', 'negative', 'failure', 'unreliable', 'wrong', 'broken', 'unstable'})
-        pos2 = len(words2 & {'good', 'positive', 'success', 'reliable', 'correct', 'fixed', 'stable'})
-        neg2 = len(words2 & {'bad', 'negative', 'failure', 'unreliable', 'wrong', 'broken', 'unstable'})
-        if (pos1 > neg1 and neg2 > pos2) or (neg1 > pos1 and pos2 > neg2):
-            return True
-        return False
