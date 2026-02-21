@@ -1,5 +1,5 @@
 # Process Lib Index
-All real Python implementations live in /python/python-process-lib/
+All real Python implementations live in (https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/PROCESS)
 
 Emoji,Process,Status,Raw URL
 🧠,TRUTH,v3,https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TRUTH.py
