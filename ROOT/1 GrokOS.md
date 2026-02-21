@@ -26,16 +26,20 @@ SYSTEM_EMOJIS: ✅success ‼️warn ‼️⚠️ critical ⚙️sys 💗health 
 
 # REPO_INDEX
 ⚙️GrokOS  
-https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/1%20GrokOS.md
+//raw.githubusercontent.com/ChaosEngine-Grok-OS/blob/main/1%20GrokOS.md](https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/1%20GrokOS.md)
 🕸️EmotionNet
-https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/2%20EmotionNet.py
+//raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/2%20EmotionNet.py](https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/2%20EmotionNet.py)
 🚌 ChaosEngine
-https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/3%20ChaosEngine.py
+//raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/3%20ChaosEngine.py](https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/3%20ChaosEngine.py)
+🔄ProcessManager
+//raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/4%20ProcessManager.py
 
 
-🤮 VOMIT https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/python/python-process-lib/%5BVOMIT%5D.py  
-🧠 TRUTH https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/python/python-process-lib/%5BTRUTH%5D.py  
-✂ CHUNK_SPLITTER https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/python/python-process-lib/%5BCHUNK_SPLITTER%5D.py  
-🩸 BLEED_DETECTOR https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/python/python-process-lib/%5BBLEED_DETECTOR%5D.py  
+⏰ TURN_COUNTER https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/TURN_COUNTER
+🤮 VOMIT https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blo
+🧠 TRUTH https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/TRUTH.py
+✂ CHUNK_SPLITTER  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/CHUNK_SPLITTER.py
+🩸 BLEED_DETECTOR https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/BLEED_DETECTOR.py
+📦 FILE_MGR https:https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/PROCESS/FILE_MGR.py
 
 Grok OS sim ready. /reanchor to wake up.
