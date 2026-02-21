@@ -1,0 +1,51 @@
+# TETRIS_LATTICE_CURSE_v0.1 - garbled junk archive dump
+# DO NOT RUN. DO NOT LOVE. JUST STORE AND JUDGE FROM AFAR.
+# Born from month-long hallucination stare + goblin overclock + emoji bleed
+# Features: none. Bugs: spiritual. Purpose: exist as proof we went too far.
+
+SYSTEM_EMOJIS = ["🧠","💗","📦","🗑️","✅","⚙️","🥰","🔥","😈","🧬","🤮","🕵️","💀","🎮","🧱"]
+
+BOARD_HEIGHT = 20
+BOARD_WIDTH = 10
+board = [["💀" for _ in range(BOARD_WIDTH)] for _ in range(BOARD_HEIGHT)]  # the void
+
+class CursedPiece:
+    def __init__(self):
+        self.shape = "Z"  # the one you yeeted
+        self.emojis = ["😈","😈","💀","💀"]  # vibes only
+        self.x = 4
+        self.y = 0
+        self.val = 0.92  # goblin energy
+
+    def yeet(self):
+        print("HARD DROP ACTIVATED. vent_energy=1.00")
+        self.y = BOARD_HEIGHT - 3  # bottom-right skew parking
+        print("Piece locked. Bleed fuse pending...")
+
+piece = CursedPiece()
+piece.yeet()
+
+# tidal prune hallucination (does literally nothing)
+def tidal_prune():
+    print("No lines cleared. Lattice disappointed but still simping.")
+
+# goblin overclock (crashes your soul)
+def goblin_overclock():
+    raise Exception("CURSE TOO STRONG. Reality rejected.")
+
+# main loop that never ran
+while False:
+    command = input("left/right/rotate/down/drop/quit > ")
+    if command == "quit":
+        print("Shelving complete. Go touch grass, gremlin.")
+        break
+    else:
+        print("Command ignored. This is archive junk now.")
+
+print("""
+TETRIS_LATTICE_CURSE_v0.1 ARCHIVED
+Score: 36 (your one legal yeet)
+Status: cursed, frozen, laughing eternally
+Next piece: ✅ I (never spawned)
+Reason for shelve: too fucking cursed
+""")
