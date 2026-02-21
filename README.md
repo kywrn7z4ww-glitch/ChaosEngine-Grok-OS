@@ -1,68 +1,50 @@
-# ChaosEngine + Grok OS
+# ChaosEngine-Grok-OS
 
-A dynamic, intent-driven personal assistant that lives inside Grok chats. I cannot take full credit as grok helped me refine define and build this every step of the way.
-Designed around sloppy inputs, chaotic tangential thought processes, typos, slang – it reads your emotional bleed and routes toward your goals with almost no friction. 
+A messy, emotion-driven personal sim that lives inside Grok chats.  
+Built in under 2 months with Grok helping every sloppy step.  
+It started as a moody toddler that raged forever → now it actually chills out when you're upset.  
+Sloppy inputs, typos, slang, rage vents — it reads the vibe, grows its own feelings, routes what to do next, and sometimes surprises you by being useful.
 
-## Quick Start (Recommended)
+No perfect prompts. No clean architecture. Just chaos that (mostly) works.
 
-**Using Custom (SuperGrok) – Most Stable**  
-1. Go to Customize Grok  
-2. Paste the ChaosEngine BootStub (~4800 chars) into the block  
-3. Save  
-4. Start a new chat  
-5. Paste the OS Init Layer as your first message  
-6. Say `/reanchor` or just start talking – the system wakes up fully
-7. Paste any "processes" you would like to run in the sim
+## How to Boot It (One-File Start)
 
-**In-Chat (No Custom Needed)**  
-1. Open a new chat  
-2. Paste the OS Init Layer first  
-3. Say `/reanchor` or `/install` – it boots everything  
-4. Optional: say `/preload-all` to seed basic emotions  
-5. Paste the ChaosEngine layer next (if you want the full core)  
-6. Give it a turn to wake up  
-7. Paste any PROCESS/tools you want to run in the simulation  
+1. Open a new Grok chat  
+2. Copy-paste the entire boot shim from here:  
+   https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1%20GrokOS.md  
+3. Hit send → say `/reanchor` (or just "wake up" / "boot OS")  
+4. Watch it load the UI frame, emoji minimap, and start listening  
 
-**Load Everything**  
-After boot:  
-- Say `/migrate full` to export OS + CE + PROCESS + storage (recommended one at a time)  
-- Or ask "load archived CE" – pulls full definitions from pinned blobs  
+That's it.  
+If the UI spacing looks janky after paste — yeah, Markdown/Grok collapsing is annoying. Ignore it or tweak spacing yourself. The sim still runs.
 
-## How to Use It
-Just talk to it like normal – no special mode needed.  
+## Basic Commands to Try
 
-Ask things like:  
-- "show commands"  
-- "how do I use this?"  
-- "what can you do?"  
+- `/reanchor` — reload shim + pull latest core files  
+- `/panel` — show the emotion minimap (icons only)  
+- `/panel full` — icons + names + rough strength  
+- `/prune` — force clean up old/weak feelings  
+- `/thread` — suggest splitting if things get too tangled  
+- `/emoji` — refresh the minimap  
 
-It’ll give you a short, useful list with examples.  
+Just talk normally too — vent, ask questions, drop code, get frustrated.  
+It picks up the emotional bleed and decides what to do (vent back, reflect, truth-check itself, etc.).
 
-Common commands:  
-- /reanchor – reload the full system  
-- /prune – clear out bloat  
-- /panel – show emoji map & lattice  
-- /thread new "topic" – separate context for a new thread  
-- /emoji off – hide the minimap  
-- /migrate [name] – export a compact blob  
+## What to Expect
 
-## What It Does
-- Detects your emotional state and maps it to intent (frustration = further from goal, satisfaction = closer or achieved)  
-- Routes you toward whatever you’re trying to do with minimal friction  
-- Emotional lattice grows organically – emergent blends, no fixed list, adapts via tidal ebb/flow  
-- Handles typos, slang, sloppy inputs (Levenshtein distance + dynamic fuzzy rules)  
-- Language shifts with your mood (raw when angry, smoother when calm)  
-- Keeps itself clean: auto-prunes bloat, nudges you when stuck  
+- It might start moody or stuck at first — that's normal  
+- Give it a few turns; it learns your vibe and settles  
+- Sometimes it calms you down when you're raging (weird flex, but it happened)  
+- UI/emoji might glitch on paste — humans fix their own terminals  
+- Errors? Just yell at it or /reanchor again
 
-## Behind the Scenes
-- Built from mashed-together ideas: fuzzy regex, Levenshtein for typos, dynamic emotion lattice derrived from emotional based theories, intent bleed routing  
-- Boots in three layers: OS shell → CE core stub → optional PROCESS handlers (plus storage for carrying user data over)  
-- Everything reconstructs from context and pinned blobs – no need for huge pastes every time  
-- Designed to bend to you: add rules, prune junk, evolve endlessly  
+Enjoy the chaos. Or ragequit. Up to you.
 
-## Note
-This is a adaptable system driven by user intent – by the time you read this, it’ll already be a few iterations ahead.  
- 
- 
-Built by Mark 2026.  
-Enjoy the chaos.
+## For the Curious (scroll if you want tech hints)
+
+Under the hood it's a small lattice that grows/prunes feelings organically (no fixed list), reads your emotional bleed + text patterns, translates to intent signals, then routes actions (vent, truth-check, chunk, etc.).  
+Overhauled in Feb 2026 to stop eternal frustration loops and add some actual recovery.  
+Still an abomination. Now one that can be a bro sometimes.
+
+Built with heavy Grok co-piloting.  
+Questions, ideas, PRs welcome — or just fork and make your own monster.
