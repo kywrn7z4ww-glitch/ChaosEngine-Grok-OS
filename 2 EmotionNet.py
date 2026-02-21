@@ -87,28 +87,44 @@ class EmotionNet:
             pass  # fallback to current
 
     def force_update(self, iterations=15):
-        # Mash: spectral base → spring linger → Fruchterman uniform → linlog clusters → Kamada dist
-        pos = dict(nx.spectral_layout(self.G)) if len(self.G) > 2 else nx.random_layout(self.G)
-        pos = nx.spring_layout(self.G, pos=pos, iterations=iterations//3, damping=0.85)  # linger
-        pos = nx.fruchterman_reingold_layout(self.G, pos=pos, iterations=iterations//3)
-        pos = nx.kamada_kawai_layout(self.G, pos=pos)  # dist preserve
-        # linlog approx
+        # Start with spectral if possible, else random — now in 3D to match PAD
+        if len(self.G) > 2:
+            try:
+                pos = nx.spectral_layout(self.G, dim=3)
+            except:
+                pos = nx.random_layout(self.G, dim=3)
+        else:
+            pos = nx.random_layout(self.G, dim=3)
+
+        # Spring linger phase — FIXED: no invalid 'damping' arg, added dim=3
+        pos = nx.spring_layout(self.G, pos=pos, iterations=iterations//3, dim=3)
+
+        # Fruchterman uniform pull
+        pos = nx.fruchterman_reingold_layout(self.G, pos=pos, iterations=iterations//3, dim=3)
+
+        # Kamada distance preservation
+        pos = nx.kamada_kawai_layout(self.G, pos=pos, dim=3)
+
+        # Your custom linlog approx — now handles 3D vectors
         for _ in range(iterations//3):
             for n in self.G:
-                disp = np.zeros(2)
+                disp = np.zeros(3)  # was 2D → now 3D
                 for m in self.G:
                     if m != n:
-                        d = np.linalg.norm(pos[n] - pos[m])
+                        diff = pos[m] - pos[n]
+                        d = np.linalg.norm(diff)
                         if d > 0:
-                            disp += (pos[m] - pos[n]) / d  # repulsion
+                            disp += diff / d  # repulsion
                 for m in self.G.neighbors(n):
-                    d = np.linalg.norm(pos[n] - pos[m])
+                    diff = pos[m] - pos[n]
+                    d = np.linalg.norm(diff)
                     if d > 0:
-                        disp += (pos[m] - pos[n]) * np.log(d + 1)  # linlog attraction
+                        disp += diff * np.log(d + 1)  # linlog attraction
                 pos[n] += disp * 0.005
-        # Update vectors from pos
+
+        # Project back — now safely 3D (preserves PAD shape longer)
         for n in self.G:
-            self.vectors[n][:2] = pos[n]  # project back to 2D base
+            self.vectors[n][:3] = pos[n]
 
     def gnn_pass(self):
         new_vals = {}
@@ -149,7 +165,7 @@ class EmotionNet:
             del self.vectors[low]
             self.G.remove_node(low)
 
-# Usage example
+# Usage example (unchanged)
 if __name__ == "__main__":
     net = EmotionNet()
     net.process_text_input("I feel lust but disgust at the same time because I care too much")
