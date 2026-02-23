@@ -55,7 +55,7 @@ Core:
 - Shim: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1%20GrokOS.md
 - EmotionNet: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/2%20EmotionNet.py
 - ChaosEngine: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/3%20ChaosEngine.py
-- ProcessManager: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/4%20ProcessManager.py
+- ChaosManager: https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/4%20ChaosManager.py
 
 Handlers:
 - TURN_COUNTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TURN_COUNTER.py
@@ -64,9 +64,7 @@ Handlers:
 - CHUNK_SPLITTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/CHUNK_SPLITTER.py
 - BLEED_DETECTOR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/BLEED_DETECTOR.py
 - FILE_MGR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/FILE_MGR.py
-- CHAOS_MGR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/CHAOS_MGR.py
 - SYS_HEALTH: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/SYS_HEALTH.py
-- SYS_MGR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/SYS_MGR.py
 
 Full index: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/5%20full-process-index.md
 
