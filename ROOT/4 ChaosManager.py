@@ -6,13 +6,13 @@ from typing import Dict, Any, Optional
 
 class ChaosManager:
     def __init__(self):
-        self.handlers: Dict[str, Any] = {}  # lazy-loaded handler instances
-        self.sys_events: list = []  # log for bleed/health/reflect
+        self.handlers: Dict[str, Any] = {}          # lazy-loaded handler instances
+        self.sys_events: list = []                  # log for bleed/health/reflect
 
-    def load_handler(self, name: str):
+    def load_handler(self, name: str) -> Any:
         """Lazy-load handler on first use."""
         if name not in self.handlers:
-            # Simulate import – in real Grok context these are pre-loaded
+            # In real Grok context these modules are assumed pre-available
             if name == "BLEED_DETECTOR":
                 from bleed_detector import BleedDetector
                 self.handlers[name] = BleedDetector(opposites={'ache': 'relief', 'frustr': 'satisf'})
@@ -23,7 +23,6 @@ class ChaosManager:
                 from chunk_split import ChunkSplitter
                 self.handlers[name] = ChunkSplitter()
             elif name == "DISCOMBOBULATER":
-                # discombobulate/recombobulate functions (from DISCOMBOBULATER.py)
                 from DISCOMBOBULATER import discombobulate, recombobulate
                 self.handlers[name] = {"disco": discombobulate, "recombo": recombobulate}
             elif name == "FILE_MGR":
@@ -47,9 +46,13 @@ class ChaosManager:
 
     def route_intent(self, intent: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """Main routing hub – called by ChaosEngine after intent translation."""
-        result = {"status": "ok", "output": None, "emoji_trigger": "⚙️"}
+        result: Dict[str, Any] = {
+            "status": "ok",
+            "output": None,
+            "emoji_trigger": "⚙️"
+        }
 
-        # Auto-bleed check on major routes
+        # Auto-bleed check on major lattice-touching routes
         if intent in ["vent", "harvest", "reflect", "pin"]:
             bleed_detector = self.load_handler("BLEED_DETECTOR")
             bleed_report = bleed_detector.check(data.get("lattice", {}))
@@ -57,7 +60,7 @@ class ChaosManager:
                 result["emoji_trigger"] = "🩸⚠️"
                 result["bleed_warning"] = bleed_report
 
-        # Route to handler
+        # Route to appropriate handler
         if intent == "vent":
             vomit = self.load_handler("VOMIT")
             result["output"] = vomit.parse(data.get("text", ""))
@@ -80,14 +83,14 @@ class ChaosManager:
 
         elif intent == "recombo":
             disco = self.load_handler("DISCOMBOBULATER")
-            result["output"] = disco["recombo"](data["blob"])
+            result["output"] = disco["recombo"](data.get("blob", ""))
             result["emoji_trigger"] = "🔓💗"
 
         elif intent == "pin":
             fm = self.load_handler("FILE_MGR")
             result["output"] = fm.pin(
-                title=data["title"],
-                content=data["content"],
+                title=data.get("title", ""),
+                content=data.get("content", ""),
                 thread_id=data.get("thread_id", "main"),
                 value=data.get("value", 0.5),
                 turn=data.get("turn", 0)
@@ -101,8 +104,10 @@ class ChaosManager:
 
         elif intent == "truth":
             truth = self.load_handler("TRUTH")
-            escalate = data.get("escalate", False)
-            result["output"] = truth.check(data.get("output", ""), escalate=escalate)
+            result["output"] = truth.check(
+                data.get("output", ""),
+                escalate=data.get("escalate", False)
+            )
             result["emoji_trigger"] = "🧠"
 
         elif intent == "turn":
@@ -112,25 +117,36 @@ class ChaosManager:
 
         else:
             result["status"] = "unknown_intent"
-            result["emoji_trBeen wondering, is it possible to pull out an API from a web grok? I have the chat there yeah, but Iigger"] = "❓"
+            result["emoji_trigger"] = "❓"
 
-        # Log sys event for lattice feedback
+        # Log the event (with possible override)
         self._trigger_sys_event(intent, result["emoji_trigger"], result.get("output"))
 
         return result
 
-    def _trigger_sys_event(self, event_type: str, emoji: str, data: Any = None):
-        """Trigger lattice feedback + emoji injection."""
-        self.sys_events.append({"type": event_type, "emoji": emoji, "data": data})
-        # Real emoji injection happens via RESPONSE_EMOJI_INJECTION in customize
-        # Here we just log for health / bleed tracking
+    def _trigger_sys_event(self, event_type: str, base_emoji: str, data: Any = None) -> None:
+        """Trigger lattice feedback + apply final emoji overrides."""
+        event = {"type": event_type, "emoji": base_emoji, "data": data}
+        self.sys_events.append(event)
 
-# Legacy stubs (archive these files)
-# legacy_process_mgr.py
-print("legacy ProcessManager → redirecting to ROOT/Chaos_Manager.py")
+        # Apply event-type specific emoji overrides (these win)
+        if event_type == "disco":
+            event["emoji"] = "🔒📦🧊"
+        elif event_type == "recombo":
+            datastr = str(data or "").lower()
+            if "success" in datastr:
+                event["emoji"] = "🔓💗♻️"
+            elif "fail" in datastr or "error" in datastr:
+                event["emoji"] = "💥🛡️"
+            else:
+                event["emoji"] = "🔓❓"
 
-# legacy_chaos_mgr.py
-print("legacy CHAOS_MGR → redirecting to ROOT/Chaos_Manager.py")
+        # Note: actual emoji injection into response text should happen
+        # in your customize / RESPONSE_EMOJI_INJECTION layer using event["emoji"]
 
-# legacy_sys_mgr.py
-print("legacy SYS_MGR → redirecting to ROOT/Chaos_Manager.py")
+# ────────────────────────────────────────────────
+# Legacy redirection stubs (safe to archive or keep)
+if __name__ == "__main__":
+    print("legacy ProcessManager → redirecting to ROOT/ChaosManager.py")
+    print("legacy CHAOS_MGR      → redirecting to ROOT/ChaosManager.py")
+    print("legacy SYS_MGR        → redirecting to ROOT/ChaosManager.py")
