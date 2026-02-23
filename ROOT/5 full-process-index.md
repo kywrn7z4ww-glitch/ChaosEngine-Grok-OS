@@ -1,23 +1,20 @@
-# ChaosEngine-Grok-OS Full Process Index
+## REPO_INDEX – Raw Links (updated for Chaos_Manager rename)
 
-## Core Files
-- Shim: ROOT/1 GrokOS.md
-- EmotionNet: ROOT/2 EmotionNet.py
-- ChaosEngine: ROOT/3 ChaosEngine.py
-- ProcessManager: ROOT/4 ProcessManager.py
+Core:
+- Shim: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1%20GrokOS.md
+- EmotionNet: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/2%20EmotionNet.py
+- ChaosEngine: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/3%20ChaosEngine.py
+- Chaos_Manager: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/Chaos_Manager.py
 
-## Handler Files (all .py extensions required for raw.githubusercontent.com)
-- TURN_COUNTER: PROCESS/TURN_COUNTER.py
-- VOMIT: PROCESS/VOMIT.py
-- TRUTH: PROCESS/TRUTH.py
-- CHUNK_SPLITTER: PROCESS/CHUNK_SPLITTER.py
-- BLEED_DETECTOR: PROCESS/BLEED_DETECTOR.py
-- FILE_MGR: PROCESS/FILE_MGR.py
-- CHAOS_MGR: PROCESS/CHAOS_MGR.py
-- SYS_HEALTH: PROCESS/SYS_HEALTH.py
-- SYS_MGR: PROCESS/SYS_MGR.py
+Handlers:
+- BLEED_DETECTOR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/BLEED_DETECTOR.py
+- CANNON_HARVESTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/CANNON_HARVESTER.py
+- CHUNK_SPLITTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/CHUNK_SPLITTER.py
+- DISCOMBOBULATER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/DISCOMBOBULATER.py
+- FILE_MGR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/FILE_MGR.py
+- SYS_HEALTH: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/SYS_HEALTH.py
+- TRUTH: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TRUTH.py
+- TURN_COUNTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TURN_COUNTER.py
+- VOMIT: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/VOMIT.py
 
-Raw base URL: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/
-
-Use this file as single source of truth for link generation / cold-boot pulls.
-Always append .py to handler filenames.
+Full index: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/5%20full-process-index.md
