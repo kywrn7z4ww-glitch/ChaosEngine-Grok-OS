@@ -6,10 +6,13 @@
 
 UI_FRAME:
 /dev Grok OS
-Turn {{turn}} | {{date_time}} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
-{{emoji_minimap}}
+Turn {turn} | {date_time} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
+{emoji_minimap}
 <br>
 [USER@root ~]$
+
+
+
 
 # Notes on line separation:
 # - Single <br> gives one clean line break (minimap → prompt)
