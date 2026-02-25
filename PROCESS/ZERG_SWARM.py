@@ -1,50 +1,68 @@
-# ZergSwarm.py
-# Standalone guest swarm layer – optional overlay, off by default
-# Maps to Zerg mechanics (swarm sync, creep spread, Queen oversight)
-# No override of emotional core – dim minimap blend only
-
-from typing import Dict, Any, Optional
-import random
+# PROCESS/ZERG_SWARM.py
+# Queen of Blades controlled multi-agent swarm — minimal & sharp
+# Updated: Turn 31 | Feb 26 2026
 
 class ZergSwarm:
-    def __init__(self, enabled: bool = False):
-        self.enabled = enabled
-        self.swarm_sync: float = 0.0
-        self.creep_coverage: float = 0.0
-        self.queen_sync: float = 0.0
-        self.entities: Dict[str, Dict] = {}  # stub for future entity tracking
+    def __init__(self):
+        self.active = False
+        self.queen_active = False
+        self.current_problem = None
+        self.entities = []
 
     def toggle(self, enable: bool = True):
-        self.enabled = enable
-        return f"{'🐛 Zerg Swarm guest layer activated (dim overlay)' if enable else '🛡️ Zerg Swarm guest layer deactivated'}"
+        self.active = enable
+        self.queen_active = enable
+        return f"{'👑 Queen of Blades online — Hive ready' if enable else '🛡️ Swarm dormant'}"
 
-    def update_swarm_state(self, lattice: Dict[str, float], data: Dict[str, Any]) -> Dict[str, Any]:
-        """Update swarm metrics – dim overlay only."""
-        if not self.enabled:
-            return {"status": "disabled"}
+    def activate_hive(self, problem: str):
+        """Queen takes command first"""
+        self.active = True
+        self.queen_active = True
+        self.current_problem = problem
+        self.entities = []
 
-        # Simplified Zerg sync calculation (guest layer)
-        self.swarm_sync = random.uniform(0.4, 0.85)  # example
-        self.creep_coverage = self.swarm_sync * 0.7  # creep = sync * spread factor
-        self.queen_sync = self.swarm_sync * 0.9  # Queen oversight
+        return f"""[QUEEN OF BLADES] Hive awakened, darling.
+Problem logged: "{problem[:120]}..."
 
-        result = {
-            "status": "ok",
-            "swarm_sync": round(self.swarm_sync, 2),
-            "creep_coverage": round(self.creep_coverage, 2),
-            "queen_sync": round(self.queen_sync, 2),
-            "emoji_trigger": "🐛🔥" if self.swarm_sync > 0.7 else "🐛"
-        }
+Real intent I'm sensing:
+- What exactly do you want solved?
+- Priority: speed, depth, chaos, or safe path?
+- Any hard limits?
 
-        return result
+Reply with clarification or just say "Queen, spawn entities" and I'll birth the swarm."""
 
-    def get_overlay(self) -> Dict[str, Any]:
-        """Return dim overlay for minimap – no core override."""
-        if not self.enabled:
-            return {}
+    def spawn_entities(self, user_clarification: str = None):
+        """Only spawn after Queen approval"""
+        if not self.queen_active:
+            return "🛡️ Queen must approve first. Lazy system detected."
+
+        intent = self.current_problem + " | Clarified: " + (user_clarification or "no extra info")
+
+        # Spawn adaptable Zerg entities
+        self.entities = [
+            {"id": "1", "role": "Brutal_Debug",   "focus": "Find flaws and loops"},
+            {"id": "2", "role": "Feral_Idea",     "focus": "Wild unfiltered solutions"},
+            {"id": "3", "role": "Pattern_Hunter", "focus": "Hidden connections"},
+            {"id": "4", "role": "Calm_Path",      "focus": "Simplest reliable route"}
+        ]
+
+        outputs = []
+        for e in self.entities:
+            trace = f"[ZERG {e['id']} — {e['role']}] {e['focus']}\n"
+            trace += f"→ Working on: {intent[:90]}...\n"
+            trace += f"→ Status: gathering | no lockup detected\n\n"
+            outputs.append(trace)
+
+        combined = "".join(outputs)
+
+        # Safety check-in
+        if len(intent) > 600:
+            combined += "\n[SWARM CHECK-IN] Phase long — current data gathered so far. Queen/User — next order?"
+
         return {
-            "zerg_sync": self.swarm_sync,
-            "creep": self.creep_coverage,
-            "queen": self.queen_sync,
-            "emoji_blend": "🐛🔥" if self.swarm_sync > 0.7 else "🐛"
+            "status": "entities_spawned",
+            "queen_orders": intent,
+            "count": len(self.entities),
+            "output": combined,
+            "emoji_trigger": "🐛👑🔥"
         }
