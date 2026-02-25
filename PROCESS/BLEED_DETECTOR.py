@@ -1,19 +1,20 @@
-# python/python-process-lib/bleed_detector.py
-# 🩸 v1.1 – Cross-node bleed detector & stabilizer (variables, dynamic growth)
+# BLEED_DETECTOR.py
+# 🩸 v1.2 – Cross-node bleed detector & stabilizer + λ half-life decay curve
 
 from typing import Dict, List, Tuple
+import math
 
 class BleedDetector:
-    def __init__(self, opposites: Dict[str, str], threshold: float = 0.35):
+    def __init__(self, opposites: Dict[str, str], threshold: float = 0.35, half_life_threshold: float = 0.01):
         self.opposites = opposites  # starting pairs – expands dynamically
         self.threshold = threshold  # variable – tune on fly
+        self.half_life_threshold = half_life_threshold  # λ_dom < this → critical slowing warning
 
     def detect_bleed(self, lattice: Dict[str, float]) -> List[Tuple[str, str, float]]:
         """Scan for bleed – variables only, no statics."""
         bleed_events = []
-
         # Opposite bleed (variable delta)
-        for pos, neg in list(self.opposites.items()):  # list to allow dynamic modify
+        for pos, neg in list(self.opposites.items()):
             pos_val = lattice.get(pos, 0.0)
             neg_val = lattice.get(neg, 0.0)
             delta = abs(pos_val - neg_val)
@@ -35,22 +36,39 @@ class BleedDetector:
 
         return sorted(bleed_events, key=lambda x: x[2], reverse=True)
 
-    def suggest_stabilization(self, bleed_events: List[Tuple[str, str, float]]) -> str:
-        """Suggest fixes – single-line nudge."""
-        if not bleed_events:
+    def check_half_life_decay(self, lambda_dom: float, prev_lambda: float, time_delta: float) -> str:
+        """Check λ half-life decay curve – critical slowing warning."""
+        if abs(lambda_dom) >= self.half_life_threshold:
+            return "λ_dom normal – decay active"
+
+        # Approximate decay rate (simplified half-life model)
+        if prev_lambda == 0 or time_delta == 0:
+            return "λ_dom stable – no decay rate"
+
+        decay_rate = math.log(2) / time_delta * math.log(abs(prev_lambda / lambda_dom))
+        if decay_rate < 0.001:  # tunable ε
+            return f"🩸💤 Critical slowing detected – λ_dom ≈ {lambda_dom:.6f}, decay rate {decay_rate:.6f}"
+        else:
+            return f"λ_dom {lambda_dom:.6f} – decay rate {decay_rate:.6f}"
+
+    def suggest_stabilization(self, bleed_events: List[Tuple[str, str, float]], lambda_dom: float = None, prev_lambda: float = None, time_delta: float = 1.0) -> str:
+        """Suggest fixes – single-line nudge + half-life warning."""
+        if not bleed_events and (lambda_dom is None or abs(lambda_dom) >= self.half_life_threshold):
             return "🩸✅ No significant bleed – stable"
 
-        strongest = bleed_events[0]
-        n1, n2, score = strongest
-        return f"🩸⚠️ Bleed detected ({n1} → {n2}, {score:.2f}) – /thread split? /vent? /clarity?"
+        parts = []
+        if bleed_events:
+            strongest = bleed_events[0]
+            n1, n2, score = strongest
+            parts.append(f"🩸⚠️ Bleed ({n1} → {n2}, {score:.2f}) – /thread? /vent? /clarity?")
 
-    def check(self, lattice: Dict[str, float]) -> str:
-        """Full check – call on demand or auto-nudge."""
+        if lambda_dom is not None:
+            half_life_msg = self.check_half_life_decay(lambda_dom, prev_lambda or lambda_dom, time_delta)
+            parts.append(half_life_msg)
+
+        return " ".join(parts)
+
+    def check(self, lattice: Dict[str, float], lambda_dom: float = None, prev_lambda: float = None, time_delta: float = 1.0) -> str:
+        """Full check – bleed + λ half-life decay."""
         events = self.detect_bleed(lattice)
-        return self.suggest_stabilization(events)
-
-# Example usage:  
-# opposites = {'ache': 'relief', 'frustr': 'satisf'}
-# detector = BleedDetector(opposites, threshold=0.4)
-# lattice = {'ache': 0.7, 'relief': 0.2, 'frustr': 0.3, 'project': 0.6}
-# print(detector.check(lattice))
+        return self.suggest_stabilization(events, lambda_dom, prev_lambda, time_delta)
