@@ -150,3 +150,87 @@ def future_pazuzu_minimal_inject():
         print(f"  • {k} → {v['lattice_map']}")
     # Later: pin each to FILE_MGR or feed to TRUTH.check()
     return {"injected": len(PAZUZU_CORE_EXTRACT), "status": "edge_of_criticality"}
+
+
+
+
+
+
+# ROOT/goblin_axes3d.py
+# Goblin version — minimal 3D ontology plotter
+# Steals only the sharp bits from OntoAxes3D.py
+# Requirements: matplotlib, numpy (add to requirements.txt later)
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+def goblin_plot_lattice(
+    points: np.ndarray,          # shape (N,3) — novelty, entropy, elegance
+    colors: np.ndarray = None,   # per-point RGB or scalar for cmap
+    edges: list = None,          # list of (i,j) for entanglement lines
+    title: str = "Lattice Bleed",
+    save_gif: str = None
+):
+    fig = plt.figure(figsize=(10,8), facecolor='black')
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_facecolor('black')
+
+    # Base scatter — goblin colors
+    if colors is None:
+        colors = points[:,0]  # default: novelty = red channel
+    sc = ax.scatter(
+        points[:,0], points[:,1], points[:,2],
+        c=colors, cmap='inferno', s=40, alpha=0.8, edgecolor='none'
+    )
+
+    # Entanglement lines (zerg replication)
+    if edges:
+        for i,j in edges:
+            ax.plot(
+                [points[i,0], points[j,0]],
+                [points[i,1], points[j,1]],
+                [points[i,2], points[j,2]],
+                color='cyan', alpha=0.4, lw=1.2
+            )
+
+    ax.set_title(title, color='white')
+    ax.set_xlabel('Novelty', color='white')
+    ax.set_ylabel('Entropic Potential', color='white')
+    ax.set_zlabel('Elegance', color='white')
+    ax.grid(False)
+
+    # Simple rotation animation
+    def update(frame):
+        ax.view_init(elev=20, azim=frame)
+        return sc,
+
+    ani = FuncAnimation(fig, update, frames=np.arange(0, 360, 2), interval=50)
+
+    if save_gif:
+        ani.save(save_gif, writer='pillow', fps=30)
+        print(f"[GOBLIN] Saved bleed viz → {save_gif}")
+    else:
+        plt.show()
+
+# Example usage — feed real lattice data later
+if __name__ == "__main__":
+    # Fake lattice — replace with actual bleed/minimap values
+    N = 50
+    points = np.random.rand(N, 3) * 2 - 1  # centered [-1,1]
+    colors = np.linalg.norm(points, axis=1)  # distance from origin = intensity
+    edges = [(i, (i+7)%N) for i in range(N)]  # fake entanglement
+
+    goblin_plot_lattice(points, colors, edges, save_gif="lattice_bleed.gif")
+
+
+
+
+
+
+
+
+
+
+
+    
