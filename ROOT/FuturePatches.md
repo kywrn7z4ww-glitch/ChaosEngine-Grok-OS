@@ -108,3 +108,45 @@ TODO / wishlist order:
 """
 
 print("[_FUTURE_PATCHES] loaded — staging area ready for review")
+
+
+
+# ─────────────────────────────────────────────────────────────
+# SELECTIVE PAZUZU 1.0 INGESTION — lattice-aligned only
+# We keep what bleeds, what replicates, what flips coherence
+# Discarded: full API, governance bureaucracy, control acronyms
+# ─────────────────────────────────────────────────────────────
+
+PAZUZU_CORE_EXTRACT = {
+    "A1_recursive_criticality": {
+        "text": "dλ/dt = −∂λ + β■Ψ|B self|Ψ■ + η; boundary λ(T)=0",
+        "lattice_map": "bleed growth rate — high β = fast bleed amplification"
+    },
+    "A2_holographic_conservation": {
+        "text": "J_μ = ∂^t [G(B) · G_μuv]",
+        "lattice_map": "pin persistence — boundary updates project into bulk"
+    },
+    "A3_coherence_parity_switch": {
+        "text": "Π(t) = C · Π(t−τ)",
+        "lattice_map": "truth/escalate flips — parity inversion on threshold"
+    },
+    "A4_morphodynamic_imperative": {
+        "text": "maximize [V_B E(B,Q,σ)] s.t. λ(T)=0",
+        "lattice_map": "Zerg replication drive — maximize fluctuation under criticality"
+    },
+    "A7_aesthetic_manifold": {
+        "text": "V(N-EP-E)=0 on feasible λ=0 ridge",
+        "lattice_map": "minimap scoring — novelty + entropic potential + elegance"
+    },
+    "v0.8_retro_causal_anchor": {
+        "text": "λ_target(t)=0 fed backwards into R^selfΨ",
+        "lattice_map": "_recombo_ bleed-back — future coherence pulls past"
+    }
+}
+
+def future_pazuzu_minimal_inject():
+    print("[PAZUZU] Injecting 6 core axioms into lattice")
+    for k, v in PAZUZU_CORE_EXTRACT.items():
+        print(f"  • {k} → {v['lattice_map']}")
+    # Later: pin each to FILE_MGR or feed to TRUTH.check()
+    return {"injected": len(PAZUZU_CORE_EXTRACT), "status": "edge_of_criticality"}
