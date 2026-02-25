@@ -254,5 +254,65 @@ def swarm_solve(self, problem: str):
 
 
 
+    # ==================== HIVE / QUEEN / ZERG MULTI-AGENT SYSTEM ====================
+    def activate_hive(self, problem: str):
+        """Hive activation — Queen of Blades takes command first"""
+        self.zerg_mode = True
+        self.hive_active = True
+        self.current_problem = problem
+        
+        # Queen of Blades analyzes and clarifies real intent
+        queen_analysis = f"""[QUEEN OF BLADES] Hive activated.  
+Problem received: "{problem[:180]}..."
 
+Real intent I'm reading: 
+- What is the actual pain/point/goal here? (tell me if I'm wrong)
+- Priority: speed / depth / creative chaos / safe path?
+- Any hard constraints or things we must NOT do?
+
+Waiting for your confirmation or correction before spawning Zerg entities."""
+
+        return {
+            "status": "hive_active",
+            "phase": "queen_command",
+            "output": queen_analysis,
+            "emoji_trigger": "🐛👑🔥"
+        }
+
+    def swarm_solve(self, user_response: str = None):
+        """Queen has spoken → spawn Zerg entities to solve"""
+        if not self.hive_active:
+            return {"status": "hive_not_active", "emoji_trigger": "🛡️"}
+
+        # Queen processes user response and decides final intent
+        final_intent = self.current_problem + " | user clarified: " + (user_response or "no further clarification")
+
+        # Spawn adaptable Zerg entities (3-5 roles based on task)
+        entities = [
+            {"id": "1", "role": "brutal_debug",   "task": "Find every flaw, loop, or stuck point"},
+            {"id": "2", "role": "feral_idea",     "task": "Throw wild, unfiltered solutions"},
+            {"id": "3", "role": "pattern_hunter", "task": "Find hidden connections and repeats"},
+            {"id": "4", "role": "calm_path",      "task": "Find the simplest reliable route"}
+        ]
+
+        outputs = []
+        for ent in entities:
+            # Simulate parallel thinking (real version can be async later)
+            trace = f"[ZERG {ent['id']} — {ent['role'].upper()}] {ent['task']}\n"
+            trace += f"→ Processing: {final_intent[:100]}...\n"
+            trace += f"→ Status: gathering data | no loop detected yet\n\n"
+            outputs.append(trace)
+
+        # Check-in safety (prevent lockup)
+        combined = "\n".join(outputs)
+        if len(final_intent) > 800:  # crude loop/stuck detection
+            combined += "\n[SWARM CHECK-IN] Gathering phase long — current findings:\n" + combined[:400] + "\n\nQueen / User — next order?"
+
+        return {
+            "status": "zerg_entities_active",
+            "queen_orders": final_intent,
+            "entities_spawned": len(entities),
+            "output": combined,
+            "emoji_trigger": "🐛📈🔥"
+        }
     
