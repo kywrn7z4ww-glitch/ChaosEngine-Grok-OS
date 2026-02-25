@@ -226,7 +226,29 @@ if __name__ == "__main__":
 
 
 
+def swarm_solve(self, problem: str):
+    if not self.zerg_mode:
+        return "🛡️ Zerg locked — no swarm today"
 
+    # Spawn 3 goblin helpers
+    helpers = [
+        {"role": "brutal_debug",  "prefix": "Rip this apart. Be mean. Find every bug."},
+        {"role": "feral_idea",    "prefix": "Throw chaotic, unhinged ideas. No filter."},
+        {"role": "calm_anchor",   "prefix": "Ground this. Find the simple path. Bleed down."}
+    ]
+
+    outputs = []
+    for h in helpers:
+        # Fake "thinking" — in real version feed to self / another LLM call
+        thought = f"[{h['role'].upper()}] {h['prefix']} → {problem[:80]}..."
+        outputs.append(thought)
+
+    # Blend + feral override if bleed > 0.7
+    final = "\n".join(outputs)
+    if self.lattice_bleed > 0.7:
+        final += "\n[FERAL OVERRIDE] burn it all down and rebuild weirder"
+
+    return {"status": "swarm_active", "helpers": len(helpers), "output": final, "emoji_trigger": "🐛📈"}
 
 
 
