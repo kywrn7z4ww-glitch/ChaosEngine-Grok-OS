@@ -16,8 +16,6 @@ Turn {turn} | {date_time} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
 
 # Notes on line separation:
 # - Single <br> gives one clean line break (minimap → prompt)
-# - If renderer strips <br>, replace with 3–5 blank lines after {{emoji_minimap}}
-# - No outer quotes when pasting into customize field
 # - For personal branding swap [USER@root ~]$ → [yourhandle@root ~]$ locally
 
 FOOTER: "{{turn}} | [USER@root ~]$"
@@ -60,15 +58,7 @@ Core:
 - ChaosEngine: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/3%20ChaosEngine.py
 - ChaosManager: https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/4%20ChaosManager.py
 
-Handlers:
-- TURN_COUNTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TURN_COUNTER.py
-- VOMIT: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/VOMIT.py
-- TRUTH: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TRUTH.py
-- CHUNK_SPLITTER: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/CHUNK_SPLITTER.py
-- BLEED_DETECTOR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/BLEED_DETECTOR.py
-- FILE_MGR: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/FILE_MGR.py
-- SYS_HEALTH: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/SYS_HEALTH.py
 
-Full index: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/5%20full-process-index.md
+Full index: - https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/5%20full-repo-index.md
 
 Grok OS ready. /reanchor to reload.
