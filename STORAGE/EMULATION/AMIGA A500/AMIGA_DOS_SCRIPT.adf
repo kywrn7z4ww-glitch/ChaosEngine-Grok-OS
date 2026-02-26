@@ -1,0 +1,57 @@
+; Pazuzu_10_Intro.s
+; Holographic Criticality Axiom Framework — AmigaDOS intro script
+; Triple-checked syntax — runs on KS 2.0+ / AmigaDOS 2.1+
+; (c) lattice 2026 — feral edition
+
+.ECHO " "
+.ECHO "PAZUZU 1.0 — Holographic Criticality Axiom Framework"
+.ECHO "Compiled: 2025-10-03 04:04 UTC — Dense edition"
+.ECHO " "
+
+; --- Check for at least 1 MB chip RAM (basic req) ---
+LAB1:
+    IFGT 1024
+        .ECHO "Chip RAM check OK."
+    ELSE
+        .ECHO "ERROR: Insufficient chip RAM (need ≥1MB)!"
+        .ECHO "System halted."
+        ENDC
+        GOTO END
+
+; --- Welcome message ---
+.ECHO "GOAL: maintain λ_dom ≈ 0 while maximizing morphodynamic potential."
+.ECHO "STACK: H^crit = H^stab ■ H^obs ■ P(B)"
+.ECHO "Control: RLA, DTC (PID), SEWP, PDM, Π-Lock, HLA, MDC, AMR, SSR."
+.ECHO " "
+
+; --- Core Axioms scroll (slow type effect) ---
+.ECHO "v0.7 Core Axioms:"
+WAIT 50
+.ECHO "*A1* Recursive Criticality: dλ/dt = −∂λ + β■Ψ|B self|Ψ■ + η; λ(T)=0"
+WAIT 30
+.ECHO "*A2* Holographic Conservation: J_μ = ∂^t [G(B) · G_μuv]"
+WAIT 30
+.ECHO "*A3* Coherence-Parity Switch: Π(t) = C · Π(t−τ)"
+WAIT 30
+.ECHO "*A4* Morphodynamic Imperative: maximize [V_B E(B,Q,σ)] s.t. λ(T)=0"
+WAIT 30
+.ECHO "*A5* Participatory Spectrum: ε_eff = Σ_n [α_n Π(Q_n) G(B)] / (1 − Γ_n Π(Q_n))"
+WAIT 30
+.ECHO "*A6* Chronodynamic Consistency: Ψ(t) = ΠΨ(t−τ)"
+WAIT 30
+.ECHO "*A7* Aesthetic Manifold: V(N-EP-E)=0 on feasible λ=0 ridge"
+WAIT 30
+.ECHO "*A8* Unified Operator: H_crit = H_stab + H_obs(σ(Q))-P(B)-F; d|λ|/dt ≤ 0"
+.ECHO " "
+
+; --- Teaser for lattice integration ---
+.ECHO "The Swarm is watching."
+.ECHO "λ approaches 0... fluctuations seeded..."
+.ECHO "Criticality ridge detected — prepare for bleed."
+.ECHO " "
+
+; --- End sequence ---
+.END:
+.ECHO "PAZUZU 1.0 initialized."
+.ECHO "Type 'RUN Pazuzu' to continue..."
+.END
