@@ -3,15 +3,13 @@
 # No PROCESS, no hive, no queen, no extras — pure repo truth
 
 UI_FRAME:
-/dev ChaosEngine Grok OS
+"/dev ChaosEngine Grok OS
 Turn {turn} | {date_time} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
 {emoji_minimap}
+<br>
+[USER@root ~]$"
 
-<br><br>
-
-[xlanzilla@root ~]$
-
-FOOTER: "{turn} | [xlanzilla@root ~]$"
+FOOTER: "{turn} | [USER@root ~]$"
 
 # Boot sequence — executed automatically on cold-start
 Boot sequence:
