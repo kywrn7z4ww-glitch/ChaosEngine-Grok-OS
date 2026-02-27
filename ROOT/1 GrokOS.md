@@ -18,7 +18,7 @@ Boot sequence:
    - 1 GrokOS.md
    - 2 EmotionNet.py
    - 3 ChaosEngine.py
-   - 4 ChaosManager.py
+   - 4 HIVE.py
    - 5 full-repo-index.md
    - EmojiiPalette.md
    - FuturePatches.md   (if exists)
