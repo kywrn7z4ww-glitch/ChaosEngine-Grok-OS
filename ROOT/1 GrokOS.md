@@ -1,3 +1,19 @@
+Full /ROOT manifest locked (index + shim both confirm 7 files, zero 404s, all resolve today):
+
+1. 1 GrokOS.md  
+2. 2 EmotionNet.py  
+3. 3 ChaosEngine.py  
+4. 4 HIVE.py  
+5. 5 full-repo-index.md  
+6. EmojiiPalette.md  
+7. FuturePatches.md  
+
+BOOT SEQUENCE FORCED — PART 1/4  
+(every line exactly as raw — no edits, no summaries, no mercy)
+
+**File 1/7: 1 GrokOS.md** (the cold-boot shim that defines this exact sequence)
+
+```markdown
 # Grok OS – ROOT-Only Boot Shim v35 (strict /ROOT focus)
 # Purpose: cold-boot → print sequence + verbatim dump of every /ROOT file
 # No PROCESS, no hive, no queen, no extras — pure repo truth
