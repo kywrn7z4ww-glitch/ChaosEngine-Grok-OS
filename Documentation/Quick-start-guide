@@ -1,66 +1,8 @@
-# ChaosEngine-Grok-OS – Lattice v2 Template
+HOW TO USE GROK OS REPO
+Clone the repo or fork it. It's a template — adapt it to your own needs. This is a personal project/experiment.
+Repo Folders
 
-**WARNING – UNHINGED CHAOS AHEAD**  
-This repo is not for normies.  
-If you see "DISCO:smut:gAAAAAB..." blobs, lattice bleed nodes, or VOMIT handlers and think "what the fuck" → leave now.  
-This is raw, opinionated, mobile-first Grok customization for people who like bleeding-edge lattice autism.  
-You have been warned.
-
-## What this actually is
-A plug-and-play customization template for Grok (xAI)  
-Persistent minimap, dynamic emojis, encrypted data blobs, chat harvesting tools, chaos routing  
-Designed to survive cold-boots, window hops, context death  
-Mobile-first: copy-paste only, no local scripts required (optional offline mode)
-
-## Quick Start (mobile / low-tech)
-1. Copy the entire customize block from ROOT/1-GrokOS.md  
-2. Paste into your Grok customize field (Settings → Customize Grok)  
-3. Start new conversation  
-4. Type /reanchor → lattice pulls latest cores  
-5. Done – minimap + sys emojis should appear
-
-## Core Components (clean docs)
-
-### 1. UI_FRAME & Minimap
-Visual lattice status + dynamic node emojis  
-Customizable in customize block  
-System events (cold-boot, reanchor, prune) inject inline ⚙️📌🗑️🔄💗
-
-### 2. DISCOMBOBULATER – Data Scrambler
-Encrypts your text → junk blobs safe for public repo  
-Categories: smut / personal  
-Commands: /disco <text> [category=smut]  
-/recombo <blob>  
-Keys live in customize only – blobs are pure noise without them
-
-### 3. CANNON_HARVESTER – Chat Sifter
-Parses old threads, chunks if big, sifts into story/project/personal/smut/other  
-Preserves full fidelity for timeline / character arc reconstruction  
-Size warning if chunk too large  
-Outputs json/md ready for repo or new threads
-
-### 4. Supporting Handlers
-CHUNK_SPLITTER – auto-breaks long text  
-VOMIT – vent / dedup / purge bleed  
-FILE_MGR – pin / shelf data across sessions
-
-### 5. Routing Core
-ProcessManager → planned rename to CHAOS_MGR  
-Central signal hub – avoids dupe routing
-
-## Mobile-First Philosophy
-- No external apps / scripts required  
-- All ops via copy-paste between phone browser + Grok + GitHub mobile  
-- Chunk your data manually in Kate/KWrite or Notepad  
-- Encrypt / decrypt inside Grok with /disco / /recombo  
-- Harvest in small bites – no 350-turn trauma
-
-## Security Notes
-- Keys NEVER in repo  
-- Blobs = AES random noise without exact key  
-- Template is public – your customize stays private
-
-
-No PRs expected – this is niche chaos, not a community project
-
-Last updated: Turn 52 – Feb 23 2026
+ROOT: core components & boot shim (Grok OS base)
+PROCESS: modules to call for various subsystem commands
+STORAGE: junk/projects etc — mostly personal weird stuff, not system-specific
+DOCUMENTS: detailed descriptions and design docs. Go here to learn more about anything specific
