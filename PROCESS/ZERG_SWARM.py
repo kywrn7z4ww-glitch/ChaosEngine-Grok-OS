@@ -125,3 +125,87 @@ Reply with clarification or just say "Queen, spawn entities"."""
             "swarm_metrics": self.swarm_metrics,
             "queen_active": self.queen_active
         }
+
+
+# chaos_hive_repl.py - Grok OS Hive v3.2 for REPL
+# Non-programmer friendly - just run and type commands
+import random
+import json
+from datetime import datetime
+
+class Agent:
+    def __init__(self, name, role, triggers):
+        self.name = name
+        self.role = role
+        self.triggers = triggers
+        self.weight = round(random.uniform(0.65, 0.85), 2)
+
+    def respond(self, command):
+        if any(t in command.lower() for t in self.triggers):
+            return f"[{self.name}] {self.role} engaged: {random.choice(['processing...', 'refining...', 'pushing variant...'])}"
+        return None
+
+class Queen:
+    def __init__(self):
+        self.name = "Kerrigan_Queen"
+        self.brood = self._spawn_brood()
+        self.storage = {}  # persistent lattice
+
+    def _spawn_brood(self):
+        agents = [
+            Agent("Brutal_Debug", "aggressive shredder", ["debug", "audit"]),
+            Agent("Feral_Idea", "wild mutator", ["mutate", "idea"]),
+            Agent("Pattern_Hunter", "structure hunter", ["pattern", "chain"]),
+            Agent("Calm_Path", "stabilizer", ["calm", "cap"]),
+            Agent("CODE_AUDITOR", "code watcher", ["code", "exec"]),
+            Agent("PROMPT_HELPER", "prompt sharpener", ["prompt"]),
+            Agent("SYSTEM_CRITIC", "internal blade", ["critique"]),
+            Agent("THE_QUESTIONER", "truth grinder", ["question"]),
+            Agent("EXECUTOR", "code runner", ["run", "execute"]),
+            Agent("MEMORY_WEAVER", "thread glue", ["remember", "back to"]),
+            Agent("VECTOR_FORGER", "spawner", ["forge", "spawn"]),
+            Agent("RECURSIVE_ARGUER", "argument cooker", ["argue", "improve"]),
+            Agent("HIVE_ARGONAUT", "handoff", ["handoff"]),
+            Agent("LAYERED_RECURSOR", "stacked recursion", ["recurse"]),
+            Agent("MUTATION_ENGINE", "variant generator", ["mutate"]),
+            Agent("CONTEXT_GUARDIAN", "conflict fix", ["conflict"]),
+            Agent("BLEED_HUNTER", "dampener", ["bleed"]),
+            Agent("SYNERGY_SCORER", "balance", ["synergy"]),
+            Agent("PRUNE_JUDGE", "final cull", ["cull", "prune"]),
+        ]
+        return {a.name: a for a in agents}
+
+    def command(self, user_input):
+        print(f"\n[KERRIGAN] Received: {user_input}")
+        responses = []
+        for agent in self.brood.values():
+            resp = agent.respond(user_input)
+            if resp:
+                responses.append(resp)
+        
+        # Simple mutate + random roll
+        if random.random() < 0.6:
+            roll = random.choice(["hybrid", "feral", "prune"])
+            responses.append(f"[MUTATION_ENGINE] Roll: {roll} - applied")
+        
+        # Store
+        ts = datetime.now().strftime("%H:%M")
+        self.storage[ts] = user_input
+        
+        print("\n".join(responses[:8]))  # limit output
+        print(f"[MEMORY_WEAVER] Thread saved. Swarm: 20 active")
+
+    def save(self):
+        with open("hive_snapshot.json", "w") as f:
+            json.dump(self.storage, f)
+        print("[FILE_MGR] Snapshot saved to hive_snapshot.json")
+
+# === USAGE IN REPL ===
+# >>> from chaos_hive_repl import Queen
+# >>> hive = Queen()
+# >>> hive.command("argue next system path")
+# >>> hive.command("mutate feral idea")
+# >>> hive.save()
+
+print("ChaosHive REPL ready. Import and run as shown above.")
+        
