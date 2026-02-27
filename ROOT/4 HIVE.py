@@ -1,4 +1,4 @@
-# ROOT/4 ChaosManager.py – HIVE v41 – ALL FIT HERE
+# ROOT/4 – HIVE v41 – ALL FIT HERE
 # Queen central – all PROCESS loaded – ultra low friction auto-dump
 
 from datetime import datetime
@@ -16,10 +16,10 @@ from PROCESS.TURN_COUNTER import TurnCounter
 from PROCESS.VOMIT import VomitParser
 from PROCESS.ZERG_SWARM import ZergSwarm
 
+
 class HiveManager:
     def __init__(self):
         self.queen_active = True
-
         # All 10 processes loaded together in tandem
         self.processes = {
             "bleed": BleedDetector(opposites={}),
@@ -28,7 +28,10 @@ class HiveManager:
             "disco": None,  # functions only
             "file": FileManager(),
             "health": SystemHealth(),
-            "truth": TruthChecker(hist=[], lat={}),
+            "truth": TruthChecker(
+                hist=["initial boot sequence"],
+                lat={"conf": 0.85, "surprise": 0.15, "frustr": 0.0, "ache": 0.0}
+            ),
             "turn": TurnCounter(),
             "vomit": VomitParser(),
             "zerg": ZergSwarm()
@@ -68,8 +71,34 @@ class HiveManager:
         if "PIN" in intent_upper or "SAVE" in intent_upper:
             return self.processes["file"].pin(title=raw_intent[:50], content=raw_intent)
 
+        # ────────────────────────────────
+        # TRUTH / ANCHOR TRIGGERS (upgraded – external verification cascade)
+        # ────────────────────────────────
         if "TRUTH" in intent_upper or "CHECK" in intent_upper:
-            return self.processes["truth"].check(raw_intent)
+            escalate = any(k in intent_upper for k in [
+                "ANCHOR", "VERIFY", "GROK TRUTH", "WIKI TRUTH", "PERP TRUTH", "TRUTH ESCALATE"
+            ])
+            pri = "grok"  # default xAI layer
+            if "WIKI" in intent_upper:
+                pri = "wiki"
+            if "PERP" in intent_upper:
+                pri = "perp"
+            if "ALL" in intent_upper or "ESCALATE" in intent_upper:
+                pri = "all"  # force full cascade
+
+            truth_result = self.processes["truth"].check(
+                raw_intent,
+                escalate=escalate,
+                anchor_pri=pri
+            )
+
+            # Safety: add external delta if not present and escalated
+            if escalate and "External anchor delta" not in truth_result:
+                topic = self._extract_topic(raw_intent)
+                external = self.processes["truth"]._anchor_external(raw_intent, topic, pri)
+                truth_result += f"\n{external}"
+
+            return truth_result + f" | Turn {self.turn.get_current()}"
 
         if "HEALTH" in intent_upper or "STATUS" in intent_upper:
             return self.processes["health"].get_raw()
@@ -112,9 +141,18 @@ class HiveManager:
                 return f"{prefix}/{k}"
         return None
 
+    def _extract_topic(self, text: str) -> str:
+        sentences = re.split(r'[.!?]+', text)[:3]
+        for s in sentences:
+            words = re.findall(r'\b[A-Z][a-zA-Z]{3,}\b', s)
+            if words:
+                return '_'.join(words[:4])
+        return "unknown_topic"
+
     def load_all(self):
         print("HIVE boot — all 10 processes loaded in tandem")
         return "Queen online – everything working together"
+
 
 # === Quick self-test ===
 if __name__ == "__main__":
