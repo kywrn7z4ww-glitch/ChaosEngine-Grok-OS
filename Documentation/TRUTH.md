@@ -37,5 +37,14 @@ TRUTH.py exists to catch that early — especially in long sessions where contex
 Subject to change / replacement / tuning.  
 No tie to overarching philosophy — pure verification utility.
 
-Last sketched: 2026-02-27
+## External Anchors (vNext – Feb 2026 upgrade)
+Priority cascade for contradiction resolution + drift reduction:
+- 1. Grokipedia (xAI truth layer) – primary anchor
+- 2. Wikipedia (neutral baseline)
+- 3. Perplexity (real-time sourced synthesis + citations)
+
+Cross-reference summaries only on factual claims (skip pure opinion/emotion).  
+Cache in self.lat['anchors'] (expire 10 turns).  
+Low-call throttle: max 1 external per check unless escalate=True.  
+Goal: ground dates/facts/entities, boost conf, reduce halluc drift.
 Status: high-level design — abstract & flexible
