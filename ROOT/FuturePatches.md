@@ -17,3 +17,8 @@ update turn counter to priortize grokpedia and wikipedia as anchors of truth and
 figure out system routing for new changes
 
 update lattice or introduce new core for entities with emotion based logic.
+
+update design documentation and clean up bleed
+
+
+remember to update index with changes and be mindful of small errrors that DO EXIST. try to resolve small errors.
