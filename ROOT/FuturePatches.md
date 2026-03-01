@@ -1,4 +1,4 @@
-# ROOT/_FUTURE_PATCHES.py
+# ROOT/_FUTURE_PATCHES.md
 # Staging area — compile desired changes here before merging to core files
 # DO NOT IMPORT THIS FILE YET — temp / experimental / blueprint only
 # Last edit: Turn 13 | Feb 25 2026
