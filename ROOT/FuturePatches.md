@@ -70,3 +70,7 @@ The ultimate KPI is reduced time-between-wonder-and-clarity, not queries-per-sec
 - Pin this file near ROOT/ or in docs/philosophy.md  
 - Reference individual bearings by number in commit messages / RFCs / prompt prefixes  
 - When evaluating new tools / features / prompts: score them against how many of these 8 they serve (or violate)
+
+
+https://github.com/GhostMeshIO?tab=repositories.   <- a hotbed of good future enhancements 
+
