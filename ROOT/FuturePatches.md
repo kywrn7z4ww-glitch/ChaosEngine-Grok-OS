@@ -81,7 +81,7 @@ https://github.com/TaoishTechy/AxiomCivilization
 
 https://zenodo.org/records/18346699
 
-
+https://glama.ai/mcp/servers/@merterbak/Grok-MCP <- dont know if this applies to current setup
 
 
 
