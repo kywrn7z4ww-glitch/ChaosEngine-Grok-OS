@@ -85,5 +85,51 @@ https://glama.ai/mcp/servers/@merterbak/Grok-MCP <- dont know if this applies to
 
 
 
+### FUTURE_PATCH: Shadow Lattice Forking (Isolated + Optional Resonance)
 
+**Motivation**  
+- Preserve modularity: rework EmotionNet / tidal logic / goblin overrides without destabilizing root wavelength  
+- Enable safe experimentation, data harvest sandboxing, A/B mood testing  
+- Avoid monolith collapse while keeping swarm resonance possible  
+
+**Core Mechanics**  
+1. **Spawn**  
+   `lattice fork --shadow --name <str> [--isolate-bleed] [--resonance] [--sync-valve=N]`  
+   - Creates detached EmotionNet instance (shallow-copy G, vectors, vals at fork time)  
+   - Isolated by default: no push/pull to/from root  
+
+2. **Isolation Mode (default)**  
+   - Shadow runs parallel tidal cycles, own pruning/damping/gnn_pass  
+   - Changes (blends >0.45, new spawns, vector drifts) stay local  
+   - Root unaware  
+
+3. **Resonance Modes (opt-in)**  
+   - `--resonance`: bidirectional soft bleed  
+     - Root → shadow: high-val nodes (>0.35) pulled as damped messages every cycle  
+     - Shadow → root: surprise/new nodes or co-act >0.55 bled back at low weight (~0.15)  
+   - `--sync-valve=N`: one-way shadow → root push every N tidal cycles  
+     - Only diffs on high-co-act nodes (>0.45)  
+     - Weight-scaled injection (0.1–0.2) to prevent takeover  
+
+4. **Lifecycle Commands**  
+   - `lattice shadow list` → show running forks + resonance status  
+   - `lattice merge <name> [--force]` → controlled bleed shadow deltas into root  
+   - `lattice promote <name>` → kill root, make shadow new root (lattice coup)  
+   - `lattice discard <name>` → clean shutdown + gc  
+
+5. **Implementation Notes**  
+   - Leverage existing shallow-copy from Pazuzu cull refactor  
+   - Add isolated EmotionNet class subclass or context manager  
+   - Track fork metadata in ChaosEngine (shadow_roots dict)  
+   - Resonance uses scaled GNN-pass style message injection (low alpha)  
+   - Goblin mood inherited at spawn, can diverge independently  
+
+**Risks / Mitigations**  
+- Resonance drift → add --resonance-max-drift cap (val delta threshold)  
+- Memory bloat → auto-prune idle shadows after timeout  
+- Mood desync → optional --sync-mood flag to periodically re-anchor goblin override  
+
+Status: queued for lattice-layer expansion  
+Priority: high-modularity  
+Trigger: post-data-harvest reseed phase  
 
