@@ -22,6 +22,7 @@ TRUTH.py https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS
 TURN_COUNTER.py https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/TURN_COUNTER.py
 VOMIT.py https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/VOMIT.py
 ZERG_SWARM.py https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/PROCESS/ZERG_SWARM.py
+ENTITY_HUNTER.py https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/refs/heads/main/PROCESS/ENTITY_HUNTER.py
 
 STORAGE/ (pinned memory, characters)
 CHARACTERS/QueenOfBlades/KerriganPersonalityCore.md https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/STORAGE/CHARACTERS/QueenOfBlades/KerriganPersonalityCore.md
