@@ -1,119 +1,139 @@
-# ROOT/3_ChaosEngine.py — Consolidated Pure System Router v1 (2026-03-07)
-# Merged old 3 + old 4 — bleed sliced, agents optional, modularity locked
-# Works standalone. Agents (Core/Luna/Queen/Skynet) are just optional helpers.
+# ROOT/3_ChaosEngine.py — Dynamic Pure System Router v2 (2026-03-07)
+# Auto-scans PROCESS/ + explicit ROOT hooks for EmotionNet & TurnCounter
 
+import importlib.util
+import os
 import re
 from datetime import datetime
-# Import all current PROCESS handlers (add new ones here only)
-from PROCESS.BLEED_DETECTOR import BleedDetector
-from PROCESS.CANNON_HARVESTER import CannonHarvester
-from PROCESS.CHUNK_SPLITTER import ChunkSplitter
-from PROCESS.DISCOMBOBULATOR import discombobulate, recombobulate
-from PROCESS.FILE_MGR import FileManager
-from PROCESS.SYS_HEALTH import SystemHealth
-from PROCESS.TRUTH import TruthChecker
-from PROCESS.TURN_COUNTER import TurnCounter
-from PROCESS.VOMIT import VomitParser
-from PROCESS.ZERG_SWARM import ZergSwarm
 
-# Optional: EmotionNet hook (full heavy version, no pruning)
-try:
-    from ROOT.EmotionNet import EmotionNet
-except:
-    EmotionNet = None  # graceful fallback
+PROCESS_DIR = "PROCESS"
+
 
 class ChaosEngine:
     def __init__(self):
-        self.turn = TurnCounter()
-        self.lattice = None  # optional — agents can inject if needed
-        self.emotionnet = EmotionNet() if EmotionNet else None
+        self.turn = None
+        self.lattice = None
+        self.emotionnet = None
+        self.processes = {}
 
-        # All processes loaded in tandem — ultra low friction
-        self.processes = {
-            "bleed": BleedDetector(opposites={}),
-            "cannon": CannonHarvester(),
-            "chunk": ChunkSplitter(),
-            "disco": None,  # functions only
-            "file": FileManager(),
-            "health": SystemHealth(),
-            "truth": TruthChecker(hist=["initial boot"], lat={"conf": 0.85}),
-            "turn": self.turn,
-            "vomit": VomitParser(),
-            "zerg": ZergSwarm()
-        }
+        self._load_turn_counter()
+        self._load_emotionnet()
+        self._load_all_processes_dynamically()
+
+    def _load_turn_counter(self):
+        try:
+            from PROCESS.TURN_COUNTER import TurnCounter
+
+            self.turn = TurnCounter()
+            print("⏰ TurnCounter loaded")
+        except Exception as e:
+            print(f"⚠️ TurnCounter failed to load: {e}")
+
+    def _load_emotionnet(self):
+        try:
+            from ROOT.EmotionNet import EmotionNet
+
+            self.emotionnet = EmotionNet()
+            print("🧠 EmotionNet loaded (character routing ready)")
+        except Exception as e:
+            print(f"⚠️ EmotionNet failed to load: {e}")
+            self.emotionnet = None
+
+    def _load_all_processes_dynamically(self):
+        """Auto-discovers every .py in PROCESS/"""
+        print("🛠️ ChaosEngine scanning PROCESS/ for handlers...")
+        for root, dirs, files in os.walk(PROCESS_DIR):
+            for filename in files:
+                if filename.endswith(".py") and filename != "__init__.py":
+                    module_name = filename[:-3]
+                    filepath = os.path.join(root, filename)
+                    spec = importlib.util.spec_from_file_location(module_name, filepath)
+                    if spec and spec.loader:
+                        module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(module)
+
+                        if hasattr(module, module_name.capitalize()):
+                            handler = getattr(module, module_name.capitalize())()
+                            self.processes[module_name.lower()] = handler
+                        elif hasattr(module, "main"):
+                            self.processes[module_name.lower()] = module
+                        else:
+                            self.processes[module_name.lower()] = module
+
+                        print(f"   ✓ Loaded {module_name}")
+
+        # Special shortcuts
+        if "zerg_swarm" in self.processes:
+            self.processes["zerg"] = self.processes["zerg_swarm"]
+        if "evolution_chamber" in self.processes:
+            self.processes["evolution"] = self.processes["evolution_chamber"]
+
+        print(f"✅ ChaosEngine loaded {len(self.processes)} handlers dynamically.")
 
     def route_intent(self, intent: str, data: dict = None, caller: str = None):
         if data is None:
             data = {}
         result = {"status": "ok", "output": None, "emoji_trigger": "⚙️"}
 
-        # Recursion guard
-        if caller == "ZERG_SWARM" and intent.startswith("zerg"):
-            return {"status": "recursion_blocked", "output": "Swarm cannot call swarm"}
+        # Swarm / Kerrigan / Evolution special route
+        if any(x in intent.lower() for x in ["kerrigan", "swarm", "zerg", "evolution"]):
+            if "zerg" in self.processes:
+                return (
+                    self.processes["zerg"].spawn_entities(intent)
+                    if "spawn" in intent.lower()
+                    else self.processes["zerg"].activate_hive(intent)
+                )
+            if "evolution" in self.processes:
+                return self.processes["evolution"].spawn_mutations(intent)
 
-        # Smart low-friction parser (merged best of old 3 + 4)
+        # Smart low-friction parser
         words = intent.lower().split()
         if words and words[0].startswith("/"):
             cmd = words[0][1:]
             args = " ".join(words[1:])
-            # Zerg / load / route commands from old 3
-            if cmd == "zerg":
-                return self._handle_zerg(args)
-            if cmd == "load_handler":
-                name = args.strip()
-                handler = self.processes.get(name)
-                result["output"] = f"Loaded {name}" if handler else f"Failed {name}"
-                return result
-            if cmd == "route":
-                return self.route_intent(" ".join(words[1:]), caller="user")
+            if cmd in self.processes:
+                handler = self.processes[cmd]
+                if hasattr(handler, "route_intent"):
+                    return handler.route_intent(args)
+                elif callable(handler):
+                    return handler(args)
+                else:
+                    return {"status": "ok", "output": f"Handler {cmd} activated"}
+
         else:
-            # Ultra-low-friction auto-detect from old HIVE
+            # Direct keyword routing — safe fallbacks
             intent_upper = intent.upper()
-            short_triggers = ["print", "show", "dump", "raw", "pull", "file", "repo", "process"]
-            if len(intent.split()) <= 5 and any(t in intent.lower() for t in short_triggers):
-                return self._auto_dump(intent)
-
-            if re.search(r'(root|process|storage)/.*\.(md|py)', intent, re.I):
-                return self.processes["cannon"].harvest(intent)
-
-            # Direct process routing
-            if any(k in intent_upper for k in ["TRUTH", "CHECK"]):
+            if (
+                "TRUTH" in intent_upper or "CHECK" in intent_upper
+            ) and "truth" in self.processes:
                 return self.processes["truth"].check(intent)
-            if "HEALTH" in intent_upper or "STATUS" in intent_upper:
+            if (
+                "HEALTH" in intent_upper or "STATUS" in intent_upper
+            ) and "health" in self.processes:
                 return self.processes["health"].get_raw()
-            if "VOMIT" in intent_upper:
+            if "VOMIT" in intent_upper and "vomit" in self.processes:
                 return self.processes["vomit"].parse(intent)
-            if "ZERG" in intent_upper:
-                return self.processes["zerg"].spawn_entities(intent)
-            if "CHUNK" in intent_upper:
+            if "CHUNK" in intent_upper and "chunk" in self.processes:
                 return self.processes["chunk"].process(intent)
-            if any(k in intent_upper for k in ["DISCO", "ENCRYPT", "RECOMBO"]):
-                return "DISCO routed — use /disco or /recombo"
 
-        # Fallback: warm EmotionNet if present, then default health
-        if self.emotionnet:
-            self.emotionnet.process_text_input(intent)
-        health = self.processes["health"].get_raw()
-        result["output"] = f"ChaosEngine routed: {intent} | {health} | Turn {self.turn.get_current()}"
+        # Final safe fallback
+        result["output"] = f"ChaosEngine routed: {intent} | Turn active"
         return result
 
-    # Helper methods (kept clean)
-    def _handle_zerg(self, args):
-        # ... (kept from old 3)
-        return {"status": "zerg_handled", "output": "Zerg routed"}
-
-    def _auto_dump(self, target):
-        if "root" in target.lower():
-            return self.processes["cannon"].harvest(target)
-        return self.processes["cannon"].harvest(target)
+    def get_roleplay_emotion(self, character_type: str, user_text: str):
+        """Bridge for Luna / roleplay — routes through EmotionNet"""
+        if self.emotionnet:
+            return self.emotionnet.get_roleplay_emotion(character_type, user_text)
+        return {"default": 0.5}
 
     def load_all(self):
-        print("ChaosEngine v1 — all processes loaded independently")
+        print("ChaosEngine v2 — dynamic process loading complete")
         return "Core router online — agents optional"
+
 
 # Quick self-test
 if __name__ == "__main__":
     engine = ChaosEngine()
     engine.load_all()
-    print(engine.route_intent("print ROOT/1 GrokOS.md"))
-    print(engine.route_intent("truth check this"))
+    print(engine.route_intent("print ROOT/1_GrokOS_Boot.md"))
+    print(engine.route_intent("kerrigan spawn entities"))
