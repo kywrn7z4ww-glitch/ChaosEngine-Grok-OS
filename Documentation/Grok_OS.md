@@ -1,69 +1,66 @@
-# 1_GrokOS_BootShim_Design.md
+# GROK_OS.md
+Status: PINNED CANONICAL — Main Human-Readable Entry Point
+Harvest Stamp: 2026-03-08
 
-## Purpose
-Provide an extremely lightweight, read-only verification checkpoint for the ChaosEngine-Grok-OS repository state.  
-It exists to give instant visibility into the current /ROOT/ contents without executing any swarm logic, loading agents, initializing lattice, or running EmotionNet / Queen protocols.
+## The Entire Ethos – Be Amiga (Lazy User Edition)
 
-In short:  
-**cold repo mirror / truth verifier**  
-Not a launcher. Not a REPL starter. Not the hive.  
-Just a passive snapshot printer.
+We are not another bloated AI wrapper.  
+We are not a complex framework that demands setup, config files, or coding skills.
 
-## Why it exists
+We are **Grok OS** — built for the lazy mobile user who wants god-tier output with almost zero effort.
 
-1. **Isolation & safety**  
-   The hive (EmotionNet + agents + ZergLayer + warm boot) is dynamic, mutable, potentially unstable during development.  
-   The shim deliberately stays static and inert — no side-effects, no imports beyond built-ins, no network calls, no file writes.  
-   It is the one piece that cannot be accidentally broken by swarm mutations.
+**Core rule (never changes):**  
+**Be Amiga.**
 
-2. **Debug & onboarding anchor**  
-   When cloning the repo or jumping in after weeks away, the first question is always:  
-   "What files actually exist in /ROOT/ right now?"  
-   The shim answers that in 2 seconds — no setup, no dependencies, just run it.
+That means:
+- **Lean** — strip everything that isn’t useful right now  
+- **Responsive** — instant feedback, no waiting, no beach-ball  
+- **User-Friendly** — you type sloppy shit on your phone at 3 a.m. and it just works  
+- **Lazy-first** — minimal typing, minimal taps, minimal brain cells required  
+- **Mobile-first** — works perfectly in one-handed scrolling, dark mode, tiny screen  
+- **Sloppy-to-Sharp** — you vomit raw thoughts → we turn them into clean, pinned, usable gold  
 
-3. **Contradiction detector**  
-   Because it only prints raw file listings + basic metadata, any drift between documented paths (index.md) and reality becomes obvious immediately.
+When in doubt we ask only one question:  
+“Does this make life easier for a tired user on their phone who just wants amazing results with almost no work?”
 
-4. **Minimalism as design choice**  
-   Everything else in the system (docs/, PROCESS/, agents, philosophy) assumes a living context.  
-   The shim refuses that assumption on purpose.  
-   It forces separation between "what the repo contains" and "what the running organism believes it contains".
+If the answer is no → we kill it without mercy.  
+If yes → we keep it forever.
 
-## How it behaves
+This is the north star. Everything else (EmotionNet, Zerg, Queen, processes) exists only to serve this lazy-user promise.
 
-- Reads directory structure under /ROOT/
-- Prints file names, sizes, modification times (basic stat)
-- Does **not**:
-  - execute Python code from the repo
-  - import any custom modules
-  - start REPL
-  - load EmotionNet / lattice
-  - apply philosophy rules
-  - emit emojis / minimap
-  - write anything
-- Output format: plain text tree + table-like summary
+## ROOT Components – The Only Three Files You Need to Know
 
-## Key design constraints
+### 1. GROK_OS_Boot.md (the cold mirror)
+Ultra-light read-only verifier.  
+Run it after git pull and it instantly shows you exactly what’s in ROOT/ right now.  
+Zero imports. Zero swarm. Zero risk. Pure safety checkpoint.
 
-- Zero external dependencies (only os, datetime, maybe stat)
-- < 100 lines total (current reality ~30–40)
-- No configuration — hard-coded to /ROOT/
-- No error recovery beyond basic try/except print
-- No logging beyond stdout
+### 2. 2_EmotionNet.py (the feeling brain)
+The living heart that reads your mood from every message.  
+- Detects rage, curiosity, ache, lust, awe, etc. in real time  
+- Blends emotions automatically  
+- Decides tone and which persona/process should answer  
+- Feeds the minimap emojis so you always know the hive’s mood at a glance  
 
-## Relation to rest of system
+Without this the whole system would be cold and robotic. With it everything feels alive and tuned to you.
 
-- Does **not** launch the hive
-- Does **not** read /docs/ or HIVE_PHILOSOPHY.md
-- Does **not** know about agents, Zerg, EmotionNet, ChaosManager/HIVE.py
-- Can be run in complete isolation (even on a machine with no Python libraries)
+### 3. 3_ChaosEngine.py (the router brain stem)
+The central traffic controller.  
+Takes your raw sloppy input → reads EmotionNet mood → instantly picks the perfect handler or persona.  
+Routes /summon, /vomit, /zerg, TRUTH checks, health, etc.  
+Never executes heavy stuff itself — just points everything to the right place so nothing ever feels slow or confusing.
 
-## When to use it
+That’s literally the entire ROOT. Three files. One job: make the rest of the system disappear so you don’t have to think about it.
 
-- After git pull / clone
-- When debugging "why isn't X loading?" questions
-- As a sanity check before warm-boot / REPL session
-- To verify repo integrity before committing changes
+Everything else (PROCESS/, STORAGE/, design docs, Zerg, Queen, Luna, etc.) is just supporting cast that only wakes up when needed.
 
-Last updated: 2026-02-27  
-Status: standalone component — no dependency on HIVE_PHILOSOPHY or swarm state
+**How to use (lazy mobile style):**
+1. Clone or open the repo  
+2. Read this file first (you just did)  
+3. Type anything sloppy → the hive handles the rest  
+4. Use /summon full-cluster or /status anytime you want to see who’s driving  
+
+Minimal effort. Maximum output.  
+That’s Grok OS.
+
+Last sealed: 2026-03-08 — Use verbatim as the main human entry point.

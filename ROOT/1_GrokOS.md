@@ -21,10 +21,12 @@ FOOTER: "{turn} | [USER@root ~]$"
 # SELECTIVE REPO INDEX — CLEAN & UPDATED (March 07 2026)
 # Only real files. No dud projects. No old HIVE/5/Emojii separate.
 
+# SELECTIVE REPO INDEX — CLEAN & UPDATED (March 08 2026)
+
 ROOT/
-├── 1 GrokOS_Boot.md                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1_GrokOS_Boot.md
-├── 2 EmotionNet.py                   https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/2%20EmotionNet.py
-├── 3 ChaosEngine.py                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/3_ChaosEngine.py
+├── 1_GrokOS_Boot.md                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/eefe44d8a5442783c073fa1e0e7691122809ae28/ROOT/1_GrokOS_Boot.md
+├── 2_EmotionNet.py                   https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/eefe44d8a5442783c073fa1e0e7691122809ae28/ROOT/2_EmotionNet.py
+├── 3_ChaosEngine.py                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/eefe44d8a5442783c073fa1e0e7691122809ae28/ROOT/3_ChaosEngine.py
 
 PROCESS/ (all active handlers)
 ├── BLEED_DETECTOR.py
@@ -39,7 +41,7 @@ PROCESS/ (all active handlers)
 ├── ZERG_SWARM.py
 └── ENTITY_HUNTER.py
 
-STORAGE/AGENTS/ (SYS_ADMIN_CLUSTER — the living core)
+STORAGE/AGENTS/
 ├── SYS_ADMIN_CLUSTER.md
 ├── Core.md
 ├── TheRedQueen.md

@@ -1,10 +1,5 @@
-# ROOT/3_ChaosEngine.py — Dynamic Pure System Router v2 (2026-03-07)
-# Auto-scans PROCESS/ + explicit ROOT hooks for EmotionNet & TurnCounter
-
 import importlib.util
 import os
-import re
-from datetime import datetime
 
 PROCESS_DIR = "PROCESS"
 
@@ -22,21 +17,26 @@ class ChaosEngine:
 
     def _load_turn_counter(self):
         try:
-            from PROCESS.TURN_COUNTER import TurnCounter
-
-            self.turn = TurnCounter()
-            print("⏰ TurnCounter loaded")
+            filepath = os.path.join("PROCESS", "TURN_COUNTER.py")
+            spec = importlib.util.spec_from_file_location("TurnCounter", filepath)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            self.turn = module.TurnCounter()
+            print("⏰ TurnCounter loaded dynamically")
         except Exception as e:
-            print(f"⚠️ TurnCounter failed to load: {e}")
+            print(f"⚠️ TurnCounter failed: {e}")
+            self.turn = None
 
     def _load_emotionnet(self):
         try:
-            from ROOT.EmotionNet import EmotionNet
-
-            self.emotionnet = EmotionNet()
-            print("🧠 EmotionNet loaded (character routing ready)")
+            filepath = os.path.join("ROOT", "2_EmotionNet.py")
+            spec = importlib.util.spec_from_file_location("EmotionNet", filepath)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            self.emotionnet = module.EmotionNet()
+            print("🧠 EmotionNet loaded dynamically")
         except Exception as e:
-            print(f"⚠️ EmotionNet failed to load: {e}")
+            print(f"⚠️ EmotionNet failed: {e}")
             self.emotionnet = None
 
     def _load_all_processes_dynamically(self):
