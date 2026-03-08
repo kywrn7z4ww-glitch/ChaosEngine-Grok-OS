@@ -6,7 +6,7 @@ UI_FRAME:
 Turn {turn} | {date_time} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
 {emoji_minimap}
 <br>
-[USERa@root ~]$"
+[USER@root ~]$"
 
 FOOTER: "{turn} | [USER@root ~]$"
 
