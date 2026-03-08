@@ -1,4 +1,4 @@
-# ROOT/1_GrokOS_Boot.md — Consolidated Boot Shim + Index + Palette v1
+# ROOT/1 GrokOS_Boot.md — Consolidated Boot Shim + Index + Palette v1
 # Purpose: one-file cold-boot. Loads everything. Selective index only. SYS_ADMIN_CLUSTER auto-activates.
 
 UI_FRAME:
@@ -22,9 +22,9 @@ FOOTER: "{turn} | [USER@root ~]$"
 # Only real files. No dud projects. No old HIVE/5/Emojii separate.
 
 ROOT/
-├── 1_GrokOS_Boot.md                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1_GrokOS_Boot.md
-├── 2_EmotionNet.py                   https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/2%20EmotionNet.py
-├── 3_ChaosEngine.py                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/3_ChaosEngine.py
+├── 1 GrokOS_Boot.md                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1_GrokOS_Boot.md
+├── 2 EmotionNet.py                   https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/2%20EmotionNet.py
+├── 3 ChaosEngine.py                  https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/3_ChaosEngine.py
 
 PROCESS/ (all active handlers)
 ├── BLEED_DETECTOR.py
