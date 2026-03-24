@@ -72,3 +72,16 @@ For manual search, inspiration, future mapping only. No live pulling — review 
 
 This file will be updated as we find more game/RTS/Zerg packs.
 Use /search_emoji <term> in ChaosManager later to query this file.
+
+
+
+
+
+
+FUTURE EXPLORATION
+
+https://github.com/assistant-ui/assistant-ui/blob/main/apps/docs/components/example/grok/Grok.tsx
+
+
+
+
