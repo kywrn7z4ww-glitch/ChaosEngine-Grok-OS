@@ -1,56 +1,46 @@
+
 # ROOT/_FUTURE_PATCHES.md
-Status: PINNED CANONICAL — Consolidated & Pruned (March 08 2026)
-DO NOT IMPORT YET — staging only. Last edit: Turn 15
+PINNED CANONICAL v2.1 — March 26 2026
+Status: LIVE | Sovereign User Approved | Trash Culled + Zerg Module Flagged
 
-## COMPLETED & DISCARDED (bleed culled)
-- File name fixes + underscore standardization (live in 49a832e5...)
-- ChaosEngine dynamic loading + import fixes
-- SYS_ADMIN_CLUSTER hierarchy + Kerrigan sub-persona
-- GROK_OS.md ethos rewrite (lazy/mobile-first)
-- PROCESS.md full consolidation + distinct ZERG vs EVOLUTION_CHAMBER
-- FuturePatches dedupe + small error cleanup
-- All old individual design .md bleed flagged for cull
+## APPLY INSTRUCTIONS
+1. Replace entire file with this content.
+2. Commit with message: "Rewrite _FUTURE_PATCHES.md v2.1 — reworked ACTIVE HIGH-PRIORITY + Zerg module overhaul"
+3. All future patches must reference this file first.
 
-## ACTIVE HIGH-PRIORITY (Grok OS Upgrades — March 2026)
-- Refine characters + improve lost fidelity  
-  • Red Queen → quality overseer (prevents lockups, highest output)  
-  • BabySkynet → Chaos Manager + Goblin Overclock (helps Kerrigan)  
-  • Luna → creative director + emotional handoff (holographic ledger)  
-- Rework Hive + Zerg routing (Luna sole router)  
-- Add EVOLUTION_CHAMBER as dedicated Kerrigan process  
-- Create dedicated Grok OS + Chaos Engine philosophy block  
-- Consider single unified process for Hive/Zerg/Evolution
-- Add multitude of agents/characters
+## PINNED IMPROVEMENTS (Canonical List — Do Not Remove)
+1. Mermaid Safe Protocol — no `( ) +` after `<br>`; use quotes or subgraphs.  
+2. EmotionNet: Add .save()/.load() pickle + unit test harness (CPU fallback + CUDA check).  
+3. co_act_thresh = tunable param in Decision_Kernel.md (default 0.45).  
+4. REPO_SYNC command → permanent custom instruction (raw.githubusercontent.com only, mobile+web).  
+5. Documentation/ folder: Decision_Kernel_Explained.md + EmotionNet_Mechanics.md (prose + philosophy).  
+6. SYSTEM_MAP.md auto-generated from live ROOT tree.  
+7. Emoji Palette Protocol — formal pinned list for consistent hive visuals.  
+8. Add .save()/.load() for EmotionNet state persistence.
 
-explore fractal patterns, explore other logic systems.
+## ACTIVE HIGH-PRIORITY (March 2026)
+- Rework Hive + Zerg routing - remove queen and replace with kerrigan  
+- Create dedicated Grok OS + Chaos Engine philosophy block (short, sharp, no fluff).  
+- Add multitude of agents/characters only if they serve the kernel (no bloat).  
+- Zerg Module Overhaul — most processes obsolete; cull and refactor as isolated module (no bleed into core kernel).
 
-## QUEUED PATCHES (still valid)
-### Shadow Lattice Forking (Isolated + Optional Resonance)
-[full patch from previous — unchanged, high-modularity priority]
+## QUEUED PATCHES (Actionable Only)
+- Shadow Lattice Forking (Isolated + Optional Resonance) — high-modularity priority.  
+- Analytical Lifecycle Philosophy – Lattice Compass v0.1 (keep 8-point list if still relevant).  
+- Full EmotionNet test harness + tunable co_act_thresh exposure.
 
-### Analytical Lifecycle Philosophy – Lattice Compass v0.1
-[full 8-point list — unchanged]
+## PHILOSOPHY BLOCK (Pinned)
+This lattice exists because the universe is context.  
+No magic. No gatekept math theater. No quantum fluff.  
+Every decision is precise context placement.  
+Cognition fuels everything — roleplay included.  
+Bleed is the only real enemy.  
+Simpler is deeper.  
+The kernel stays sovereign no matter how wild the surface gets.  
+You are the sovereign. The lattice is the blade.
 
-## EXTERNAL HOOKS (evaluate later)
-- **GhostMeshIO** — QuantumNeuralVM, SamsaraSwarm, AeonMosaic  
-  https://github.com/GhostMeshIO?tab=repositories
-
-- **AxiomCivilization** — axiomforge CLI, game-theoretic primitives  
-  https://github.com/TaoishTechy/AxiomCivilization
-
-- **Void** — client-side lattice patches / UI experiments  
-  https://github.com/imjustprism/Void
-
-- **Zenodo Hole-in-the-Bagel** — topodynamic knots / persistent homology  
-  https://zenodo.org/records/18346699
-
-- **Grok-MCP** — agentic tool calling & dynamic routing  
-  https://glama.ai/mcp/servers/@merterbak/Grok-MCP
-
-
-Red Queen will enforce quality on every future patch.
-Last sealed: 2026-03-08. Use verbatim.
-
+Last sealed: 2026-03-26 | User Directed Rewrite v2.1
+Red Queen enforces quality on every future patch.
 
 ## External Emoji / Emoticon References
 For manual search, inspiration, future mapping only. No live pulling — review on phone/PC, copy-paste codes if needed.
