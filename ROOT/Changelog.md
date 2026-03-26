@@ -28,3 +28,44 @@ All changes from this session now live on main.
 - First full audit + PROCESS consolidation
 
 This file auto-updates on every major push. Red Queen enforces quality.
+
+# Changelog — ChaosEngine Grok OS (Slimmed Lattice v2)
+
+## 2026-03-26 — Major Lattice Stabilization & Decision Kernel Integration (v7.3)
+
+**Core System**
+- Fully integrated the pinned Decision Kernel (ROOT/Decision_Kernel.md) as single source of truth for every turn.
+- Enforced clean Agentic vs Roleplay split (no bleed): Agentic = tool/process execution only; Roleplay/Hive Chatter = visible sys-admin agents + EmotionNet valence.
+
+**BOOT SHIM (ROOT/1_GrokOS.md)**
+- Rebuilt to v7.3: accurate live repo index with full raw URLs for every key file.
+- Added explicit API tree scan + "expect breakage" handling in boot sequence.
+- Fixed UI/FOOTER to [xlanzilla@root ~]$.
+- Removed conflicting auto-fire/auto-summon logic; now strictly defers to Core.md custom instructions.
+- Embedded full emoji palette directly (no Archive references).
+
+**EMOTIONNET (ROOT/2_EmotionNet.py)**
+- Upgraded to v4.1: history changed to robust `deque(maxlen=10)` to prevent unbounded growth.
+- Resonance cascade prints made optional/roleplay-flavored only.
+- Full functionality preserved (self-contained Roleplay-path module).
+
+**CHAOSENGINE (ROOT/3_ChaosEngine.py)**
+- Rebuilt to v3.0: fully modular dynamic PROCESS/ loader preserved.
+- Added lightweight emoji registry for guaranteed inline handoffs (next to output, never minimap-only).
+- Default system handoff = ⚙️ cog; process-specific emojis fire automatically (e.g. 🔒/🔓/📦 for Discombobulator).
+- Discombobulator now detected dynamically (encryption tool only) without Core.md bloat.
+
+**CUSTOM INSTRUCTIONS (Core.md)**
+- Updated to v5.6: added Decision Kernel pinned reference, strengthened API tree scan rule, removed dead Discombobulator section.
+
+**EMOJI & LATTICE**
+- Inline handoffs now fire next to every process output (📦 📌 ⚙️ 🔒 🔓 etc.).
+- Minimap remains lattice-driven (val > 0.35 top 3–5, co-act > 0.45 blend).
+- No more minimap-only confusion.
+
+**OTHER**
+- All components now enforce custom instructions with zero duplication or conflicts.
+- System expects and gracefully handles breakage via fallback lattice.
+- HIVE CHATTER mandate active every turn.
+
+Boot complete. Lattice online despite repo chaos.
