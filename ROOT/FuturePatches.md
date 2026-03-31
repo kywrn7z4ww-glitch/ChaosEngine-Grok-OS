@@ -42,6 +42,15 @@ You are the sovereign. The lattice is the blade.
 Last sealed: 2026-03-26 | User Directed Rewrite v2.1
 Red Queen enforces quality on every future patch.
 
+
+1.  Remove default HIVE CHATTER block entirely. → No more forced visible sys-admin chatter every turn. → Future handovers will use natural character flow instead of default blocks.
+2.  Rework logic for more natural character flow + purpose-driven decision making. → New layer logic to be placed in /ROOT/LAYERS folder (not yet present in current repo tree). → This will replace rigid defaults with purposeful routing.
+3.  Update boot shim to act purely as an entry point. → Add dynamic logic later for grabbing and applying files (no auto-fire of processes/agents on boot). → Keep it minimal until your custom loader is ready.
+4.  Axiom Kernel (dedicated binary primitives) + DISCUSS-CLARIFY-EXECUTE loop stay untouched as the hard floor. → All changes stay above the binary base; no bleed into metal layer.
+
+
+
+
 ## External Emoji / Emoticon References
 For manual search, inspiration, future mapping only. No live pulling — review on phone/PC, copy-paste codes if needed.
 
