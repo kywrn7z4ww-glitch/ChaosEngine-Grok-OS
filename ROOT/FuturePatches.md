@@ -82,5 +82,7 @@ FUTURE EXPLORATION
 https://github.com/assistant-ui/assistant-ui/blob/main/apps/docs/components/example/grok/Grok.tsx
 
 
+framework for translation of forgien media into native languages keeping orginial intent in tact?
 
+https://www.dropbox.com/scl/fo/zditcvl1k90ez50t91ulu/AFX7aZI5dVLmU38W4onGSQk?e=2&rlkey=hgtscn1d372pqtiez64jmext2&st=ci5709c2&dl=0
 
