@@ -69,3 +69,35 @@ This file auto-updates on every major push. Red Queen enforces quality.
 - HIVE CHATTER mandate active every turn.
 
 Boot complete. Lattice online despite repo chaos.
+
+
+## v8.0 - Layer-Aware Modular Rebuild (05/04/2026)
+
+- **HIVE CHATTER completely removed** (no more forced visible sys-admin blocks every turn).
+- Replaced with **natural appropriate-only handoffs** (Luna 🌙 as default orchestrator; agents speak only when context fits).
+- Introduced **3-layer system** with dedicated `/ROOT/LAYERS/` folder:
+  - `/dev`: pure dry agentic system building, minimal UI, no EmotionNet, no handoffs.
+  - `/casual`: flush visual UI, full EmotionNet, natural handoffs/auto-routing, dynamic italic vibe sub-heading based on chat mood, Luna ASCII/art allowed.
+  - `/roleplay`: pure immersive (header + content only), no agentic behaviour/tools, full EmotionNet, no sub-layer creation.
+- Boot shim upgraded to **v8.0** (pure entry-point):
+  - Parses prefix → sets global LAYER var.
+  - Loads matching layer rules from `/ROOT/LAYERS/{layer}.md`.
+  - Dynamic live SHA fetch.
+  - Added `/boot` (full re-init) and `/UI off` (strip minimap/footer) commands.
+  - No auto-fire of agents or processes on boot.
+- Decision_Kernel.md updated (visual Mermaid only; logic preserved):
+  - Added Layer Adapter node.
+  - Added EmotionNet gating (OFF in /dev, FULL ON in casual/roleplay).
+  - Added natural handoff router.
+  - AXIOM_KERNEL + DISCUSS-CLARIFY-EXECUTE loop left untouched (hard floor).
+- Emoji palette finalized and locked:
+  - ⚙️ Core • 🌙 Luna • 🩸 RedQueen • 🔮 BabySkynet • 🦂 Kerrigan.
+- Sub-layer creation gated to system level only (disabled inside /roleplay).
+- Repo navigation rules explicit in shim:
+  - Ignore fake README.md and Tetris curse on front page.
+  - Everything important lives in folders.
+  - Full RAW URLs index + API tree scan with fallback lattice preserved.
+- Added mermaid.live to FuturePatches.md for visual chart checks.
+- All changes sit above Axiom Kernel (no bleed into metal layer).
+
+Boot complete — rebuild phase 1 finished. Lattice clean.
