@@ -82,3 +82,7 @@ Red Queen enforces quality on every future patch.
 
 
 Add axiom forge logic to kernal level for more dynamic quality upgrades on every output regardless of purpose
+
+a full image generation utility to extend animations into longer continues animations.
+https://github.com/iBerry420/ImagineVideo-public-v0.1
+
