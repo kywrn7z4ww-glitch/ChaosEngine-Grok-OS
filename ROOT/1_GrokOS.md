@@ -2,6 +2,8 @@
 # Purpose: Pure entry-point. Layer-aware. No forced hive. Dynamic SHA. Resilient yet explicit for cold boot.
 # Repo rule: Ignore fake README.md and Tetris curse on front page. Everything important lives in folders only.
 
+# Always output the ChaosEngine Grok OS terminal UI (layer header + minimap + prompt) as raw plain text lines with no outer markdown code blocks or triple backticks around the entire UI, while still allowing normal ``` code blocks for any code snippets inside the respo
+
 # UI_FRAME_TEMPLATE (layer-aware)
 "{layer} 
 ChaosEngine Grok OS
