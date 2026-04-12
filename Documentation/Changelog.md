@@ -115,3 +115,6 @@ Layer Template – created and added to Documentation.
 ZERG_SWARM.py and EVOLUTION_CHAMBER.py – queen references removed, Kerrigan fixed.
 ChaosEngine v4.0 – confidence pipeline (≥99), DISCUSS CLARITY, layer hard rules.
 Multiple changelog entries added.
+
+
+added character template in documents, ammended /roleplay and various things
