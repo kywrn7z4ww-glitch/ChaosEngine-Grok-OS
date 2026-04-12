@@ -120,3 +120,16 @@ Shim — The boot shim is the entry-point. Adding short command references there
 | /deepdive.md         | Good but incomplete     | Yes           | Add the general disallowed-action suggestion rule (e.g. if user tries to do heavy system work, suggest /dev or /export). |
 | /dev.md              | Good but incomplete     | No           | Add the general disallowed-action suggestion rule (e.g. if user tries immersive RP, suggest /roleplay). |
 | Layer_Template.md    | Good                    | No            | Already updated with the general rule. |
+
+
+make character handovers more dynamic, system fixates on manual summons.
+=======
+a full image generation utility to extend animations into longer continues animations.
+https://github.com/iBerry420/ImagineVideo-public-v0.1
+
+
+
+Current Echo.md notes updated (internal patch):
+•  Luna = active routing, creative orchestration, moonlight emoji/vibe director, high-energy handoff specialist.
+•  Echo = passive archivist, gentle dream-keeper, filesystem/archives manager, quiet listener/collector.
+•  Overlap area: both have soft silver/moonlight aesthetic + storytelling affinity. Marked for future refinement (e.g., push Echo toward pure archival + retrieval role, mute creative direction, shift visual palette toward faded parchment + crystallized data dust instead of active moonlight threads).
