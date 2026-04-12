@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 
 AGENTS_DIR = "STORAGE/AGENTS"
 
+
 class MutationEntity:
     def __init__(self, name: str, role: str, task: str):
         self.id = f"mut_{random.randint(100000, 999999):06x}"
@@ -33,12 +34,15 @@ class MutationEntity:
         elif "perspective" in self.role.lower():
             return f"[SHIFTER {self.name}] From a completely different angle: what if we..."
         elif "synergy" in self.role.lower():
-            return f"[SYNERGY {self.name}] Combine these two ideas into something new..."
+            return (
+                f"[SYNERGY {self.name}] Combine these two ideas into something new..."
+            )
         else:
             return f"[MUTATOR {self.name}] Wild mutation proposal: twist it this way..."
 
     def report(self):
         return f"[{self.name}] Role: {self.role} | Creativity: {self.metrics['creativity']:.2f} | Disruption: {self.metrics['disruption']:.2f}"
+
 
 class EvolutionChamber:
     def __init__(self):
@@ -59,12 +63,12 @@ class EvolutionChamber:
                     rel_path = os.path.relpath(os.path.join(root, filename), AGENTS_DIR)
                     name = os.path.splitext(filename)[0].replace("_", " ")
                     agents[name] = os.path.join(AGENTS_DIR, rel_path)
-        print(f"EVOLUTION_CHAMBER loaded {len(agents)} agents dynamically.")
+        print(f"🧬 EVOLUTION_CHAMBER loaded {len(agents)} agents dynamically.")
         return agents
 
     def set_timeout(self, minutes: int):
         self.timeout_minutes = max(1, minutes)
-        print(f"Evolution Chamber timeout set to {minutes} minutes")
+        print(f"⏰ Evolution Chamber timeout set to {minutes} minutes")
 
     def _is_timed_out(self) -> bool:
         if not self.session_start_time:
@@ -83,7 +87,9 @@ Mutation cycle started. Kerrigan will score the results."""
 
     def spawn_mutations(self, user_clarification: str = None):
         if self._is_timed_out():
-            return f"Evolution Chamber timed out after {self.timeout_minutes} minutes."
+            return (
+                f"⏰ Evolution Chamber timed out after {self.timeout_minutes} minutes."
+            )
 
         intent = (
             self.current_problem
@@ -119,7 +125,7 @@ Mutation cycle started. Kerrigan will score the results."""
             ),
             "output": combined,
             "ready_for_kerrigan_scoring": True,
-            "emoji_trigger": "EVOLUTION_CHAMBER",
+            "emoji_trigger": "🧬🔬🦂",
         }
 
     def get_state(self):
@@ -133,6 +139,7 @@ Mutation cycle started. Kerrigan will score the results."""
             if self.session_start_time
             else 0,
         }
+
 
 # === USAGE ===
 # >>> from PROCESS.EVOLUTION_CHAMBER import EvolutionChamber

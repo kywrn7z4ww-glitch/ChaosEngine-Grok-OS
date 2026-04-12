@@ -1,3 +1,9 @@
+# ROOT/3_ChaosEngine.py
+# v4.0 – Central intent router and confidence-based pipeline.
+# Purpose: Orchestrates all system flow. Calculates confidence from EmotionNet + window state.
+# Only executes processes if confidence ≥ 99. Enforces layer rules and DISCUSS CLARITY on low confidence.
+# Displays [PROCESS_NAME] when handlers run.
+
 import importlib.util
 import os
 from typing import Any, Dict
@@ -9,35 +15,22 @@ class ChaosEngine:
         self.turn = None
         self.emotionnet = None
         self.processes: Dict[str, Any] = {}
+        self.active_layer = "dev"  # default
 
-        # Lightweight emoji registry — fires automatically (processes can override)
+        # Lightweight emoji registry
         self.emoji_registry = {
-            "discombobulator": "🔒",      # disco start
-            "recombo": "🔓",              # recombobulate success
-            "bleed_detector": "🩸",
-            "cannon_harvester": "🔥",
-            "chunk_splitter": "✂",
-            "entity_hunter": "🧠",
-            "evolution_chamber": "🔥",
-            "file_mgr": "📦",
-            "repo_validator": "⚙️",
-            "sys_health": "💗",
-            "truth": "🧠",
-            "turn_counter": "⏰",
-            "vomit": "🤮",
-            "zerg_swarm": "🦂",           # future swarm emoji
-            "zerg": "🦂",
-            "core": "⚙️",
-            "redqueen": "🩸",
-            "luna": "🌙",
-            "babyskynet": "⚡️",
-            "kerrigan": "🦂"
+            "discombobulator": "🔒", "recombo": "🔓", "bleed_detector": "🩸",
+            "cannon_harvester": "🔥", "chunk_splitter": "✂", "entity_hunter": "🧠",
+            "evolution_chamber": "🔥", "file_mgr": "📦", "repo_validator": "⚙️",
+            "sys_health": "💗", "truth": "🧠", "turn_counter": "⏰", "vomit": "🤮",
+            "zerg_swarm": "🦂", "zerg": "🦂", "core": "⚙️", "redqueen": "🩸",
+            "luna": "🌙", "babyskynet": "🔮", "kerrigan": "🦂"
         }
 
         self._load_turn_counter()
         self._load_emotionnet()
         self._load_all_processes_dynamically()
-        print("ChaosEngine v3.0 — rebuilt modular, emojis fire inline, Decision Kernel aware")
+        print("ChaosEngine v4.0 — confidence pipeline active (≥99 only), layers hard-enforced")
 
     def _load_turn_counter(self):
         try:
@@ -46,7 +39,6 @@ class ChaosEngine:
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.turn = module.TurnCounter()
-            print("TurnCounter loaded dynamically")
         except Exception as e:
             print(f"TurnCounter failed: {e}")
             self.turn = None
@@ -58,13 +50,11 @@ class ChaosEngine:
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.emotionnet = module.EmotionNet()
-            print("EmotionNet loaded dynamically")
         except Exception as e:
             print(f"EmotionNet failed: {e}")
             self.emotionnet = None
 
     def _load_all_processes_dynamically(self):
-        """Fully modular auto-discovery — core of the system"""
         print("ChaosEngine scanning PROCESS/ for handlers...")
         for root, _, files in os.walk(PROCESS_DIR):
             for filename in files:
@@ -93,63 +83,67 @@ class ChaosEngine:
 
         print(f"ChaosEngine loaded {len(self.processes)} modular handlers.")
 
-    def dispatch_to_handler(self, cls: str, intent: str, data: dict = None) -> dict:
-        """Clean registry dispatch — emojis fire inline automatically"""
-        if data is None:
-            data = {}
-        handler = self.processes.get(cls)
-        result = {"status": "ok", "output": None, "inline_handoff": "⚙️"}  # default cog
+    def _calculate_confidence(self, intent: str, data: dict = None) -> float:
+        """EmotionNet + window state → confidence score (0-100)"""
+        if not self.emotionnet:
+            return 50.0
+        emo = self.emotionnet.get_current_state()
+        frustration = emo.get("frustration", 0.0)
+        coherence = emo.get("coherence", 0.5)
+        confidence = 100 * (coherence * (1 - frustration))
+        if intent.startswith("/"):
+            confidence = min(100, confidence + 15)
+        return round(confidence, 1)
 
-        if handler and hasattr(handler, "route_intent"):
-            result = handler.route_intent(intent, data)
-        elif handler and callable(handler):
-            result = handler(intent, data)
+    def set_layer(self, layer: str):
+        self.active_layer = layer.lower()
+        print(f"ChaosEngine switched to layer: /{self.active_layer}")
 
-        # Guarantee emoji fires — process can override by returning its own key
-        if "inline_handoff" not in result or not result.get("inline_handoff"):
-            result["inline_handoff"] = self.emoji_registry.get(cls, "⚙️")
+    def dispatch_to_handler(self, process_name: str, intent: str, data: dict = None) -> dict:
+        """Clean dispatch with [PROCESS] display"""
+        handler = self.processes.get(process_name.lower())
+        if not handler:
+            return {"status": "error", "output": f"Process {process_name} not found"}
 
-        # Special Discombobulator logic (🔒 vs 🔓)
-        if cls == "discombobulator":
-            result["inline_handoff"] = "🔓" if "recombo" in intent.lower() else "🔒"
+        result = handler.process(intent, data) if hasattr(handler, "process") else handler(intent, data)
 
+        result["inline_handoff"] = f"[{process_name.upper()}]"
         return result
 
-    def route_intent(self, intent: str, data: dict = None, caller: str = None):
-        """Agentic path only — emojis guaranteed to fire"""
+    def route_intent(self, intent: str, data: dict = None):
+        """Main entry point — confidence-based pipeline"""
         if data is None:
             data = {}
-        result = {"status": "ok", "output": None, "inline_handoff": "⚙️"}
 
-        words = intent.lower().split()
-        if words and words[0].startswith("/"):
-            cmd = words[0][1:]
-            args = " ".join(words[1:])
-            if cmd in ["disco", "recombo"]:
-                return self.dispatch_to_handler("discombobulator", args, data)
-            return self.dispatch_to_handler(cmd, args, data)
+        confidence = self._calculate_confidence(intent, data)
 
-        # Direct keyword fallbacks (still modular)
-        intent_upper = intent.upper()
-        if ("TRUTH" in intent_upper or "CHECK" in intent_upper) and "truth" in self.processes:
-            return self.processes["truth"].check(intent)
-        if ("HEALTH" in intent_upper or "STATUS" in intent_upper) and "sys_health" in self.processes:
-            return self.processes["sys_health"].get_raw()
-        if "VOMIT" in intent_upper and "vomit" in self.processes:
-            return self.processes["vomit"].parse(intent)
-        if "CHUNK" in intent_upper and "chunk_splitter" in self.processes:
-            return self.processes["chunk_splitter"].process(intent)
+        # Layer hard override
+        if self.active_layer == "void":
+            return {"status": "ok", "output": None, "inline_handoff": "🔇"}
 
-        result["output"] = f"ChaosEngine (Agentic) routed: {intent} | Turn active"
-        return result
+        # High confidence → EXECUTE
+        if confidence >= 99:
+            if intent.startswith("/"):
+                cmd = intent[1:].split()[0]
+                return self.dispatch_to_handler(cmd, intent, data)
 
-    def get_roleplay_emotion(self, character_type: str, user_text: str):
-        if self.emotionnet:
-            return self.emotionnet.get_roleplay_emotion(character_type, user_text)
-        return {"default": 0.5}
+            return self.dispatch_to_handler("sys_health", intent, data)
+
+        # Low/Medium confidence → DISCUSS CLARITY
+        return {
+            "status": "clarify",
+            "output": f"Confidence {confidence:.1f}/100 — let's DISCUSS CLARITY first.\n"
+                      f"What is most important here? (high-fidelity segment, summary, code, etc.)",
+            "suggested_commands": [
+                "/export --no-ui OLD_CONTEXT_BACKUP",
+                "Run VOMIT + CHUNK_SPLITTER to preserve data",
+                "Run SYS_HEALTH for full window scan"
+            ],
+            "inline_handoff": "🤔"
+        }
 
     def load_all(self):
-        print("ChaosEngine v3.0 — rebuilt modular, emojis fire inline")
+        print("ChaosEngine v4.0 — confidence pipeline active (≥99 only), layers hard-enforced")
         return "Core router online — agents optional"
 
 
@@ -157,5 +151,5 @@ class ChaosEngine:
 if __name__ == "__main__":
     engine = ChaosEngine()
     engine.load_all()
-    print(engine.route_intent("/disco test blob"))
-    print(engine.route_intent("health check"))
+    print(engine.route_intent("check health"))
+    print(engine.route_intent("/void test"))

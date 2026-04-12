@@ -82,3 +82,6 @@ Red Queen enforces quality on every future patch.
 
 
 Add axiom forge logic to kernal level for more dynamic quality upgrades on every output regardless of purpose
+
+
+make character handovers more dynamic, system fixates on manual summons.

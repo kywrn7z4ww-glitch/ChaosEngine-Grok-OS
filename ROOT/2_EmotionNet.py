@@ -1,4 +1,7 @@
-# ROOT/2_EmotionNet.py — v4.1 Hybrid GNN-Symbolic Lattice (March 2026)
+# ROOT/2_EmotionNet.py
+# v4.1 – Emotion state engine.
+# Purpose: Tracks real-time emotional state (frustration, coherence, pleasure, consciousness, etc.).
+# Feeds confidence scoring to ChaosEngine and drives dynamic character behaviour in roleplay.
 # Mash: Plutchik wheel + VAD dims + OCC appraisal + temporal LSTM + spring tension
 # v4.1: deque history (robust), optional resonance prints
 

@@ -101,3 +101,28 @@ Boot complete. Lattice online despite repo chaos.
 - All changes sit above Axiom Kernel (no bleed into metal layer).
 
 Boot complete — rebuild phase 1 finished. Lattice clean.
+
+
+# ChaosEngine-Grok-OS Changelog
+
+## 2026-04-11 – PROCESS/ & Layer Expansion
+
+### New Layers (ROOT/LAYERS/)
+- `/void.md` – Silent data-dump scratchpad (zero normal output, minimal UI only).
+- `/deepdive.md` – Factual deep-research layer with Projects integration and Luna delegation.
+- `/export.md` – Intelligent export & synthesis layer (format detection, token prediction, no-UI PDF mode).
+
+### PROCESS/ Handlers – New & Reworked
+- **STITCH.py v1** – Smart adaptive document & code stitcher with internal validation, self-tracking, and adaptive breaking.
+- **VALIDATOR.py v1** – Dynamic context-aware validator for code, pseudo-code, structures, and simulations (suggest-only).
+- **TRUTH.py v5.0** – Full rework: dynamic source scoring for any website, author trustworthiness on social platforms, multi-perspective analysis.
+- **BLEED_DETECTOR.py v2.0** – System-level context-aware bleed engine (layer/UI/code/simulation detection + TRUTH cross-reference).
+- **SYS_HEALTH.py v2.0** – Proactive window coherence hub (context re-anchor first, full scan, suggest-only with DISCUSS CLARITY).
+
+### General Improvements
+- LAYERS/ folder standardized to all-caps.
+- All layer Notes sections cleaned to pure purpose-only.
+
+**Next steps:** User-led Documentation rework.
+
+Commit when ready.

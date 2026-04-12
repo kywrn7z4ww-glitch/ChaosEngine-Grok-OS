@@ -58,3 +58,26 @@ flowchart TD
     classDef dev fill:#1e3a8a,stroke:#60a5fa,color:#fff
     classDef casual fill:#4338ca,stroke:#818cf8,color:#fff
     classDef rp fill:#312e81,stroke:#a5b4fc,color:#fff
+
+
+
+## System Folder Structure (Canonical Reference)
+
+ROOT/                          ← Boot shim + core files
+├── 1_GrokOS.md                ← Entry point / boot shim
+├── 2_EmotionNet.py            ← Emotion state engine
+├── 3_ChaosEngine.py           ← Central intent router + confidence pipeline
+├── Decision_Kernel.md         ← High-level rules & routing hierarchy (this file)
+├── LAYERS/                    ← Layer-specific rules (dynamically loaded)
+│   ├── dev.md
+│   ├── casual.md
+│   ├── roleplay.md            ← Character dynamics + EmotionNet routing
+│   ├── void.md
+│   ├── deepdive.md
+│   ├── export.md
+│   └── ... (future layers)
+├── PROCESS/                   ← All handlers (dynamically discovered)
+├── STORAGE/
+│   └── AGENTS/                ← Characters & agents (scanned by Zerg/Evolution)
+├── Documentation/             ← Changelog + future patches
+└── Archive/                   ← Old/reference only (never auto-loaded)

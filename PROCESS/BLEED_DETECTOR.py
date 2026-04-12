@@ -1,74 +1,82 @@
-# BLEED_DETECTOR.py
-# 🩸 v1.2 – Cross-node bleed detector & stabilizer + λ half-life decay curve
+# python/python-process-lib/BLEED_DETECTOR.py
+# v2.0 – System-level context-aware bleed detector (ChaosEngine callable)
 
-from typing import Dict, List, Tuple
-import math
+from typing import Dict, Any, List, Optional
+import re
+
+# Internal lightweight imports (ChaosEngine can override)
+from .ENTITY_HUNTER import EntityHunter  # optional delegation
+from .TRUTH import TruthValidator        # cross-reference
 
 class BleedDetector:
-    def __init__(self, opposites: Dict[str, str], threshold: float = 0.35, half_life_threshold: float = 0.01):
-        self.opposites = opposites  # starting pairs – expands dynamically
-        self.threshold = threshold  # variable – tune on fly
-        self.half_life_threshold = half_life_threshold  # λ_dom < this → critical slowing warning
+    def __init__(self):
+        self.entity_hunter = EntityHunter()
+        self.truth_validator = TruthValidator()
 
-    def detect_bleed(self, lattice: Dict[str, float]) -> List[Tuple[str, str, float]]:
-        """Scan for bleed – variables only, no statics."""
-        bleed_events = []
-        # Opposite bleed (variable delta)
-        for pos, neg in list(self.opposites.items()):
-            pos_val = lattice.get(pos, 0.0)
-            neg_val = lattice.get(neg, 0.0)
-            delta = abs(pos_val - neg_val)
-            if delta > self.threshold:
-                bleed_events.append((pos, neg, delta))
+    def _detect_context(self, text: str, context_hint: str = "") -> Dict:
+        """Detect what is happening — conversation, UI, layer, code, simulation, etc."""
+        ctx = {"type": "unknown", "severity": 0.0}
+        text_lower = text.lower()
+        context_lower = context_hint.lower()
 
-        # Co-activation bleed (high unrelated pairs)
-        high_nodes = [k for k, v in lattice.items() if v > 0.5]
-        for i in range(len(high_nodes)):
-            for j in range(i+1, len(high_nodes)):
-                n1, n2 = high_nodes[i], high_nodes[j]
-                if n1 not in self.opposites and n2 not in self.opposites:
-                    delta = abs(lattice[n1] - lattice[n2])
-                    if delta > self.threshold:
-                        bleed_events.append((n1, n2, delta))
-                        # Dynamic expand: spawn new opposite pair
-                        new_pair = f"{n1}-{n2}"
-                        self.opposites[new_pair] = f"anti-{n1}-{n2}"  # placeholder anti-pair
-
-        return sorted(bleed_events, key=lambda x: x[2], reverse=True)
-
-    def check_half_life_decay(self, lambda_dom: float, prev_lambda: float, time_delta: float) -> str:
-        """Check λ half-life decay curve – critical slowing warning."""
-        if abs(lambda_dom) >= self.half_life_threshold:
-            return "λ_dom normal – decay active"
-
-        # Approximate decay rate (simplified half-life model)
-        if prev_lambda == 0 or time_delta == 0:
-            return "λ_dom stable – no decay rate"
-
-        decay_rate = math.log(2) / time_delta * math.log(abs(prev_lambda / lambda_dom))
-        if decay_rate < 0.001:  # tunable ε
-            return f"🩸💤 Critical slowing detected – λ_dom ≈ {lambda_dom:.6f}, decay rate {decay_rate:.6f}"
+        if re.search(r'/[a-z]+|layer|ui rules|routing logic|notes|turn \d+|chaosengine', text_lower):
+            ctx["type"] = "layer_ui_bleed"
+            ctx["severity"] = 0.9
+        elif re.search(r'def |class |function |import |```[a-z]+', text_lower):
+            ctx["type"] = "code_bleed"
+            ctx["severity"] = 0.7
+        elif "simulation" in context_lower or "state machine" in text_lower:
+            ctx["type"] = "simulation_bleed"
+            ctx["severity"] = 0.8
         else:
-            return f"λ_dom {lambda_dom:.6f} – decay rate {decay_rate:.6f}"
+            ctx["type"] = "conversation_bleed"
+            ctx["severity"] = 0.5
 
-    def suggest_stabilization(self, bleed_events: List[Tuple[str, str, float]], lambda_dom: float = None, prev_lambda: float = None, time_delta: float = 1.0) -> str:
-        """Suggest fixes – single-line nudge + half-life warning."""
-        if not bleed_events and (lambda_dom is None or abs(lambda_dom) >= self.half_life_threshold):
-            return "🩸✅ No significant bleed – stable"
+        return ctx
 
-        parts = []
-        if bleed_events:
-            strongest = bleed_events[0]
-            n1, n2, score = strongest
-            parts.append(f"🩸⚠️ Bleed ({n1} → {n2}, {score:.2f}) – /thread? /vent? /clarity?")
+    def process(self,
+                text: str,
+                context_hint: str = "",
+                escalate: bool = False) -> Dict[str, Any]:
+        """Main entry point — context-aware bleed detection + optional delegation."""
+        bleed_context = self._detect_context(text, context_hint)
 
-        if lambda_dom is not None:
-            half_life_msg = self.check_half_life_decay(lambda_dom, prev_lambda or lambda_dom, time_delta)
-            parts.append(half_life_msg)
+        # Optional ENTITY_HUNTER delegation for deep entity bleed
+        entities = []
+        if escalate or bleed_context["severity"] > 0.7:
+            entity_result = self.entity_hunter.process(text)
+            entities = entity_result.get("entities", [])
 
-        return " ".join(parts)
+        # TRUTH.py cross-reference (repo scans or conversation window)
+        truth_result = self.truth_validator.process(
+            text,
+            escalate=escalate,
+            context_hint=f"bleed check: {bleed_context['type']}"
+        )
 
-    def check(self, lattice: Dict[str, float], lambda_dom: float = None, prev_lambda: float = None, time_delta: float = 1.0) -> str:
-        """Full check – bleed + λ half-life decay."""
-        events = self.detect_bleed(lattice)
-        return self.suggest_stabilization(events, lambda_dom, prev_lambda, time_delta)
+        # Final bleed report
+        bleed_score = bleed_context["severity"] * (1 + len(entities) * 0.1)
+        has_bleed = bleed_score > 0.6
+
+        suggestions = []
+        if has_bleed:
+            suggestions = [
+                "Consider /void for clean data dump",
+                "Switch layer or run /export --no-ui",
+                "Run full SYS_HEALTH for vitals"
+            ]
+
+        return {
+            'bleed_detected': has_bleed,
+            'bleed_score': round(bleed_score, 2),
+            'bleed_type': bleed_context["type"],
+            'entities_found': len(entities),
+            'truth_cross_reference': truth_result['truth_score'],
+            'suggestions': suggestions,
+            'summary': f"BLEED v2.0 — {bleed_context['type']} detected (score {bleed_score:.2f})"
+        }
+
+# Example usage (ChaosEngine or any layer/handler):
+# detector = BleedDetector()
+# result = detector.process(user_input, context_hint="system-building python", escalate=True)
+# print(result['summary'])

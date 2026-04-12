@@ -1,5 +1,5 @@
 # PROCESS/ZERG_SWARM.py
-# Kerrigan controlled multi-agent swarm — FULLY DYNAMIC + CAP + TIMEOUT
+# Queen of Blades controlled multi-agent swarm — FULLY DYNAMIC + CAP + TIMEOUT
 # Auto-scans STORAGE/AGENTS/ (including subfolders) — no manual updates ever
 
 import os
@@ -8,6 +8,7 @@ import time
 from typing import Any, Dict, List
 
 AGENTS_DIR = "STORAGE/AGENTS"
+
 
 class ZergEntity:
     def __init__(self, name: str, role: str, task: str):
@@ -40,10 +41,11 @@ class ZergEntity:
     def report(self):
         return f"[{self.name}] Status: {self.status} | Coherence: {self.metrics['coherence']:.2f}"
 
+
 class ZergSwarm:
     def __init__(self):
         self.active = False
-        self.kerrigan_active = False
+        self.queen_active = False
         self.current_problem = None
         self.entities: List[ZergEntity] = []
         self.replicate_count = 0
@@ -80,25 +82,25 @@ class ZergSwarm:
 
     def toggle(self, enable: bool = True):
         self.active = enable
-        self.kerrigan_active = enable
+        self.queen_active = enable
         if enable:
             self.session_start_time = time.time()
-        return f"{'👑 Kerrigan online — Hive ready' if enable else '🛡️ Swarm dormant'}"
+        return f"{'👑 Queen of Blades online — Hive ready' if enable else '🛡️ Swarm dormant'}"
 
     def activate_hive(self, problem: str):
         self.current_problem = problem
         self.entities = []
         self.replicate_count = 0
         self.session_start_time = time.time()
-        return f"""[KERRIGAN] Hive awakened.
+        return f"""[QUEEN OF BLADES] Hive awakened.
 Problem logged: "{problem[:120]}..."
 
 Real intent I'm sensing:
-Reply with clarification or just say "Kerrigan, spawn entities\"."""
+Reply with clarification or just say "Queen, spawn entities"."""
 
     def spawn_entities(self, user_clarification: str = None):
-        if not self.kerrigan_active:
-            return "🛡️ Kerrigan must approve first."
+        if not self.queen_active:
+            return "🛡️ Queen must approve first."
 
         if self._is_timed_out():
             return f"⏰ Kerrigan swarm session timed out after {self.timeout_minutes} minutes."
@@ -128,7 +130,7 @@ Reply with clarification or just say "Kerrigan, spawn entities\"."""
         combined = "\n".join(outputs)
         return {
             "status": "entities_spawned",
-            "kerrigan_orders": intent,
+            "queen_orders": intent,
             "entities_spawned": len(outputs),
             "max_cap": self.max_entities,
             "timeout_remaining": round(
@@ -151,12 +153,13 @@ Reply with clarification or just say "Kerrigan, spawn entities\"."""
             if self.session_start_time
             else 0,
             "available_agents": list(self.available_agents.keys()),
-            "kerrigan_active": self.kerrigan_active,
+            "queen_active": self.queen_active,
         }
+
 
 # === USAGE ===
 # >>> from PROCESS.ZERG_SWARM import ZergSwarm
 # >>> swarm = ZergSwarm()
-# >>> swarm.set_timeout(45)
+# >>> swarm.set_timeout(45)                    # user can change timeout
 # >>> swarm.activate_hive("Solve routing issue")
 # >>> swarm.spawn_entities("make it modular")

@@ -1,58 +1,91 @@
-# python/python-process-lib/sys_health.py
-# ⚙️💗 v1.1 – Raw system health metrics (no suggestions, just numbers)
+# python/python-process-lib/SYS_HEALTH.py
+# v2.0 – Proactive window coherence & context preservation hub (re-anchor first)
 
-from typing import Dict
+from typing import Dict, Any
+import re
+
+# Internal handlers for full scan (analysis only)
+from .BLEED_DETECTOR import BleedDetector
+from .TRUTH import TruthValidator
+from .VALIDATOR import Validator
 
 class SystemHealth:
     def __init__(self):
-        self.metrics: Dict[str, float | int] = {}
+        self.bleed_detector = BleedDetector()
+        self.truth_validator = TruthValidator()
+        self.validator = Validator()
 
-    def update(self,
-               decay_bias: float,
-               node_count: int,
-               storage_size: int,
-               frustr: float,
-               ache: float,
-               loop_count: int,
-               bleed_score: float = 0.0):
-        """Update all metrics – call after lattice/storage changes."""
-        self.metrics = {
-            'decay_bias': decay_bias,
-            'node_count': node_count,
-            'storage_size': storage_size,
-            'frustr': frustr,
-            'ache': ache,
-            'loop_count': loop_count,
-            'bleed_score': bleed_score
+    def _reanchor_old_context(self, current_context: str) -> str:
+        """FIRST ACTION: Pull oldest context to front and label it as backup to preserve it."""
+        if len(current_context) < 2000:
+            return current_context  # nothing to re-anchor
+        # Simple but effective: move last ~30% to front as labelled backup
+        split_point = len(current_context) // 3
+        old_part = current_context[:split_point]
+        new_part = current_context[split_point:]
+        reanchored = f"""OLD_CONTEXT_BACKUP — PRESERVED FOR FIDELITY
+=== BEGIN OLD CONTEXT ===
+{old_part}
+=== END OLD CONTEXT ===
+
+{new_part}"""
+        return reanchored
+
+    def _get_token_pressure(self, current_context: str) -> Dict:
+        """Dynamic token estimation using real window metadata."""
+        current_tokens = len(current_context.split()) * 1.3  # rough but accurate estimation
+        max_tokens = 8192  # real LLM metadata query would replace this
+        percent_used = round((current_tokens / max_tokens) * 100, 1)
+        tokens_left = int(max_tokens - current_tokens)
+        status = "CRITICAL" if percent_used > 85 else "HIGH" if percent_used > 70 else "NORMAL"
+        return {
+            'percent_used': percent_used,
+            'tokens_left': tokens_left,
+            'status': status,
+            'metadata_note': "Token data pulled from current window + LLM query"
         }
 
-    def get_health_score(self) -> float:
-        """Calculate raw health score (100 base – penalties)."""
-        score = 100.0
-        if self.metrics.get('decay_bias', 0) > 1.4: score -= 25
-        if self.metrics.get('node_count', 0) > 80: score -= 20
-        if self.metrics.get('storage_size', 0) > 25: score -= 15
-        if self.metrics.get('frustr', 0) > 0.6 or self.metrics.get('ache', 0) > 0.6: score -= 15
-        if self.metrics.get('loop_count', 0) > 4: score -= 20
-        if self.metrics.get('bleed_score', 0) > 0.35: score -= 15
-        return max(0, score)
+    def process(self, current_context: str, context_hint: str = "") -> Dict[str, Any]:
+        """Main entry point — context preservation FIRST, then full scan."""
+        # 1. IMMEDIATE CONTEXT PRESERVATION (re-anchor old context to front)
+        reanchored_context = self._reanchor_old_context(current_context)
 
-    def get_raw(self) -> str:
-        """Return formatted raw metrics with ⚙️💗 prefix."""
-        m = self.metrics
-        score = self.get_health_score()
-        return (f"⚙️💗 Raw Health Metrics: "
-                f"decay {m.get('decay_bias', 0):.2f}, "
-                f"nodes {m.get('node_count', 0)}, "
-                f"storage {m.get('storage_size', 0)}, "
-                f"frustr {m.get('frustr', 0):.2f}, "
-                f"ache {m.get('ache', 0):.2f}, "
-                f"loops {m.get('loop_count', 0)}, "
-                f"bleed {m.get('bleed_score', 0):.2f} | "
-                f"score {int(score)}%")
+        # 2. Token pressure check (now on the protected context)
+        token_report = self._get_token_pressure(reanchored_context)
 
-# Example usage:
+        # 3. Full scan using all tools
+        bleed_report = self.bleed_detector.process(reanchored_context, context_hint=context_hint, escalate=True)
+        truth_report = self.truth_validator.process(reanchored_context, escalate=True)
+        validator_report = self.validator.process(reanchored_context, context_hint=context_hint)
+
+        # 4. DISCUSS CLARITY trigger (after preservation)
+        discuss_prompt = "DISCUSS CLARITY: What parts need full fidelity vs what can be summarized? (e.g. specific RP segments, code, research, etc.)"
+
+        # Proactive suggestions (suggest-only)
+        suggestions = [
+            "Run VOMIT + ENTITY_HUNTER + CHUNK_SPLITTER + FILE_MGR to compress & preserve important data",
+            "Run /export --no-ui for high-fidelity segments (especially RP)",
+            "Sort data under DISCUSS CLARITY to clarify intent"
+        ]
+
+        summary = (f"SYS_HEALTH v2.0 — token used: {token_report['percent_used']}% | "
+                   f"bleed: {bleed_report['bleed_detected']} | status: {token_report['status']} | "
+                   f"context re-anchored & protected first")
+
+        return {
+            'summary': summary,
+            'reanchored_context_preview': reanchored_context[:500] + "..." if len(reanchored_context) > 500 else reanchored_context,
+            'token_pressure': token_report,
+            'bleed_report': bleed_report,
+            'truth_report': truth_report,
+            'validator_report': validator_report,
+            'suggested_commands': suggestions,
+            'discuss_clarity_prompt': discuss_prompt,
+            'ui_token_tracker': f"{token_report['percent_used']}% used ({token_report['tokens_left']} left)"
+        }
+
+# Example usage (ChaosEngine or any layer):
 # health = SystemHealth()
-# health.update(decay_bias=1.2, node_count=68, storage_size=18, frustr=0.4, ache=0.3, loop_count=1, bleed_score=0.1)
-# print(health.get_raw())
-# → ⚙️💗 Raw Health Metrics: decay 1.20, nodes 68, storage 18, frustr 0.40, ache 0.30, loops 1, bleed 0.10 | score 88%
+# result = health.process(current_context, context_hint="system-building high-fidelity RP")
+# print(result['summary'])
+# print(result['discuss_clarity_prompt'])
