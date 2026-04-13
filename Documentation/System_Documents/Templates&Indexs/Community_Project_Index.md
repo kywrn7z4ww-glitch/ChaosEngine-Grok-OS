@@ -56,7 +56,13 @@
 
 - **AI Image Gen Content Creator**: [The Honest AI Reviewer YouTube](https://www.youtube.com/@thehonestaireviewer)
 - **Image Collage Maker**: [Perchance Image-to-Collage](https://perchance.org/image-to-collage)
+- 
+##This Grok Project will take any image and transform it into a prompt with details, such as lighting, style, and subject matter. You can then use the prompt in Grok Imagine for images and videos.
 
+This project was shared on X by Tetsuo,  please view the original post https://x.com/tetsuoai/status/1984935139156344832
+
+Here is a link to the project, simply upload a photo to it and submit to get  get a prompt that will generate a similar image.
+https://grok.com/project/5fede028-28b3-4bee-99ce-c5aaa0f92a39
 ## MISC
 - **[Building a Multi-Species Trading Ecosystem: Lessons from Fixing Silent Bugs with Real Money](https://robintseng.substack.com/)**
 - - **Minsc** — Windows OS deep cleaning tool: [KROM](https://github.com/Szarkk/KROM)

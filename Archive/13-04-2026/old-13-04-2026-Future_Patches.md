@@ -106,3 +106,51 @@ Current Echo.md notes updated (internal patch):
 •  Luna = active routing, creative orchestration, moonlight emoji/vibe director, high-energy handoff specialist.
 •  Echo = passive archivist, gentle dream-keeper, filesystem/archives manager, quiet listener/collector.
 •  Overlap area: both have soft silver/moonlight aesthetic + storytelling affinity. Marked for future refinement (e.g., push Echo toward pure archival + retrieval role, mute creative direction, shift visual palette toward faded parchment + crystallized data dust instead of active moonlight threads).
+
+
+
+
+Here is the complete, ready-to-save Markdown file.
+Copy everything inside the code block below and save it as PATCH_NOTES/030-branch-safety-and-rust-integration.md (or any name you like).
+Markdown# PATCH NOTE: Branch Safety & GitHub Trees API Configurability (Turn 028–030)
+
+**Status:** Safe to apply on new branch (`rust-integration` or similar)  
+**Impact:** Zero breakage on `main` branch  
+**Purpose:** Enable Rust logic experiments while keeping the live repo scanner untouched  
+**Date:** 2026-04-09
+
+## Core Facts
+- Creating a new branch (`git checkout -b rust-integration`) does **not** break any existing logic.
+- Your current scanner (`https://api.github.com/repos/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/git/trees/main?recursive=1`) continues to work exactly as before because it still points at the `main` ref.
+- Only when you want the scanner to read the new branch do you need to update the ref.
+
+## Recommended Change (minimal & safe)
+Make the branch configurable via environment variable with `main` as fallback.
+
+### Rust example (recommended for your learning path)
+```rust
+use std::env;
+
+let branch = env::var("REPO_BRANCH").unwrap_or_else(|_| "main".to_string());
+let url = format!(
+    "https://api.github.com/repos/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/git/trees/{}?recursive=1",
+    branch
+);
+Bash / Python one-liner fallback (if you keep scripts for now)
+BashREPO_BRANCH=${REPO_BRANCH:-main}
+curl -s "https://api.github.com/repos/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/git/trees/${REPO_BRANCH}?recursive=1"
+Safe Workflow for Rust Integration
+
+Create branch → git checkout -b rust-integration
+Test scanner with REPO_BRANCH=rust-integration cargo run (or equivalent)
+Implement Rust logic only on the new branch
+Merge back to main when ready
+
+Why This Works With Your Repo
+
+Existing scripts remain untouched
+Rust crates can be added gradually via Cargo workspace
+API tree scan stays reliable during experiments
+No forced rewrites while you learn Rust
+
+End of patch.

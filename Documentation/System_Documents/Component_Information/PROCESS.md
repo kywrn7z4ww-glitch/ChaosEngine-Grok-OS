@@ -1,66 +1,91 @@
 # PROCESS.md
-Status: PINNED CANONICAL — All Handlers Consolidated + Audited (March 08 2026)
+Status: PINNED CANONICAL — All Handlers Consolidated + Audited (13 April 2026)
 
-## VOMIT
-**What it does** (code + design): Raw messy input → paragraph/sentence smart chunks → dedup (SequenceMatcher >0.88) → auto-titles + heavy flag + pin suggestions for FILE_MGR.  
-**Does it do the job?** Yes — perfect sloppy-to-clean recycler.  
-**Rebuild better?** No change needed.
+## AXIOM_FORGE.py
+**What it does**: Creates, refines, and hardens core axioms/rules for the system.  
+**Does it do the job?** Yes — foundational rule generator.  
+**Rebuild better?** Under active development.
 
-## ZERG_SWARM (Queen of Blades)
-**What it does**: Mass feral entity spawning factory. Scans STORAGE/AGENTS/ (incl subfolders) → spawns temporary entities (roles pulled live) for general task help and new entity creation. High volume, timeout cap (default 120 min), hard max 50.  
-**Does it do the job?** Yes — broad swarm firepower under Queen control.  
+## BLEED_DETECTOR.py
+**What it does**: Scans for concept bleed, contamination, or unwanted cross-activation between contexts/layers.  
+**Does it do the job?** Yes — early warning system.  
 **Rebuild better?** No.
 
-## EVOLUTION_CHAMBER (Kerrigan Mutation Engine)
-**What it does**: Focused mutation & argument engine. Spawns temporary agents with structured debate roles (Devil's Advocate, Radical Mutator, Perspective Shifter, Synergy Weaver, etc.) → generates targeted counter-arguments and idea mutations → ready for Kerrigan scoring. Session-based with timeout.  
-**Does it do the job?** Yes — deliberate idea evolution and debate (distinct from ZERG mass spawning).  
-**Rebuild better?** No — valuable targeted distinction preserved.
-
-## FILE_MGR
-**What it does**: In-chat virtual FS. pin(title, content) with auto-deduplication, UTC+London timestamps, recent_pins queue, thread support.  
-**Does it do the job?** Yes — perfect RAM-disk memory.  
+## CANNON_HARVESTER.py
+**What it does**: Heavy harvesting and reconstruction of canon from chat history + entities.  
+**Does it do the job?** Yes — canon building pipeline.  
 **Rebuild better?** No.
 
-## ENTITY_HUNTER
-**What it does**: Scans chats_split/*.json → detects repeating capitalized phrases → ranks entities → outputs detected_entities.json.  
-**Does it do the job?** Yes — clean dynamic entity extraction.  
+## CHUNK_SPLITTER.py
+**What it does**: Intelligent load-aware text splitting (paragraph/sentence) with smart chunking logic.  
+**Does it do the job?** Yes — core preprocessing engine.  
 **Rebuild better?** No.
 
-## CANNON_HARVESTER
-**What it does**: User-controlled canon builder. Loads chat JSON + entities → keep/prune/split_mode → outputs clean JSON in canon_anchor/ with metadata.  
-**Does it do the job?** Yes — exact reconstruction pipeline.  
+## DISCOMBOBULATOR.py
+**What it does**: Fernet AES encryption/decryption for private data blobs (/disco + /recombo).  
+**Does it do the job?** Yes — secure chaos injection.  
 **Rebuild better?** No.
 
-## SYS_HEALTH
-**What it does**: Raw watchdog. update(metrics) → calculates 100-base score with penalties → get_raw string.  
-**Does it do the job?** Yes — passive pulse checker.  
+## ENTITY_HUNTER.py
+**What it does**: Scans chat history for repeating capitalized phrases and extracts named entities.  
+**Does it do the job?** Yes — dynamic entity detection.  
 **Rebuild better?** No.
 
-## TURN_COUNTER
-**What it does**: Monotonic turn counter + London TZ timestamps + desync resynch + nudge at 95/100/200.  
+## EVOLUTION_CHAMBER.py
+**What it does**: Focused mutation & debate engine. Spawns structured roles (Devil's Advocate, Mutator, etc.) for idea evolution.  
+**Does it do the job?** Yes — targeted refinement (distinct from mass spawning).  
+**Rebuild better?** No.
+
+## FILE_MGR.py
+**What it does**: In-chat virtual filesystem. Handles pinning, deduplication, timestamps, and file operations.  
+**Does it do the job?** Yes — RAM-disk memory manager.  
+**Rebuild better?** No.
+
+## INVERSION.py
+**What it does**: Performs logical inversion, counter-argument generation, and perspective flipping.  
+**Does it do the job?** Yes — powerful dialectic tool.  
+**Rebuild better?** No.
+
+## REPO_VALIDATOR.py
+**What it does**: Live repository validation. Checks SHA, path drift, casing, 404s, and poison pills.  
+**Does it do the job?** Yes — critical system integrity guardian (recently executed).  
+**Rebuild better?** No.
+
+## STITCH.py
+**What it does**: Smart document/code stitching with validation and bleed cleanup.  
+**Does it do the job?** Yes — high-quality synthesis tool.  
+**Rebuild better?** No.
+
+## SYS_HEALTH.py
+**What it does**: System health monitoring and scoring (100-base metric with penalties).  
+**Does it do the job?** Yes — passive watchdog.  
+**Rebuild better?** No.
+
+## TRUTH.py
+**What it does**: Truth verification engine. Detects contradictions and can anchor to external sources.  
+**Does it do the job?** Yes — bullshit detector.  
+**Rebuild better?** No.
+
+## TURN_COUNTER.py
+**What it does**: Monotonic turn counter with London timezone timestamps and desync handling.  
 **Does it do the job?** Yes — reliable sequencing.  
 **Rebuild better?** No.
 
-## DISCOMBOBULATOR
-**What it does**: Fernet AES encrypt/decrypt using customize keys. /disco + /recombo commands.  
-**Does it do the job?** Yes — private blob system.  
+## VALIDATOR.py
+**What it does**: General input/output validation and sanitization layer.  
+**Does it do the job?** Yes — safety & consistency gate.  
 **Rebuild better?** No.
 
-## BLEED_DETECTOR
-**What it does**: Scans lattice for opposite/co-activation bleed + λ half-life decay warning → suggest_stabilization.  
-**Does it do the job?** Yes — early feral warning.  
+## VOMIT.py
+**What it does**: Raw messy input → smart chunking → deduplication → auto-titling + pin suggestions.  
+**Does it do the job?** Yes — excellent sloppy-to-clean recycler.  
 **Rebuild better?** No.
 
-## TRUTH
-**What it does**: Bullshit detector. Quick mode (contradictions) or full (Grokipedia → Wiki → Perplexity anchors). Returns score + delta.  
-**Does it do the job?** Yes — lightweight consistency guard.  
-**Rebuild better?** No.
-
-## CHUNK_SPLITTER
-**What it does**: Load-aware splitter. predict_load + paragraph/sentence split (max 400 words) → returns load_type + chunks.  
-**Does it do the job?** Yes — smart chunking.  
+## ZERG_SWARM.py
+**What it does**: Mass agent spawning factory. Scans STORAGE/AGENTS/ and creates temporary swarm entities.  
+**Does it do the job?** Yes — high-volume support under Queen control.  
 **Rebuild better?** No.
 
 Key invariant for all: lean, responsive, user-friendly. Called only via ChaosEngine.route_intent. Zero side-effects on failure.
 
-Last sealed: 2026-03-08. Use verbatim.
+Last sealed: 2026-04-13. Use verbatim.

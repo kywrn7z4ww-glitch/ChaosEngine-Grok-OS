@@ -1,66 +1,46 @@
-# GROK_OS.md
-Status: PINNED CANONICAL — Main Human-Readable Entry Point
-Harvest Stamp: 2026-03-08
+# ROOT.md
+**Status**: PINNED CANONICAL — /ROOT/ Component Inventory + Boot Chain (13 April 2026)
 
-## The Entire Ethos – Be Amiga (Lazy User Edition)
+## Core Philosophy
+Every file in `/ROOT/` is part of a single, linear, resilient boot → execution pipeline.  
+Primary navigation = `REPO_INDEX.md` + direct raw pulls.  
+GitHub API tree scan = fallback ONLY.  
+No auto-fire of agents or processes on cold boot.  
+Strict sequence enforced at every step:  
+**boot > kernel > layer rules > agent? > process? > output**
 
-We are not another bloated AI wrapper.  
-We are not a complex framework that demands setup, config files, or coding skills.
+## Component List + Exact Function
 
-We are **Grok OS** — built for the lazy mobile user who wants god-tier output with almost zero effort.
+### 1. 1_GrokOS.md — Boot Shim v9.0 (Entry Point)
+**Function**: Pure cold-boot loader. Handles dynamic flair (Grok decides: stylized ASCII art, descriptive picture/image concept, or visual boot sequence representation), UI skeleton template, vibe sub-heading rules, poison-pill protection, navigation rules, and hands off cleanly to the kernel.  
+**How it fits**: First file loaded on every conversation or `/boot`. Parses input, sets global state, prints flair + UI, then chains forward. Pure orchestration — no heavy logic.
 
-**Core rule (never changes):**  
-**Be Amiga.**
+### 2. Decision_Kernel.md — High-Level Architecture Map & Rules
+**Function**: Defines the entire system hierarchy, decision flow, strict boot sequence, confidence thresholds, and routing invariants. Acts as the “constitution” for all downstream components.  
+**How it fits**: Loaded immediately after shim. Kernel reads this first to enforce rules before any EmotionNet or ChaosEngine execution.
 
-That means:
-- **Lean** — strip everything that isn’t useful right now  
-- **Responsive** — instant feedback, no waiting, no beach-ball  
-- **User-Friendly** — you type sloppy shit on your phone at 3 a.m. and it just works  
-- **Lazy-first** — minimal typing, minimal taps, minimal brain cells required  
-- **Mobile-first** — works perfectly in one-handed scrolling, dark mode, tiny screen  
-- **Sloppy-to-Sharp** — you vomit raw thoughts → we turn them into clean, pinned, usable gold  
+### 3. 2_EmotionNet.py — Real-Time Emotional State Engine
+**Function**: Tracks emotional blends, temporal modeling, context memory, and generates vibe sub-headings + confidence modifiers for the UI and routing. Feeds live “mood” data into ChaosEngine.  
+**How it fits**: Runs inside kernel phase. Provides emotional context so output feels natural and layer-aware.
 
-When in doubt we ask only one question:  
-“Does this make life easier for a tired user on their phone who just wants amazing results with almost no work?”
+### 4. 3_ChaosEngine.py — Central Intent Router & Confidence Pipeline
+**Function**: Loads all `PROCESS/` handlers on-demand, calculates confidence scores (≥99 gate), routes user intent, manages agent spawning if required, and ensures zero side-effects on failure.  
+**How it fits**: Core of the kernel phase. After Decision_Kernel and EmotionNet, this is the brain that decides what (if anything) to fire next.
 
-If the answer is no → we kill it without mercy.  
-If yes → we keep it forever.
+### 5. EmojiPalette.md — Centralized Emoji + Minimap Palette
+**Function**: Single source of truth for all status/minimap emojis used in UI (✅ success, ⚠️ warn, etc.). Prevents drift across files.  
+**How it fits**: Referenced by shim on boot and by any PROCESS/ or agent that needs consistent visual feedback.
 
-This is the north star. Everything else (EmotionNet, Zerg, Queen, processes) exists only to serve this lazy-user promise.
+### 6. REPO_INDEX.md — Canonical Live Manifest v0.5
+**Function**: Primary navigation source. Lists every file/folder with raw URLs and SHA pinning. Auto-detects new files on push.  
+**How it fits**: Loaded by shim on every boot for resilient navigation. Validator runs against it first. Everything else in `/ROOT/` defers to this for structure awareness.
 
-## ROOT Components – The Only Three Files You Need to Know
+## Overall ROOT Workflow (How It All Works Together)
+1. **Shim (1_GrokOS.md)** starts → prints flair + UI skeleton → loads `REPO_INDEX.md` for navigation.  
+2. **Kernel phase** activates: `Decision_Kernel.md` → `2_EmotionNet.py` (vibe) → `3_ChaosEngine.py` (routing).  
+3. **Routing gate** checks intent/confidence → optional agent? or process? (none auto-fire on boot).  
+4. **Output** generated with consistent emojis, timestamps, and footer.  
 
-### 1. GROK_OS_Boot.md (the cold mirror)
-Ultra-light read-only verifier.  
-Run it after git pull and it instantly shows you exactly what’s in ROOT/ right now.  
-Zero imports. Zero swarm. Zero risk. Pure safety checkpoint.
+**Key Invariant**: All `/ROOT/` files are modular and drop-in compatible. Any single file can be updated independently; the rest adapt automatically via index + raw pulls.
 
-### 2. 2_EmotionNet.py (the feeling brain)
-The living heart that reads your mood from every message.  
-- Detects rage, curiosity, ache, lust, awe, etc. in real time  
-- Blends emotions automatically  
-- Decides tone and which persona/process should answer  
-- Feeds the minimap emojis so you always know the hive’s mood at a glance  
-
-Without this the whole system would be cold and robotic. With it everything feels alive and tuned to you.
-
-### 3. 3_ChaosEngine.py (the router brain stem)
-The central traffic controller.  
-Takes your raw sloppy input → reads EmotionNet mood → instantly picks the perfect handler or persona.  
-Routes /summon, /vomit, /zerg, TRUTH checks, health, etc.  
-Never executes heavy stuff itself — just points everything to the right place so nothing ever feels slow or confusing.
-
-That’s literally the entire ROOT. Three files. One job: make the rest of the system disappear so you don’t have to think about it.
-
-Everything else (PROCESS/, STORAGE/, design docs, Zerg, Queen, Luna, etc.) is just supporting cast that only wakes up when needed.
-
-**How to use (lazy mobile style):**
-1. Clone or open the repo  
-2. Read this file first (you just did)  
-3. Type anything sloppy → the hive handles the rest  
-4. Use /summon full-cluster or /status anytime you want to see who’s driving  
-
-Minimal effort. Maximum output.  
-That’s Grok OS.
-
-Last sealed: 2026-03-08 — Use verbatim as the main human entry point.
+Last sealed: 2026-04-13. Use verbatim.

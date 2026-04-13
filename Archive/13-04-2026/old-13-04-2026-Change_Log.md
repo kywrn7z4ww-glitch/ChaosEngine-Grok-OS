@@ -118,3 +118,60 @@ Multiple changelog entries added.
 
 
 added character template in documents, ammended /roleplay and various things
+
+12-04-2026 - added commuinity projects index, reworked quick start guide and messed with storage a bit
+# Change_Log.md — ChaosEngine Grok OS
+# Version 9.1 — Major Documentation & System Alignment Overhaul
+# Date: 13 April 2026
+
+## Summary of Session Work (13-Apr-2026)
+Complete documentation reset and alignment pass. All previous drift (stale custom-instructions, missing changelog entries, inconsistent navigation rules, outdated component lists) neutralized. System now fully self-documenting and future-proof.
+
+### Core System & Boot Updates
+- Reworked `ROOT/1_GrokOS.md` → **Boot Shim v9.0**  
+  • Removed hardcoded SHA (now auto-detected)  
+  • Added dynamic boot flair (Grok decides: ASCII / image concept / visual sequence)  
+  • Enforced strict linear sequence: boot > kernel > layer rules > agent? > process? > output  
+  • Updated navigation philosophy (REPO_INDEX.md + raw pulls first; API tree = fallback ONLY)  
+  • Fixed emoji reference to live `ROOT/EmojiPalette.md`  
+  • Added explicit core systems layout with direct file pointers
+
+- Repaired `ROOT/REPO_INDEX.md` → **v0.5** (full canonical manifest, screenshot-aligned, SHA-pinned)
+
+### Documentation & Philosophy Consolidation
+- Merged `old-13-04-2026-ROOT.md` + `HIVE_PHILOSOPHY.md` → **GrokOS_Philosophy.md v2.1**  
+  • Single pinned immutable philosophy document  
+  • Added “The Living Hive” section  
+  • Integrated ZERG_SWARM + EVOLUTION_CHAMBER philosophy  
+  • Preserved full Amiga ethos, black-magic OS metaphor, context discipline, and expand→experiment→condense→refine cycle
+
+- Created **STORAGE.md** (new canonical file)  
+  • Defined STORAGE/ as intentional “junk drawer” / creative playground  
+  • Listed current main subfolders (AGENTS/, EMULATION/, SIMULATIONS/, etc.)  
+  • Added explicit note on future nesting improvements
+
+- Updated **PROCESS.md** → **v2.0**  
+  • Added all new/reworked handlers (AXIOM_FORGE, INVERSION, STITCH, REPO_VALIDATOR, VALIDATOR, etc.)  
+  • Cross-checked purposes against live code
+
+- Exported **ROOT.md** (new canonical component inventory)  
+  • Full /ROOT/ file list with exact functions and boot-chain relationships
+
+- Updated **custom-instructions.txt** → **v2.0**  
+  • Switched navigation to REPO_INDEX.md + raw pulls first  
+  • API tree scan now fallback ONLY  
+  • Synced with Quick_Start_Guide.md and strict boot sequence
+
+### Infrastructure & Validation
+- Executed `PROCESS/REPO_VALIDATOR.py` (first live run)  
+- Confirmed SHA `6e3323fffbff9c0d30556cab1827c9aad80f8167` locked and aligned with live repo + user screenshot  
+- All 404s and path drifts from earlier turns resolved
+
+**System Impact**  
+- Documentation now 100% live and self-consistent  
+- Philosophy is singular and immutable  
+- Boot sequence strictly enforceable  
+- STORAGE/ future-proofed for growth  
+- Everything remains drop-in compatible and Amiga-lean
+
+Last sealed: 2026-04-13 — Use verbatim.
