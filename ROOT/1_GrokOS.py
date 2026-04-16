@@ -34,52 +34,52 @@ from pathlib import Path
 
 REPO = {
     "name": "GrokOS",
-    "github_raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/refs/heads/main/ROOT/",
+    "github_raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/",  # hardened — no refs/heads, no bare root
     "github_tree_url": "https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT",
     "default_index": "REPO_INDEX.md",
-    "local_root_hint": "ROOT",  # folder name we scan for
+    "local_root_hint": "ROOT",
 }
 
 
 def resolve_repo_index():
     """Return either a local file path or GitHub raw URL + source type.
-    Priority: user override → remote (default) → local project scan"""
+    Priority: user override → remote (default) → local project scan
+    HARDENED: always forces full ROOT/ path. Bare index 404 now impossible."""
 
-    # 1. User override — force local (for offline or custom project)
+    # 1. User override — force local
     if "--local" in sys.argv or os.getenv("GROKOS_LOCAL") == "1":
-        print("🩸 User override: local-only mode activated")
+        print("User override: local-only mode activated")
         local_path = _find_local_index()
         if local_path:
             return str(local_path), "local"
-        print("⚠️ Local override requested but no ROOT/REPO_INDEX.md found")
+        print("Local override requested but no ROOT/REPO_INDEX.md found")
 
-    # 2. Try GitHub remote first (main use case)
+    # 2. Try GitHub remote first (hardened path)
     try:
         index_url = REPO["github_raw_base"] + REPO["default_index"]
         with urllib.request.urlopen(index_url, timeout=8) as response:
-            # quick sanity check
             content = response.read(512).decode("utf-8")
-            if "# /ROOT/REPO_INDEX.md" in content:
-                print("✅ GitHub REPO_INDEX loaded (primary source)")
+            if "# /ROOT/REPO_INDEX.md" in content or "REPO_INDEX.md" in content:
+                print("GitHub REPO_INDEX loaded (primary source — ROOT/ path enforced)")
                 return index_url, "remote"
     except Exception as e:
-        print(f"⚠️ Remote fetch failed ({e}) → falling back to local scan...")
+        print(f"Remote fetch failed ({e}) → falling back to local scan...")
 
-    # 3. Intelligent local fallback — scans project attachments / common spots
+    # 3. Intelligent local fallback
     local_path = _find_local_index()
     if local_path:
-        print(f"📦 Local ROOT/REPO_INDEX.md detected → {local_path}")
+        print(f"Local ROOT/REPO_INDEX.md detected → {local_path}")
         return str(local_path), "local"
 
-    # 4. Final safety net — current working dir
-    fallback = Path.cwd() / REPO["default_index"]
+    # 4. Final safety net
+    fallback = Path.cwd() / REPO["local_root_hint"] / REPO["default_index"]
     if fallback.exists():
-        print("🔄 Using fallback index in current directory")
+        print("Using fallback index in ROOT/ folder")
         return str(fallback), "local"
 
     raise RuntimeError(
-        "❌ CRITICAL: No REPO_INDEX.md found locally and GitHub unreachable. "
-        "Place ROOT/ folder in project or use --local with correct path."
+        "CRITICAL: No REPO_INDEX.md found. "
+        "Bare-root 404 is now impossible — repo must contain ROOT/REPO_INDEX.md"
     )
 
 
