@@ -1,81 +1,81 @@
 import json
-import os
 from datetime import datetime
 
 import requests
 
-# Primary: REPO_INDEX.md + raw pulls
+# PRIMARY TRUTH = GitHub API tree (real current structure)
+# REFERENCE ONLY = REPO_INDEX.md (for diff detection on huge changes)
 REPO_OWNER = "kywrn7z4ww-glitch"
 REPO_NAME = "ChaosEngine-Grok-OS"
 BRANCH = "main"
-INDEX_PATH = "ROOT/REPO_INDEX.md"  # relative to repo root
 
 POISON_PILLS = ["README.md", "readme.md", "tetris_curse.py"]
 
 
-def get_latest_sha():
-    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/commits/{BRANCH}"
-    r = requests.get(url, timeout=8)
+def get_latest_tree():
+    """Primary source: GitHub API recursive tree (structure-only)"""
+    # Get latest SHA
+    commit_url = (
+        f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/commits/{BRANCH}"
+    )
+    r = requests.get(commit_url, timeout=8)
     r.raise_for_status()
     sha = r.json()["sha"]
-    print(f"✅ Latest SHA (API): {sha[:12]}... ({datetime.now()})")
-    return sha
+    print(f"✅ Latest SHA (API truth): {sha[:12]}... ({datetime.now()})")
 
-
-def get_tree_files(sha):
-    """GitHub API tree scan — fallback only"""
-    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/git/trees/{sha}?recursive=1"
-    r = requests.get(url, timeout=10)
+    # Get full tree
+    tree_url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/git/trees/{sha}?recursive=1"
+    r = requests.get(tree_url, timeout=10)
     r.raise_for_status()
     tree = r.json()["tree"]
-    return [item["path"] for item in tree if item["type"] == "blob"]
+    files = [item["path"] for item in tree if item["type"] == "blob"]
+    print(f"📦 Real structure scanned: {len(files)} files")
+    return set(files), sha
 
 
-def load_current_index():
-    """Primary source — raw pull of REPO_INDEX.md"""
-    url = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/{INDEX_PATH}"
+def load_index_reference():
+    """Reference only — parse REPO_INDEX.md for comparison"""
+    url = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/ROOT/REPO_INDEX.md"
     r = requests.get(url, timeout=8)
     r.raise_for_status()
     lines = r.text.strip().split("\n")
-    indexed = [
-        line.strip() for line in lines if line.strip() and not line.startswith("#")
-    ]
-    return set(indexed)
+    indexed = set()
+    for line in lines:
+        line = line.strip()
+        if line.startswith("- ") and not line.startswith("#"):
+            # Extract path (e.g. ROOT/LAYERS/boot/boot.md)
+            path = line.split("→")[0].strip().replace("- ", "").strip()
+            if path:
+                indexed.add(path)
+    print(f"📋 REPO_INDEX reference loaded: {len(indexed)} entries")
+    return indexed
 
 
 def run_validator():
-    print("🔍 REPO_VALIDATOR.py — starting structural cross-check...")
-    sha = get_latest_sha()
-    current_index = load_current_index()
+    print("🔍 REPO_VALIDATOR.py — structure drift detector (API tree = TRUTH)")
+    real_files, sha = get_latest_tree()
+    index_ref = load_index_reference()
 
-    # Primary check: compare vs REPO_INDEX.md
-    try:
-        tree_files = get_tree_files(sha)  # API fallback only if needed
-    except:
-        tree_files = []  # graceful fallback
+    # Detect differences
+    additions = real_files - index_ref
+    deletions = index_ref - real_files
+    poison_found = [
+        f for f in real_files if any(p.lower() in f.lower() for p in POISON_PILLS)
+    ]
 
-    indexed_set = current_index
-    actual_set = set(
-        f
-        for f in tree_files
-        if f.startswith("ROOT/") or f.startswith("LAYERS/") or f.startswith("PROCESS/")
-    )
-
-    additions = actual_set - indexed_set
-    deletions = indexed_set - actual_set
-    poison_found = [f for f in actual_set if any(p in f for p in POISON_PILLS)]
-
-    print("\n📊 VALIDATOR RESULTS")
+    print("\n📊 DRIFT REPORT (big structure changes)")
     if additions:
-        print(f"⚠️  Additions detected ({len(additions)}): {list(additions)[:5]}")
+        print(
+            f"⚠️  ADDITIONS (new files/folders): {len(additions)} → {list(additions)[:10]}"
+        )
     if deletions:
         print(
-            f"⚠️  Deletions / missing from index ({len(deletions)}): {list(deletions)[:5]}"
+            f"⚠️  DELETIONS / missing from index: {len(deletions)} → {list(deletions)[:10]}"
         )
     if poison_found:
         print(f"‼️  POISON PILL DETECTED: {poison_found}")
     if not additions and not deletions and not poison_found:
-        print("✅ Structure matches REPO_INDEX.md — no drift")
+        print("✅ No structural drift — index matches live tree")
 
     return {
         "sha": sha,
