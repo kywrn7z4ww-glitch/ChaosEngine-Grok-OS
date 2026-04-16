@@ -70,3 +70,6 @@ https://grok.com/project/5fede028-28b3-4bee-99ce-c5aaa0f92a39
 ParodyFrame Master, a Grok Imagine comedy prompt generator - https://discord.com/channels/1320903119827112047/1464923659385831526
 - Understanding Large Language Models: How They Work, Their Limits, and How to Get Better Answers https://discord.com/channels/1320903119827112047/1450653906169233549
 - Reproducible Multi-Layer AI Architecture Across LLMs https://discord.com/channels/1320903119827112047/1442851908099379352
+
+
+#oustide referaces interesting hermes agent to look at
