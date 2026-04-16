@@ -1,31 +1,29 @@
-# /ROOT/REPO_INDEX.md — FULL CANONICAL LIVE MANIFEST v0.6
+# /ROOT/REPO_INDEX.md — FULL CANONICAL LIVE MANIFEST v0.7
 # Single narrow URL: https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/REPO_INDEX.md
 # Purpose: Primary navigation source. Full tree scan ONLY on /boot /warmup /audit /dive drift or 404.
 # Breakage: 404s expected on moved files — fallback here + lattice. Update after ANY change.
 
 ## ROOT/ — Boot Authority (always first)
-- ROOT/1_GrokOS.md                  → Boot shim v9.0
-- ROOT/2_EmotionNet.py              → Vibe subheadings + emotional routing
-- ROOT/3_ChaosEngine.py             → Intent router + confidence pipeline
+- ROOT/1_GrokOS.py                  → Single-file boot orchestrator v9.1
+- ROOT/UI_Template.md               → Central UI frame + rules (FLAT — live)
 - ROOT/Decision_Kernel.md           → Architecture map, boot sequence, decision flow
 - ROOT/EmojiPalette.md              → Emoji + minimap definitions
 - ROOT/REPO_INDEX.md                → This file (now updated)
 - ROOT/README.md                    → POISON — ignore
 - ROOT/tetris_curse.py              → POISON PILL — ignore
-- ROOT/LAYERS/                      → Layer rules subfolder
+- ROOT/LAYERS/                      → Layer rules subfolder (per-layer folders enabled)
 
-## ROOT/LAYERS/
-- ROOT/LAYERS/casual.md
-- ROOT/LAYERS/deepdive.md
-- ROOT/LAYERS/dev.md
-- ROOT/LAYERS/export.md
-- ROOT/LAYERS/old-12-04-2026-roleplay.md
-- ROOT/LAYERS/roleplay.md
-- ROOT/LAYERS/void.md
+## ROOT/LAYERS/ — Per-Layer Folders (future expansion)
+- ROOT/LAYERS/boot/boot.md          → Mandatory first layer + REPO_VALIDATOR (live)
+- ROOT/LAYERS/casual/casual.md      → Casual vibe layer
+- ROOT/LAYERS/dev/dev.md            → Dev/debug layer
+- ROOT/LAYERS/roleplay/roleplay.md  → Immersive roleplay layer
+- ROOT/LAYERS/export/export.md      → Export/data layer (if exists)
+- ROOT/LAYERS/void/void.md          → Void layer (if exists)
 - ROOT/LAYERS/README.md             → POISON — ignore
 
 ## PROCESS/ — Modular Handlers (on-demand — validator just ran)
-- PROCESS/REPO_VALIDATOR.py         → SHA/drift/poison validation (just executed)
+- PROCESS/REPO_VALIDATOR.py         → SHA/drift/poison validation (API-tree + index cross-check)
 - PROCESS/AXIOM_FORGE.py
 - PROCESS/BLEED_DETECTOR.py
 - PROCESS/CANNON_HARVESTER.py
@@ -44,7 +42,7 @@
 - PROCESS/ZERG_SWARM.py
 - PROCESS/README.md                 → POISON — ignore
 
-## Documentation/ — System Documents (nested per latest screenshot)
+## Documentation/ — System Documents (nested)
 - Documentation/Quick_Start_Guide.md
 - Documentation/README.md
 - Documentation/System_Documents/Component_Information/GrokOS_Philosophy.md
@@ -81,8 +79,7 @@
 # REPO NAVIGATION RULE (post-validator)
 Primary: This REPO_INDEX.md + direct raw pulls.  
 API tree scan = fallback ONLY.  
-No commit history reliance.  
-Index now 100% aligned with latest screenshot.
-
+Per-layer folders now enabled and indexed (boot/boot.md, etc.).  
+UI_Template.md confirmed flat at ROOT/UI_Template.md.  
 Validator complete. Kernel chain firing verified working. Natural flow active.
 [{user}@root ~]$
