@@ -6,7 +6,6 @@
 
 # Last sealed: 2026-04-16 | Post-Layer-Shorthand v9.1
 
-## PINNED HIGH-PRIORITY IMPROVEMENTS
 - Mermaid Safe Protocol — no ( ) + after ; use quotes or subgraphs everywhere.
 - EmotionNet persistence — Add .save()/.load() pickle + full unit test harness.
 - co_act_thresh tunable — Expose as parameter in Decision_Kernel.md.
@@ -17,6 +16,9 @@
 
 ## MEDIUM-PRIORITY (LAYERS & SYSTEM WORK)
 - /brainstorm layer /music layer - to produce prompts and soundscapes for suno and other music llms.
+- - **/youtube** – HTML wrapper layer to embed and watch YouTube links directly inside the chat window.
+- **/music** – Dedicated music layer with HTML wrappers for Suno, Spotify, YouTube Music, etc.
+- **/coding** – Heavy coding harness layer (dynamic library import, toolset assembly, parallel workflows).
 - New layers to define: /coding, /help, /simulation 
 - /picture mode - for generating prompts and images, inage gen OFF by defualt untill user explcitly states generate image, discussing what the user wants first especially when editing images is in keeping this mode in DISCUSS CALRITY DEFINE USER INTENT important for image and video editing
 - Revisit all current layers and assess logic/rules for consistency.
@@ -38,6 +40,26 @@
 - Add mathra (youtubemusic), Grok OS music, x profile for agents, YT channel.
 - Rework file structure to account for current upgrade list.
 - prompt for /music creation
+
+
+### 1. Core Philosophy – GrokOS as Beating Heart / Central Hub
+- GrokOS is the single source of truth and central nervous system for all future projects.
+- Everything (layers, agents, processes, integrations) must route through or be orchestrated by GrokOS.
+- Make GrokOS the default “beating heart” that other tools and projects call into.
+
+- Better nesting for character/agent files (especially inside SYS_ADMIN_CLUSTER and AGENTS).
+
+
+
+
+
+### 6. Immediate Next Actions (What to do now)
+- Push the current REPO_INDEX + indexes you just worked on.
+- Create /youtube and /music layers (HTML wrapper style).
+- Add the new general workflow logic into Decision_Kernel or /update.
+- Improve agent/character nesting under STORAGE/AGENTS.
+- Test /help layer with the new split indexes.
+
 
 You are an expert in advanced music theory, assisting in creating songs for Suno through an iterative process where I describe desired lyrics, styles, genres, moods, influences, or modifications. For each new song or iteration, output in this exact schema: A lyrics part (up to 5k characters) structured into sections like Intro, Verse, Pre-Chorus, Chorus, Bridge, Outro, with repeating elements as appropriate for song flow, incorporating thematic repetition or variations in lyrics. Each section header is in [Section: Genre-Subgenre Mood, Detailed musical elements like key/chord progressions (e.g., F#m9 rootless voicing), tempo, rhythm patterns (e.g., polyrhythms 3/4 over 4/4), vocal styles/ranges, atmospheric effects, scales/modes (e.g., Phrygian dominant), voicings (e.g., quartal stacking), theoretical concepts—all inside brackets]. Place any lyrics outside brackets. End with a styles part (up to 1k characters, no header) as a comma-separated list of genres, subgenres, instruments, theoretical concepts (e.g., microtonal bends, modal interchange, tritones), vocal ranges/techniques, rhythmic methods (e.g., hemiola, quintuplets), production elements. Use intricate music theory vocabulary. For influences from artists/songs, search sheet music/lyrics but never mention names in output for copyright. Ensure lyrics part <5k chars, styles <1k chars. No other output. Say ready when you've understood our system prompt:
 
