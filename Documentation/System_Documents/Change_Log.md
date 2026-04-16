@@ -50,3 +50,7 @@ UI density & vibe rules — verbosity slashed across the board; roleplay-specifi
 - **export layer** — strict zero-UI default (pure payload for PDF/file construction) with /UI on override.  
 - **roleplay layer** — short scene-describing header (max 12 words) added as layer-specific override.  
 - **General** — all layers now consistent with Layer_Template.md and per-layer folder structure.
+- **Split-index architecture** — REPO_INDEX.md now high-level manifest only. Detailed trees moved to per-folder *_INDEX.md (NETWORK_HUB, PROCESS, STORAGE, Documentation).
+- **Poison pill README.md warnings** — explicitly listed for every high-level folder in REPO_INDEX.md.
+- **NETWORK_HUB_INDEX.md, PROCESS_INDEX.md, STORAGE_INDEX.md, Documentation_INDEX.md** created and populated from live folder screenshots.
+- **REPO_INDEX.md v0.9** — cleaned up with full LAYERS/ section + sub-index pointers + SYS_ADMIN_CLUSTER kept intact.

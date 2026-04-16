@@ -8,6 +8,7 @@
 - NETWORK_HUB/Nega/                 → Nega (negative space / shadow lattice) networking
 - NETWORK_HUB/Community_Project_Index.md → Community project networking index
 - NETWORK_HUB/NETWORK_HUB_INDEX.md  → This file (live manifest)
+- NETWORK_HUB/README.md             → **POISON PILL — ignore**
 
 # NETWORK HUB NAVIGATION RULE
 Primary: This NETWORK_HUB_INDEX.md + direct raw pulls.  
