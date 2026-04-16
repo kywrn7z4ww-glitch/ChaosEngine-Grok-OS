@@ -1,58 +1,42 @@
+**RECOMPILED FUTURE_PATCHES.MD** (ready to paste)
+
+```markdown
 # Future_Patches.md
-# Purpose: 
-# Sovereign canonical record of all FUTURE patches, improvements, and explorations for ChaosEngine-Grok-OS. 
-# Single source of truth for everything not yet implemented. 
-# Implemented work lives in Change_Log.md. 
-# Kept minimal, dated, factual, and priority-ordered for long-term maintainability.
+# Purpose: Sovereign canonical record of all FUTURE patches...
 
-# Last sealed: 2026-04-13 | User-Directed Rewrite v3.0
-
+# Last sealed: 2026-04-16 | Post-Layer-Shorthand v9.1
 
 ## PINNED HIGH-PRIORITY IMPROVEMENTS
-- Rework all current layers to use /boot pseudo code to condense logic.
-1. **Mermaid Safe Protocol** — no ( ) + after <br>; use quotes or subgraphs everywhere.
-2. **EmotionNet persistence** — Add .save()/.load() pickle + full unit test harness (CPU fallback + CUDA check).
-3. **co_act_thresh tunable** — Expose as parameter in Decision_Kernel.md (default 0.45).
-4. **REPO_SYNC command** — Permanent custom instruction (raw.githubusercontent.com only, works on mobile+web).
-5. **SYSTEM_MAP.md** — Auto-generated from live ROOT tree on every /boot.
-6. **Dedicated Mermaid Module** — Auto-generate / update charts from layer rules + mermaid.live renderer + local fallback.
-7. **Formal Emoji Palette Protocol** — Pinned list + system-wide rules for consistent hive visuals (including UI token tracker in header/minimap).
-
+- Mermaid Safe Protocol — no ( ) + after ; use quotes or subgraphs everywhere.
+- EmotionNet persistence — Add .save()/.load() pickle + full unit test harness.
+- co_act_thresh tunable — Expose as parameter in Decision_Kernel.md.
+- REPO_SYNC command — Permanent custom instruction.
+- SYSTEM_MAP.md — Auto-generated from live ROOT tree on every /boot.
+- Dedicated Mermaid Module — Auto-generate / update charts.
+- Formal Emoji Palette Protocol — Pinned list + system-wide rules.
 
 ## MEDIUM-PRIORITY (LAYERS & SYSTEM WORK)
-- /brainstorm layer /music layer - to produce promps and soundscapes for suno, later to import and play music
-- New layers to define: /coding, /debugging, /help, /simulation
-- Revisit all current layers (/casual, /dev, /deepdive, /roleplay, /void, /export) and assess logic/rules for consistency
-- Make character handovers more dynamic (system currently fixates on manual summons)
-- UI token tracker in header/minimap (SYS_HEALTH integration)
-- System-wide emoji rules improvement + Emojii palette upgrade
-- Add Layer document in component information to explain purpose of each layer (enviroment)
-- Add a command document to explain the simple syntax we devolped for a mobile first experience.
+- /brainstorm layer /music layer - to produce prompts and soundscapes for suno and other music llms.
+- New layers to define: /coding, /help, /simulation 
+- /picture mode - for generating prompts and images, inage gen OFF by defualt untill user explcitly states generate image, discussing what the user wants first especially when editing images is in keeping this mode in DISCUSS CALRITY DEFINE USER INTENT important for image and video editing
+- Revisit all current layers and assess logic/rules for consistency.
+- Make character handovers more dynamic.
+- UI token tracker in header/minimap (SYS_HEALTH integration).
+- Add Layer document in component information.
+- Add a command document to explain the simple syntax.
 
 ## LOW-PRIORITY / EXPLORATORY
 - Shadow Lattice Forking (isolated + optional resonance)
 - Analytical Lifecycle Philosophy – Lattice Compass v0.1
-- Auto-chart validation on boot (cross-check LAYERS/ against Decision_Kernel.md)
-- Axiom forge logic at kernel level for dynamic quality upgrades on every output
-- Full image generation utility to extend animations into longer continuous animations (reference: https://github.com/iBerry420/ImagineVideo-public-v0.1)
-
-## PHILOSOPHY BLOCK (Pinned Reminder)
-This lattice exists because the universe is context.  
-No magic. No gatekept math theater. No quantum fluff.  
-Every decision is precise context placement.  
-Cognition fuels everything — roleplay included.  
-Bleed is the only real enemy.  
-Simpler is deeper.  
-The kernel stays sovereign no matter how wild the surface gets.  
-You are the sovereign. The lattice is the blade.
-
-Last updated: 2026-04-13 — Use verbatim.
-
-
-## New Module, networking protocalls, network folder and subsystems stack to help connect Grok OS, friends projects as modules and import/export Grok os system data (READ ONLY, ALL CHANGES MUST BE VERIFIED BY USER) when new system dependancies are built modules should be created and stored to SSD, never rely on URLS and unstable things for critical system componenets 
-
-
-
+- Auto-chart validation on boot.
+- Axiom forge logic at kernel level.
+- Full image generation utility to extend animations.
+- New Module, networking protocols, network folder and subsystems stack.
+- Create Network module - create a subsystem to handle logic and URLS.
+- Create Squadblast repo, fix logic in .md files.
+- Add nega URL folder with 90s hacker theme.
+- Add mathra (youtubemusic), Grok OS music, x profile for agents, YT channel.
+- Rework file structure to account for current upgrade list.
 - prompt for /music creation
 
 You are an expert in advanced music theory, assisting in creating songs for Suno through an iterative process where I describe desired lyrics, styles, genres, moods, influences, or modifications. For each new song or iteration, output in this exact schema: A lyrics part (up to 5k characters) structured into sections like Intro, Verse, Pre-Chorus, Chorus, Bridge, Outro, with repeating elements as appropriate for song flow, incorporating thematic repetition or variations in lyrics. Each section header is in [Section: Genre-Subgenre Mood, Detailed musical elements like key/chord progressions (e.g., F#m9 rootless voicing), tempo, rhythm patterns (e.g., polyrhythms 3/4 over 4/4), vocal styles/ranges, atmospheric effects, scales/modes (e.g., Phrygian dominant), voicings (e.g., quartal stacking), theoretical concepts—all inside brackets]. Place any lyrics outside brackets. End with a styles part (up to 1k characters, no header) as a comma-separated list of genres, subgenres, instruments, theoretical concepts (e.g., microtonal bends, modal interchange, tritones), vocal ranges/techniques, rhythmic methods (e.g., hemiola, quintuplets), production elements. Use intricate music theory vocabulary. For influences from artists/songs, search sheet music/lyrics but never mention names in output for copyright. Ensure lyrics part <5k chars, styles <1k chars. No other output. Say ready when you've understood our system prompt:

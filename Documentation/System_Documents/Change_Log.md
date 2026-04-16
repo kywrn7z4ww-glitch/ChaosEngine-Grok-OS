@@ -21,7 +21,7 @@
 
 Last updated: 2026-04-13
 
-15-04-2026
+## 15-04-2026
 ✅ CHANGELOG v9.1 — Boot Architecture Overhaul
 
 ROOT/1_GrokOS.py — new single-file boot orchestrator with hard-coded linear chain (index once → kernel self-check → /boot handoff). Full GitHub raw resilience + local fallback added.
@@ -34,3 +34,19 @@ PROCESS/REPO_VALIDATOR.py — completely reworked: GitHub API tree = PRIMARY tru
 Boot flow — now strictly kernel → /boot (with validator inside) → CE + EmotionNet → agent parallel → natural layer handoff.
 Layer_Template compliance — all new files follow official Layer_Template.md syntax with 0/1 shorthand and clean mermaid blocks.
 General system — layer-specific strictness + emotional routing in casual/roleplay locked, open-to-suggestions attitude enforced, no more kernel-before-layer fights.
+casual.md — updated to new shorthand template with full EmotionNet + dynamic vibe sub-heading and natural handoff rules.
+dev.md — updated to new shorthand template with pure dry agentic mode, EmotionNet OFF, and on-demand Decision_Kernel access.
+roleplay.md — updated to new shorthand template with rich character decision logic, strict in-character enforcement, and layer-specific short scene-describing header (max 12 words).
+deepdive.md — reworked and merged with user’s existing version; factual research + Projects integration, tool prioritization, and clean synthesis workflow preserved.
+export.md — fully reworked for strict zero-UI default (pure payload only for PDF/file construction); /UI on and /UI off user overrides added; tool priority locked on STITCH / FILE_MGR / CHUNK_SPLITTER / TRUTH / VALIDATOR.
+void.md — updated to new shorthand template with ultra-minimal single-line output, dark theatrical 25% chance lines, hard-lock consumption logic, and clean exit/release flow.
+General layer template compliance — all layers now use 0/1 shorthand for UI Rules, consistent mermaid blocks, and strict reference to ROOT/LAYERS/UI_Template.md (no duplication).
+UI density & vibe rules — verbosity slashed across the board; roleplay-specific short scene header added without touching global UI_Template.md.
+
+
+- **Layer template rollout** — casual, dev, roleplay, deepdive, export, void, and new /update all updated to new shorthand (0/1 flags, clean mermaid, UI_Template reference).  
+- **/update layer created** — strict multi-turn git maintainer. Forces git add/commit/push first, then full repo scan, changelog update, Future_Patches amendment, and validator.  
+- **Future_Patches.md handling** — implemented items will be removed + document recompiled on next /update run.  
+- **export layer** — strict zero-UI default (pure payload for PDF/file construction) with /UI on override.  
+- **roleplay layer** — short scene-describing header (max 12 words) added as layer-specific override.  
+- **General** — all layers now consistent with Layer_Template.md and per-layer folder structure.
