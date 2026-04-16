@@ -3,8 +3,8 @@
 # UI Template + Rules  
 # (isolated visual system — referenced by every layer)
 
-## UI_FRAME_TEMPLATE
-{layer}
+## UI_FRAME_TEMPLATE UI is never wrapped in a codebox, or backticks unless explicity stated by user "" wrap is to preserve whitespace
+"{layer}
 ChaosEngine Grok OS
 Turn {turn} | {date_time} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
 {emoji_minimap_from_layer}
@@ -13,7 +13,7 @@ Turn {turn} | {date_time} 🏴󠁧󠁢󠁥󠁮󠁧󠁿
 {vibe_subheading}
 
 
-[{user}@root ~]$
+[{user}@root ~]$"
 
 ## FOOTER_TEMPLATE
 {user}@root ~]$
