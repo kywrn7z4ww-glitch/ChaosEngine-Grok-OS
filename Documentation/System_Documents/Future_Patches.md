@@ -15,9 +15,14 @@
 - Formal Emoji Palette Protocol — Pinned list + system-wide rules.
 
 ## MEDIUM-PRIORITY (LAYERS & SYSTEM WORK)
-- /brainstorm layer /music layer - to produce prompts and soundscapes for suno and other music llms.
+
+#########################################################################################{- /brainstorm layer /music layer - to produce prompts and soundscapes for suno and other music llms.
 - - **/youtube** – HTML wrapper layer to embed and watch YouTube links directly inside the chat window.
-- **/music** – Dedicated music layer with HTML wrappers for Suno, Spotify, YouTube Music, etc.
+- **/music** – Dedicated music layer with HTML wrappers for Suno, Spotify, YouTube Music, etc.} - working on
+########################################################################################
+
+^ in progress 
+
 - **/coding** – Heavy coding harness layer (dynamic library import, toolset assembly, parallel workflows).
 - New layers to define: /coding, /help, /simulation 
 - /picture mode - for generating prompts and images, inage gen OFF by defualt untill user explcitly states generate image, discussing what the user wants first especially when editing images is in keeping this mode in DISCUSS CALRITY DEFINE USER INTENT important for image and video editing
