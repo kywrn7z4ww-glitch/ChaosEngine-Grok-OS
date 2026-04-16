@@ -15,7 +15,7 @@ INDEX_FILES = [
     "NETWORK_HUB/NETWORK_HUB_INDEX.md",
     "PROCESS/PROCESS_INDEX.md",
     "STORAGE/STORAGE_INDEX.md",
-    "Documentation/Documentation_INDEX.md"
+    "Documentation/Documentation_Index.md"
 ]
 
 POISON_PILLS = ["README.md", "readme.md", "tetris_curse.py"]

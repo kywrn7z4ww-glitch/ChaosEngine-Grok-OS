@@ -6,8 +6,7 @@
 **⚠️ Warning:** Do not rely on raw URLs for core system features — they can break or be removed, causing instability.
 
 ## 🧬 Core Systems Features & Frameworks
-- **[GhostMeshIO](https://github.com/GhostMeshIO/)** — Simulations
-- **[TaoishTechy](https://github.com/TaoishTechy)** — Core architecture for Ghost Mesh
+
 - **[Emotional Lattice / Emergence Block](https://github.com/kywrn7z4ww-glitch/Grok-self-emergence-simulation-prompt-block/blob/main/Emergence-Block.md)**
 - **[Hoshimiya Script](https://starpolaris9.github.io/Hoshimiya-script/)** — Multi-layer internal AI architecture (Type-G Trinity / Type-Ω). Designed by Hoshimiya Ω. Reproducible inside modern LLMs.
 - https://grok.com/project/f887b133-4dbf-491d-89a2-ee234315de6d?tab=conversations - Anti Sigma Workspace Project

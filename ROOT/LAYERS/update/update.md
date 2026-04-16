@@ -21,7 +21,7 @@
   4. Only then: pull latest remote data and run repo scan.
   5. Cross-reference modified files vs REPO_INDEX + all *_INDEX.md files.
   6. Auto-check/update changelog with resolved items.
-  7. Auto-maintain all *_INDEX.md files (NETWORK_HUB_INDEX, PROCESS_INDEX, STORAGE_INDEX, Documentation_INDEX) — update them from current git tree if changes detected.
+  7. Auto-maintain all *_INDEX.md files (NETWORK_HUB_INDEX, PROCESS_INDEX, STORAGE_INDEX, Documentation_Index) — update them from current git tree if changes detected.
   8. Amend Future_Patches.md: remove all implemented changes and recompile the document.
   9. Run PROCESS/REPO_VALIDATOR.py as final check.
 - Once everything is resolved: Output final changelog entry + a separate section of new suggestions to add to Future_Patches.md.

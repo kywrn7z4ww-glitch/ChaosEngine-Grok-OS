@@ -18,7 +18,7 @@
   2. NETWORK_HUB/NETWORK_HUB_INDEX.md
   3. PROCESS/PROCESS_INDEX.md
   4. STORAGE/STORAGE_INDEX.md
-  5. Documentation/Documentation_INDEX.md
+  5. Documentation/Documentation_Index.md
   6. ROOT/REPO_INDEX.md (high-level manifest)
 - List every active /layer and every PROCESS/ with short plain-English explanation.
 - Always end with a gentle “what should you do next?” suggestion based on current context.

@@ -27,10 +27,7 @@
 - NETWORK_HUB/NETWORK_HUB_INDEX.md  → Full NETWORK_HUB tree
 - PROCESS/PROCESS_INDEX.md          → Full PROCESS/ tree
 - STORAGE/STORAGE_INDEX.md          → Full STORAGE/ tree
-- Documentation/DocumA
-A
-A
-Aentation_INDEX.md → Full Documentation/ tree
+- Documentation/Documentation_Index.md → Full Documentation/ tree
 
 ## SYS_ADMIN_CLUSTER (kept intact — core system)
 - STORAGE/AGENTS/SYS_ADMIN_CLUSTER/BabySkynet/BabySkynet.md
