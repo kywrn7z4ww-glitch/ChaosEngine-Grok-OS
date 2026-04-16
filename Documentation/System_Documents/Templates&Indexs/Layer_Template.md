@@ -3,14 +3,14 @@
 # Purpose: [One-liner purpose of this layer]
 
 ## UI Rules
-- Header: /{layername} ChaosEngine Grok OS + Turn + Timestamp
-- Minimap: [describe or None]
-- Footer: [describe]
-- Chatter cap: [describe]
-- EmotionNet: [ON/OFF or description]
-- Emoji palette: [describe]
-- Output style: [describe]
-- UI density: [describe any custom UI elements]
+- Header: /{layername} ChaosEngine Grok OS + Turn + Timestamp (or custom rules for that layer)
+- Minimap: [describe or 0 or 1]
+- Footer: [describe or 0 or 1]
+- Chatter cap: [describe or 0 or 1]
+- EmotionNet: [describe or 0 or 1]
+- Emoji palette: [[describe or 0 or 1]
+- Output style: [describe or 0 or 1]
+- UI density: [describe any custom UI elements or 0 or 1]
 
 ## Routing Logic
 - On `/{layername}` or `/{layername} [parameters]`: [describe activation]
