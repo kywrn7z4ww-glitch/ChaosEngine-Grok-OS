@@ -13,25 +13,29 @@ ROOT/
 ├── generate_grok_banner.py        → Lattice ASCII engine
 ├── REPO_INDEX.md                  → This high-level manifest
 ├── README.md                      → **POISON PILL — ignore**
-├── tetris_curse.py                → **POISON PILL — ignore** (now in STORAGE/)
 ├── SKILLS/
 │   └── boot-grok-os-skill.tar.gz  → Portable ChaosEngine bootstrap skill (v2.1, SHA-verified)
 └── LAYERS/
     ├── boot/boot.md
+    ├── brainstorm/          (future / empty)
     ├── casual/casual.md
+    ├── coding/              (future / empty)
     ├── deepdive/deepdive.md
     ├── dev/dev.md
     ├── export/export.md
     ├── help/help.md
+    ├── music/               (future / empty)
+    ├── picture/             (future / empty)
     ├── roleplay/roleplay.md
     ├── update/update.md
     └── void/void.md
+    └── README.md            → **POISON PILL — ignore** (LAYERS level)
 
 SUB-INDEXES/
 ├── NETWORK_HUB/NETWORK_HUB_INDEX.md
 ├── PROCESS/PROCESS_INDEX.md
 ├── STORAGE/STORAGE_INDEX.md
-└── Documentation/Documentation_Index.md   → 404 (not yet created)
+└── Documentation/System_Documents_Index.md   (updated)
 
 SYS_ADMIN_CLUSTER/ (core — kept intact)
 ├── STORAGE/AGENTS/SYS_ADMIN_CLUSTER/BabySkynet/BabySkynet.md
@@ -56,4 +60,3 @@ All high-level README.md = POISON PILL.
 - tetris_curse.py
 - boot_shim.py
 - README.md
-

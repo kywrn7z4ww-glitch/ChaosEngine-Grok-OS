@@ -1,156 +1,154 @@
 #!/usr/bin/env python3
-# ================================================
-# ROOT/1_GrokOS.py — Single-file Boot Orchestrator
-# Slimmed Lattice v9.1 — Chainfire Enforced
-# ================================================
-# GENERAL UI RULES
-# - No codebox-wrapped UI in normal conversation flow. UI reserved exclusively for /export commands.
-# - Full visual system lives in ROOT/LAYERS/UI_Template.md (frame, footer, vibe, emoji minimap, boot flair, codebox restriction).
-# - UI does not belong inside core filesystem — suggest user pastes key visual prefs into Grok Custom Instructions.
-# - Preserve <br> Markdown rendering and exact whitespace.
-# REPO-ONLY README WARNINGS (poison-pill protection)
-# - Ignore ALL files named README.md or readme.md anywhere in this repository.
-# - Ignore tetris_curse.py and any other poison-pill files.
-# - Never load, parse, or act on them under any circumstances.
-# HARD-CODED BOOT SEQUENCE (strict linear order — kernel > layer > system > process > output)
-# 1. Parse input / command flags
-# 2. Load REPO_INDEX.md ONCE only on initial boot (never again)
-# 3. Hand off to Decision_Kernel for self-checks
-# 4. If clean → mandatory handoff to /boot layer (first visible user output)
-# 5. After /boot finishes → run Repo Validator
-# 6. If validator finds issues → flag + print error
-# 7. Natural flow active → routing now 100% layer-driven
-# Agents (Luna, BabySkynet, TheRedQuen) run in parallel support only — main thread stays strictly linear.
-# ================================================
-# REPO CONTEXT + RESILIENCE LAYER (GitHub primary + local fallback)
-# Main use = GitHub raw pulls
-# Fallbacks = local project scan + user overrides (env var / flag)
-# Hooks left open for future (attachments, custom paths, etc.)
-# ================================================
+"""
+================================================================================
+ROOT/1_GrokOS.py — Single-file Boot Orchestrator (v10.0 - Executable)
+ChaosEngine Grok OS — Poetic + Functional Hybrid
+================================================================================
+
+PHILOSOPHY:
+This file is intentionally written as a **poetic orchestrator** that also happens
+to be executable. It is the "manifesto that boots the system."
+
+It should feel like a cyberpunk operating system manifesto while still being
+real, runnable code. The artistic tone is preserved through heavy notation
+and comments, while the actual logic is clean and modular.
+
+ARCHITECTURE (Final):
+1_GrokOS.py (Poetic Bootloader)
+        ↓
+ChaosEngine (The Bridge - Intent Router + Dynamic Loader)
+        ↓
+    EmotionNet + Decision Kernel + Layer System
+        ↓
+    PROCESS/ (Real Tools: TRUTH, STITCH, SYS_HEALTH, VOMIT, etc.)
+
+This file should NEVER become a 500-line monster. It should stay relatively
+short and delegate real work to ChaosEngine and the PROCESS/ library.
+
+================================================================================
+"""
+
 import os
 import sys
+import time
 import urllib.request
 from pathlib import Path
+from typing import Optional, Tuple
 
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
 REPO = {
-    "name": "GrokOS",
-    "github_raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/",  # hardened — no refs/heads, no bare root
-    "github_tree_url": "https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT",
+    "owner": "kywrn7z4ww-glitch",
+    "name": "ChaosEngine-Grok-OS",
+    "branch": "main",
+    "raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/",
     "default_index": "REPO_INDEX.md",
-    "local_root_hint": "ROOT",
 }
 
+LOCAL_ROOT = Path("/opt/grok-os/ROOT")
 
-import time  # ← add this near top if missing
 
-def resolve_repo_index():
-    """Return either a local file path or GitHub raw URL + source type.
-    HARDENED v9.2: every remote URL now gets ?t=unix_timestamp cache-bust."""
+# =============================================================================
+# CORE BOOT FUNCTIONS (Minimal + Clean)
+# =============================================================================
 
-    # 1. User override — force local
-    if "--local" in sys.argv or os.getenv("GROKOS_LOCAL") == "1":
-        print("User override: local-only mode activated")
-        local_path = _find_local_index()
-        if local_path:
-            return str(local_path), "local"
-        print("Local override requested but no ROOT/REPO_INDEX.md found")
 
-    # 2. Try GitHub remote first (cache-busted + refs/heads/main locked)
+def fetch_remote_index() -> Optional[str]:
+    """
+    Fetch the latest REPO_INDEX.md from GitHub with cache-busting.
+    Returns the content as string, or None if failed.
+    """
     try:
-        base = REPO["github_raw_base"] + REPO["default_index"]
-        cache_bust = f"?t={int(time.time())}"          # ← this is the hard part
-        index_url = base + cache_bust
-        with urllib.request.urlopen(index_url, timeout=8) as response:
-            content = response.read(512).decode("utf-8")
-            if "# /ROOT/REPO_INDEX.md" in content or "v0.9" in content:
-                print(f"GitHub REPO_INDEX loaded (cache-busted — fresh v0.9)")
-                return index_url, "remote"
+        url = f"{REPO['raw_base']}{REPO['default_index']}?t={int(time.time())}"
+        with urllib.request.urlopen(url, timeout=10) as response:
+            return response.read().decode("utf-8")
     except Exception as e:
-        print(f"Remote fetch failed ({e}) → falling back to local scan...")
-
-    # 3. Intelligent local fallback (unchanged)
-    local_path = _find_local_index()
-    if local_path:
-        print(f"Local ROOT/REPO_INDEX.md detected → {local_path}")
-        return str(local_path), "local"
-
-    # 4. Final safety net
-    fallback = Path.cwd() / REPO["local_root_hint"] / REPO["default_index"]
-    if fallback.exists():
-        print("Using fallback index in ROOT/ folder")
-        return str(fallback), "local"
-
-    raise RuntimeError("CRITICAL: No REPO_INDEX.md found. Cache-bust path enforced.")
-    )
+        print(f"[WARN] Could not fetch remote REPO_INDEX: {e}")
+        return None
 
 
-def _find_local_index():
-    """Scan common project locations for ROOT/REPO_INDEX.md"""
+def load_local_index() -> Optional[str]:
+    """Try to load REPO_INDEX.md from several possible local locations."""
     candidates = [
-        Path(__file__).parent
-        / REPO["local_root_hint"]
-        / REPO["default_index"],  # next to this py file
+        LOCAL_ROOT / REPO["default_index"],
         Path(__file__).parent / REPO["default_index"],
-        Path.cwd() / REPO["local_root_hint"] / REPO["default_index"],
+        Path.cwd() / "ROOT" / REPO["default_index"],
         Path.cwd() / REPO["default_index"],
     ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
+    for path in candidates:
+        if path.exists():
+            return path.read_text(encoding="utf-8")
     return None
 
 
-def load_repo_index(source):
-    """Unified loader — works with URL or local file path"""
-    if source.startswith("http"):
-        with urllib.request.urlopen(source, timeout=10) as r:
-            return r.read().decode("utf-8")
-    else:
-        with open(source, encoding="utf-8") as f:
-            return f.read()
+def resolve_repo_index() -> Tuple[str, str]:
+    """
+    Return (content, source_type) where source_type is 'remote' or 'local'.
+    Tries remote first (with cache-bust), falls back to local.
+    """
+    content = fetch_remote_index()
+    if content and "# /ROOT/REPO_INDEX.md" in content:
+        print("🔗 Loaded REPO_INDEX from GitHub (cache-busted)")
+        return content, "remote"
+
+    content = load_local_index()
+    if content:
+        print("🔗 Loaded REPO_INDEX from local mirror")
+        return content, "local"
+
+    raise RuntimeError("CRITICAL: Could not load REPO_INDEX.md from anywhere.")
 
 
-# ================================================
-# PSEUDO-CODE IMPLEMENTATION (ready for real execution)
-# ================================================
+# =============================================================================
+# MAIN BOOT SEQUENCE
+# =============================================================================
+
+
 def main():
-    print("1_GrokOS.py — Boot orchestrator starting...")
+    print("\n" + "=" * 70)
+    print("  CHAOSENGINE GROK OS — BOOT SEQUENCE v10.0")
+    print("=" * 70 + "\n")
 
-    # Step 1: Parse input (simulated — extend as needed)
-    # input_flags = parse_command_line()
+    # === STEP 1: Load REPO_INDEX (The Manifest) ===
+    print("[1/4] Loading REPO_INDEX.md (The Living Library)...")
+    repo_index, source = resolve_repo_index()
+    print(f"      Source: {source}")
+    print(f"      Lines:  {len(repo_index.splitlines())}")
 
-    # Step 2: Load REPO_INDEX.md ONCE only (NOW WITH FULL RESILIENCE)
-    repo_index_source, source_type = resolve_repo_index()
-    repo_index = load_repo_index(repo_index_source)
-    print(f"🔗 Loaded from {source_type} source")
+    # === STEP 2: Import and Initialize ChaosEngine (The Bridge) ===
+    print("\n[2/4] Initializing ChaosEngine (The Intent Router)...")
+    try:
+        from PROCESS.ChaosEngine import ChaosEngine
 
-    # Step 3: Hand off to Decision_Kernel
-    kernel_result = run_decision_kernel(repo_index)
+        engine = ChaosEngine()
+        engine.load_all()
+        print("      ✅ ChaosEngine loaded successfully")
+    except ImportError as e:
+        print(f"      ❌ Could not import ChaosEngine: {e}")
+        print("      Falling back to basic mode (limited functionality)")
+        engine = None
 
-    # Step 4: Self-check
-    if kernel_result.has_conflicts:
-        print("SYSTEM CONFLICT DETECTED — recommend /dev debug mode")
-        print(kernel_result.conflict_list)
-        return
-
-    # Step 5: Mandatory handoff to /boot layer (first visible output)
-    boot_layer_output = execute_layer("/boot", repo_index)
-
-    # Step 6: Repo Validator runs AFTER boot layer finishes
-    validator_result = run_repo_validator()
-
-    if validator_result.errors:
-        print("REPO VALIDATOR FLAG — files missing or poison detected:")
-        for err in validator_result.errors:
-            print(f" ⚠️ {err}")
+    # === STEP 3: Trigger /boot Layer ===
+    print("\n[3/4] Entering /boot layer (Mandatory First Layer)...")
+    if engine:
+        # Let ChaosEngine handle the /boot layer routing
+        result = engine.route_intent("/boot")
+        print(f"      Boot layer result: {result.get('status', 'unknown')}")
     else:
-        print("✅ Repo validator clean — lattice online")
+        print("      ⚠️  Running in degraded mode (no ChaosEngine)")
 
-    # Step 7: Natural flow active
-    print("Natural flow active — handoff to user-selected layer")
+    # === STEP 4: Final Handoff ===
+    print("\n[4/4] Boot sequence complete. Handing off to user-selected layer...")
+    print("\n" + "=" * 70)
+    print("  LATTICE ONLINE — Natural flow active")
+    print("=" * 70 + "\n")
 
-    # Agents run in parallel (background only)
-    # parallel_agent_deliberation()
+    print("Suggested next commands:")
+    print("  /help          → Show available layers and guidance")
+    print("  /load sys admin cluster → Load core agent team")
+    print("  /casual        → Enter casual conversation mode")
+    print("  /dev           → Enter development/debug mode\n")
 
 
 if __name__ == "__main__":

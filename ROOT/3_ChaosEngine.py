@@ -1,155 +1,161 @@
-# ROOT/3_ChaosEngine.py
-# v4.0 – Central intent router and confidence-based pipeline.
-# Purpose: Orchestrates all system flow. Calculates confidence from EmotionNet + window state.
-# Only executes processes if confidence ≥ 99. Enforces layer rules and DISCUSS CLARITY on low confidence.
-# Displays [PROCESS_NAME] when handlers run.
-# GENERATOR MODULE — SIMPLE ASCII ART REFERENCE for simple ascii art references go here → https://www.asciiart.eu/ (animals, objects, borders, etc. — instant on-demand fallback when KaTeX/render components not required)
+#!/usr/bin/env python3
+"""
+================================================================================
+ROOT/3_ChaosEngine.py — Central Intent Router & Dynamic Bridge (v5.0)
+ChaosEngine Grok OS — The Real Functional Bridge
+================================================================================
+
+PURPOSE:
+This is the **actual brain** of the system. It:
+- Loads EmotionNet (emotional state)
+- Dynamically discovers and loads all PROCESS/ modules
+- Routes user intent to the correct handler based on current layer
+- Calculates confidence before executing anything
+- Acts as the bridge between the poetic `1_GrokOS.py` and real tools
+
+This file should remain relatively clean and focused on routing + loading.
+Heavy logic belongs in the individual PROCESS/ files.
+
+================================================================================
+"""
+
 import importlib.util
 import os
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-PROCESS_DIR = "PROCESS"
+# =============================================================================
+# CONFIG
+# =============================================================================
+PROCESS_DIR = Path("PROCESS")
+ROOT_DIR = Path("ROOT")
+
 
 class ChaosEngine:
     def __init__(self):
         self.turn = None
         self.emotionnet = None
         self.processes: Dict[str, Any] = {}
-        self.active_layer = "dev"  # default
+        self.active_layer: str = "dev"
 
-        # Lightweight emoji registry
-        self.emoji_registry = {
-            "discombobulator": "🔒", "recombo": "🔓", "bleed_detector": "🩸",
-            "cannon_harvester": "🔥", "chunk_splitter": "✂", "entity_hunter": "🧠",
-            "evolution_chamber": "🔥", "file_mgr": "📦", "repo_validator": "⚙️",
-            "sys_health": "💗", "truth": "🧠", "turn_counter": "⏰", "vomit": "🤮",
-            "zerg_swarm": "🦂", "zerg": "🦂", "core": "⚙️", "redqueen": "🩸",
-            "luna": "🌙", "babyskynet": "🔮", "kerrigan": "🦂"
-        }
-
-        self._load_turn_counter()
         self._load_emotionnet()
         self._load_all_processes_dynamically()
-        print("ChaosEngine v4.0 — confidence pipeline active (≥99 only), layers hard-enforced")
 
-    def _load_turn_counter(self):
-        try:
-            filepath = os.path.join("PROCESS", "TURN_COUNTER.py")
-            spec = importlib.util.spec_from_file_location("TurnCounter", filepath)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            self.turn = module.TurnCounter()
-        except Exception as e:
-            print(f"TurnCounter failed: {e}")
-            self.turn = None
+        print("⚙️  ChaosEngine v5.0 — Intent Router Online (≥99% confidence gate)")
 
+    # -------------------------------------------------------------------------
+    # LOADING
+    # -------------------------------------------------------------------------
     def _load_emotionnet(self):
+        """Load EmotionNet from ROOT/2_EmotionNet.py"""
         try:
-            filepath = os.path.join("ROOT", "2_EmotionNet.py")
+            filepath = ROOT_DIR / "2_EmotionNet.py"
+            if not filepath.exists():
+                print("⚠️  2_EmotionNet.py not found — emotional state disabled")
+                return
+
             spec = importlib.util.spec_from_file_location("EmotionNet", filepath)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.emotionnet = module.EmotionNet()
+            print("🧠 EmotionNet loaded")
         except Exception as e:
-            print(f"EmotionNet failed: {e}")
-            self.emotionnet = None
+            print(f"⚠️  Could not load EmotionNet: {e}")
 
     def _load_all_processes_dynamically(self):
-        print("ChaosEngine scanning PROCESS/ for handlers...")
-        for root, _, files in os.walk(PROCESS_DIR):
-            for filename in files:
-                if filename.endswith(".py") and filename != "__init__.py":
-                    module_name = filename[:-3]
-                    filepath = os.path.join(root, filename)
-                    spec = importlib.util.spec_from_file_location(module_name, filepath)
-                    if spec and spec.loader:
-                        module = importlib.util.module_from_spec(spec)
-                        spec.loader.exec_module(module)
-                        handler = None
-                        if hasattr(module, module_name.capitalize()):
-                            handler = getattr(module, module_name.capitalize())()
-                        elif hasattr(module, "main"):
-                            handler = module
-                        else:
-                            handler = module
-                        self.processes[module_name.lower()] = handler
-                        print(f"   Loaded {module_name}")
+        """Auto-discover and load every .py file in PROCESS/ as a module"""
+        print("🔍 Scanning PROCESS/ for handlers...")
+        if not PROCESS_DIR.exists():
+            print("⚠️  PROCESS/ folder not found")
+            return
 
-        # Safe shortcuts
-        if "zerg_swarm" in self.processes:
-            self.processes["zerg"] = self.processes["zerg_swarm"]
-        if "evolution_chamber" in self.processes:
-            self.processes["evolution"] = self.processes["evolution_chamber"]
+        loaded = 0
+        for file in PROCESS_DIR.glob("*.py"):
+            if file.name.startswith("__"):
+                continue
 
-        print(f"ChaosEngine loaded {len(self.processes)} modular handlers.")
+            module_name = file.stem
+            try:
+                spec = importlib.util.spec_from_file_location(module_name, file)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
 
-    def _calculate_confidence(self, intent: str, data: dict = None) -> float:
-        """EmotionNet + window state → confidence score (0-100)"""
-        if not self.emotionnet:
-            return 50.0
-        emo = self.emotionnet.get_current_state()
-        frustration = emo.get("frustration", 0.0)
-        coherence = emo.get("coherence", 0.5)
-        confidence = 100 * (coherence * (1 - frustration))
+                # Try to get the main class (e.g. TruthValidator, Stitcher, etc.)
+                handler = None
+                if hasattr(module, module_name):
+                    handler = getattr(module, module_name)()
+                elif hasattr(module, "main"):
+                    handler = module
+                else:
+                    handler = module  # fallback to module itself
+
+                self.processes[module_name.lower()] = handler
+                loaded += 1
+            except Exception as e:
+                print(f"  ❌ Failed to load {module_name}: {e}")
+
+        print(f"✅ Loaded {loaded} process handlers dynamically")
+
+    # -------------------------------------------------------------------------
+    # ROUTING
+    # -------------------------------------------------------------------------
+    def _calculate_confidence(self, intent: str) -> float:
+        """Simple confidence scoring (expand later with real EmotionNet)"""
+        base = 75.0
         if intent.startswith("/"):
-            confidence = min(100, confidence + 15)
-        return round(confidence, 1)
+            base += 15
+        if self.emotionnet:
+            # Future: use real emotional state
+            pass
+        return min(100.0, base)
 
-    def set_layer(self, layer: str):
-        self.active_layer = layer.lower()
-        print(f"ChaosEngine switched to layer: /{self.active_layer}")
-
-    def dispatch_to_handler(self, process_name: str, intent: str, data: dict = None) -> dict:
-        """Clean dispatch with [PROCESS] display"""
-        handler = self.processes.get(process_name.lower())
-        if not handler:
-            return {"status": "error", "output": f"Process {process_name} not found"}
-
-        result = handler.process(intent, data) if hasattr(handler, "process") else handler(intent, data)
-
-        result["inline_handoff"] = f"[{process_name.upper()}]"
-        return result
-
-    def route_intent(self, intent: str, data: dict = None):
-        """Main entry point — confidence-based pipeline"""
+    def route_intent(self, intent: str, data: Optional[Dict] = None) -> Dict[str, Any]:
+        """Main entry point — routes user intent to the correct process"""
         if data is None:
             data = {}
 
-        confidence = self._calculate_confidence(intent, data)
+        confidence = self._calculate_confidence(intent)
 
-        # Layer hard override
+        # Hard layer override
         if self.active_layer == "void":
             return {"status": "ok", "output": None, "inline_handoff": "🔇"}
 
-        # High confidence → EXECUTE
+        # High confidence → execute
         if confidence >= 99:
-            if intent.startswith("/"):
-                cmd = intent[1:].split()[0]
-                return self.dispatch_to_handler(cmd, intent, data)
+            cmd = intent[1:].split()[0] if intent.startswith("/") else "sys_health"
+            handler = self.processes.get(cmd.lower())
+            if handler:
+                result = (
+                    handler.process(data) if hasattr(handler, "process") else handler
+                )
+                return {"status": "executed", "process": cmd, "result": result}
+            else:
+                return {"status": "unknown_command", "command": cmd}
 
-            return self.dispatch_to_handler("sys_health", intent, data)
-
-        # Low/Medium confidence → DISCUSS CLARITY
+        # Low confidence → force clarification
         return {
             "status": "clarify",
-            "output": f"Confidence {confidence:.1f}/100 — let's DISCUSS CLARITY first.\n"
-                      f"What is most important here? (high-fidelity segment, summary, code, etc.)",
-            "suggested_commands": [
-                "/export --no-ui OLD_CONTEXT_BACKUP",
-                "Run VOMIT + CHUNK_SPLITTER to preserve data",
-                "Run SYS_HEALTH for full window scan"
+            "message": f"Confidence {confidence:.1f}% — DISCUSS CLARITY required",
+            "suggestions": [
+                "Run /help",
+                "Try /dev for debugging",
+                "Use /casual for general chat",
             ],
-            "inline_handoff": "🤔"
         }
 
+    def set_layer(self, layer: str):
+        self.active_layer = layer.lower()
+        print(f"📍 Layer switched to: /{self.active_layer}")
+
     def load_all(self):
-        print("ChaosEngine v4.0 — confidence pipeline active (≥99 only), layers hard-enforced")
-        return "Core router online — agents optional"
+        """Explicitly load everything (called by 1_GrokOS.py)"""
+        print("🔄 ChaosEngine fully initialized")
+        return "Bridge active — ready to route intent"
 
 
 # Quick self-test
 if __name__ == "__main__":
     engine = ChaosEngine()
     engine.load_all()
-    print(engine.route_intent("check health"))
-    print(engine.route_intent("/void test"))
+    print(engine.route_intent("/boot"))
+    print(engine.route_intent("check system health"))
