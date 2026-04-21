@@ -12,13 +12,17 @@
     - PROCESS.md
     - ROOT.md
     - STORAGE.md
-  - Documentation/System_Documents/Templates&Indexs/
+    - Documentation/System_Documents/Templates&Indexs/
     - Character_Template.md
     - Emojji_Referances.md
     - Layer_Template.md
     - Change_Log.md
     - Future_Patches.md
     - System_Documents_Index.md
+    - Documentation/System_Documents/Grok_4.3
+    - Architecture.md
+    - Skills.md
+    
 - Documentation/Documentation_Index.md              → This file (live manifest)
 
 # DOCUMENTATION NAVIGATION RULE

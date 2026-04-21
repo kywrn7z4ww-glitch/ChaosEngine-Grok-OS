@@ -5,12 +5,17 @@
 
 ROOT/
 ├── 1_GrokOS.py                    → Single-file boot orchestrator v9.1
+├── 2_EmotionNet.py                → Emotion state engine (GAT + LSTM)
+├── 3_ChaosEngine.py               → Intent router + confidence pipeline
 ├── UI_Template.md                 → Central UI frame + rules
 ├── Decision_Kernel.md             → Architecture map, boot sequence, decision flow
 ├── EmojiPalette.md                → Emoji + minimap definitions
+├── generate_grok_banner.py        → Lattice ASCII engine
 ├── REPO_INDEX.md                  → This high-level manifest
 ├── README.md                      → **POISON PILL — ignore**
-├── tetris_curse.py                → **POISON PILL — ignore**
+├── tetris_curse.py                → **POISON PILL — ignore** (now in STORAGE/)
+├── SKILLS/
+│   └── boot-grok-os-skill.tar.gz  → Portable ChaosEngine bootstrap skill (v2.1, SHA-verified)
 └── LAYERS/
     ├── boot/boot.md
     ├── casual/casual.md
@@ -46,3 +51,9 @@ SYS_ADMIN_CLUSTER/ (core — kept intact)
 Primary: This REPO_INDEX.md (high-level) + direct raw pulls of each *_INDEX.md.  
 Detailed trees live in per-folder indexes.  
 All high-level README.md = POISON PILL.
+
+## REPO-ROOT POISON PILLS (explicitly ignored — never load)
+- tetris_curse.py
+- boot_shim.py
+- README.md
+
