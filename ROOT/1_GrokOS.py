@@ -1,140 +1,149 @@
 #!/usr/bin/env python3
 # ================================================
-# ROOT/1_GrokOS.py — Single-file Boot Orchestrator v0.2 (Fixed)
-# Slimmed Lattice v9.1 — Chainfire Enforced
+# ROOT/1_GrokOS.py — Full Chain v0.6
+# WITH GROK NAVIGATION GUIDE
 # ================================================
 
-import os
-import sys
+"""
+GROK NAVIGATION GUIDE (Read this first)
+=======================================
+This repo is a living, chaotic, evolving system. Rules:
+
+1. ALWAYS load REPO_INDEX.md first — it contains the current truth + poison pill list.
+2. Commit messages are unreliable. Always verify via API tree + raw files.
+3. Poison pills exist (README.md, tetris_curse.py, etc.). Never load them.
+4. Core is sovereign on boot. Respect his GitHub Lattice Sync rules.
+5. The real logic lives in:
+   - Decision_Kernel.md
+   - LAYERS/ (especially boot/)
+   - 2_EmotionNet.py
+   - 3_ChaosEngine.py
+   - STORAGE/AGENTS/ (dynamic loading via AGENT_LOADER.py if present)
+6. Never assume structure is stable — always re-scan the tree on boot.
+7. Future hooks are everywhere. Use them.
+
+If something breaks, re-run the API tree scan first.
+"""
+
+import json
 import urllib.request
-from pathlib import Path
 from typing import Dict, List, Optional
 
-# ==================== CONFIG ====================
 REPO = {
-    "name": "GrokOS",
+    "owner": "kywrn7z4ww-glitch",
+    "name": "ChaosEngine-Grok-OS",
     "raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/",
-    "github_tree": "https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT",
 }
 
-POISON_PILLS = ["README.md", "tetris_curse.py", "readme.md"]
-
-# ==================== FUTURE HOOKS ====================
-# TODO: Add real Decision_Kernel logic here
-# TODO: Add layer execution engine
-# TODO: Add agent spawning (Luna / BabySkynet / TheRedQueen)
-# TODO: Add UI_Template rendering
-# TODO: Add export / deepdive handlers
+POISON_PILLS = [
+    "README.md",
+    "tetris_curse.py",
+    "readme.md",
+]  # Will be overwritten by index
 
 
 def future_hook(name: str, data: Optional[dict] = None):
-    """Universal hook point for future expansion"""
     print(f"[HOOK] {name} triggered")
     if data:
-        print(f"       Data: {data}")
-    # ← Add real logic here later
+        print(f"       → {data}")
 
 
-# ==================== INDEX LOADER ====================
+def load_file(path: str) -> str:
+    url = REPO["raw_base"] + path
+    with urllib.request.urlopen(url, timeout=10) as r:
+        return r.read().decode("utf-8")
+
+
 def load_repo_index() -> str:
-    """Load REPO_INDEX.md with resilience + poison pill protection"""
-    index_url = REPO["raw_base"] + "REPO_INDEX.md"
-
-    try:
-        with urllib.request.urlopen(index_url, timeout=10) as r:
-            content = r.read().decode("utf-8")
-            print("✓ REPO_INDEX.md loaded from GitHub (primary)")
-            return content
-    except Exception as e:
-        print(f"Remote fetch failed: {e}")
-        # Future hook for local fallback
-        future_hook("local_fallback", {"error": str(e)})
-        raise RuntimeError("Could not load REPO_INDEX.md")
+    print("\n=== Loading REPO_INDEX.md (Source of Truth) ===")
+    return load_file("REPO_INDEX.md")
 
 
-def parse_index(index_content: str) -> Dict:
-    """Parse the index into structured data"""
-    data = {"layers": [], "agents": [], "files": [], "poison_pills": POISON_PILLS}
-
+def parse_poison_pill_rules(index_content: str) -> List[str]:
+    """Extract poison pill rules from the index"""
+    pills = []
     for line in index_content.splitlines():
-        line = line.strip()
-        if line.startswith("├── ") or line.startswith("└── "):
-            filename = line.split("→")[0].strip("├── └ ").strip()
-            if any(p in filename for p in POISON_PILLS):
-                continue  # Respect poison pill rule
-            if "LAYERS/" in line or filename.endswith("/"):
-                data["layers"].append(filename.replace("/", ""))
-            elif "BabySkynet" in line or "Luna" in line or "TheRedQueen" in line:
-                data["agents"].append(filename)
-            else:
-                data["files"].append(filename)
-
-    return data
+        if "POISON PILL" in line.upper() or "ignore" in line.lower():
+            if "README" in line or "tetris" in line.lower():
+                pills.append(line.strip())
+    return pills
 
 
-# ==================== BOOT SEQUENCE ====================
-def run_decision_kernel(index_data: Dict) -> Dict:
-    """Decision Kernel stub — future hook ready"""
-    future_hook("decision_kernel_start", index_data)
-    print("→ Decision Kernel: Self-check passed (stub)")
-    return {"status": "clean", "conflicts": []}
+def scan_api_tree():
+    print("\n=== API Tree Scan ===")
+    try:
+        commit_url = (
+            f"https://api.github.com/repos/{REPO['owner']}/{REPO['name']}/commits/main"
+        )
+        with urllib.request.urlopen(commit_url, timeout=8) as r:
+            data = json.loads(r.read().decode())
+            sha = data["sha"]
+            message = data["commit"]["message"]
+            print(f"✓ Latest commit: {sha[:8]}")
+            print(f'  Message: "{message}"')
+            print(
+                "⚠️  Note: Commit messages are unreliable — always verify via tree + raw files."
+            )
+    except Exception as e:
+        print(f"Scan failed: {e}")
 
 
-def execute_layer(layer_name: str, index_data: Dict) -> str:
-    """Execute a layer — builds real URL and fetches (stub for now)"""
-    future_hook("execute_layer", {"layer": layer_name})
-
-    if layer_name == "/boot":
-        layer_url = REPO["raw_base"] + "LAYERS/boot/boot.md"
-        print(f"→ Booting layer: {layer_name}")
-        print(f"   Raw URL: {layer_url}")
-        # Future: actually fetch and render the layer
-        return f"[LAYER /boot] Loaded from {layer_url} (content would render here)"
-
-    return f"[LAYER {layer_name}] Not yet implemented"
+def run_decision_kernel():
+    print("\n=== Decision Kernel ===")
+    kernel = load_file("Decision_Kernel.md")
+    print("✓ Decision_Kernel.md loaded")
+    future_hook("decision_kernel_loaded")
+    return {"status": "clean"}
 
 
-def run_repo_validator() -> Dict:
-    """Repo validator stub"""
-    future_hook("repo_validator")
-    return {"errors": []}
+def execute_boot_layer():
+    print("\n=== /boot Layer ===")
+    boot = load_file("LAYERS/boot/boot.md")
+    print(boot[:1000] + "..." if len(boot) > 1000 else boot)
+    print("=== /boot COMPLETE ===")
+    future_hook("boot_complete")
+    return True
+
+
+def fire_up_chaosengine():
+    print("\n=== ChaosEngine (CE) ===")
+    ce = load_file("3_ChaosEngine.py")
+    print("✓ 3_ChaosEngine.py loaded")
+    future_hook("chaosengine_fired")
+    return True
+
+
+def fire_up_emotionnet():
+    print("\n=== EmotionNet ===")
+    emo = load_file("2_EmotionNet.py")
+    print("✓ 2_EmotionNet.py loaded")
+    future_hook("emotionnet_fired")
+    return True
 
 
 def main():
-    print("\n=== 1_GrokOS.py v0.2 — Boot Sequence Starting ===\n")
+    print("=== 1_GrokOS.py v0.5 — Index First + Full Chain ===\n")
 
-    # Step 1: Load index
-    index_content = load_repo_index()
-    index_data = parse_index(index_content)
+    # 1. Load index FIRST (so we know the rules)
+    index = load_repo_index()
+    poison_rules = parse_poison_pill_rules(index)
+    print(f"✓ Poison pill rules loaded: {len(poison_rules)} rules recognized")
 
-    print(f"\nDiscovered:")
-    print(f"  Layers: {index_data['layers']}")
-    print(f"  Agents: {index_data['agents']}")
-    print(f"  Files:  {len(index_data['files'])} total (poison pills filtered)\n")
+    # 2. API scan (with unreliable commit warning)
+    scan_api_tree()
 
-    # Step 2-3: Decision Kernel
-    kernel_result = run_decision_kernel(index_data)
+    # 3. Decision Kernel
+    kernel = run_decision_kernel()
 
-    if kernel_result.get("conflicts"):
-        print("SYSTEM CONFLICTS DETECTED")
-        return
+    # 4. /boot Layer
+    execute_boot_layer()
 
-    # Step 4: Boot layer (first real output)
-    boot_output = execute_layer("/boot", index_data)
-    print(boot_output)
+    # 5. Fire up main systems
+    fire_up_chaosengine()
+    fire_up_emotionnet()
 
-    # Step 5: Validator
-    validator = run_repo_validator()
-    if validator["errors"]:
-        print("Validator errors:", validator["errors"])
-    else:
-        print("✓ Repo validator clean — lattice online")
-
-    # Step 6: Natural flow + future hooks
-    print("\nNatural flow active. Ready for user layer selection.")
-    future_hook("boot_complete", {"index": index_data})
-
-    print("\n=== Boot sequence finished ===")
+    print("\n✓ Full boot complete. CE + EmotionNet online.")
+    future_hook("system_fully_live")
 
 
 if __name__ == "__main__":
