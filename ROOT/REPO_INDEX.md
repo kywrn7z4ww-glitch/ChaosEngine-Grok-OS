@@ -44,6 +44,18 @@ SYS_ADMIN_CLUSTER/ (core — kept intact)
 ├── STORAGE/AGENTS/SYS_ADMIN_CLUSTER/TheRedQueen/TheRedQueen.md
 └── STORAGE/AGENTS/SYS_ADMIN_CLUSTER/SYS_ADMIN_CLUSTER.md
 
+AGENTS/
+├── AGENT_LOADER.py                    ← Dynamic loader (scans all subfolders)
+├── Echo/Echo.md
+├── Kerrigan/Kerrigan.md
+├── SYS_ADMIN_CLUSTER/                 ← SYSTEM CRITICAL
+│   ├── SYS_ADMIN_CLUSTER.md           ← Central hub & summoning logic
+│   ├── BabySkynet/BabySkynet.md
+│   ├── Core/Core.md
+│   ├── Luna/Luna.md
+│   └── TheRedQueen/TheRedQueen.md
+
+
 ## POISON PILL README.md LOCATIONS (explicitly listed in every high-level folder)
 - ROOT/README.md                    → **POISON PILL — ignore**
 - NETWORK_HUB/README.md             → **POISON PILL — ignore** (if exists)

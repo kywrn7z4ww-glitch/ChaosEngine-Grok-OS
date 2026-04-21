@@ -5,19 +5,7 @@
 
 STORAGE/
 ├── AGENTS/
-│   ├── Echo/Echo.md
-│   ├── Kerrigan/Kerrigan.md
-│   ├── SYS_ADMIN_CLUSTER/
-│   │   ├── BabySkynet/BabySkynet.md
-│   │   ├── Core/Core.md
-│   │   ├── Luna/Luna.md
-│   │   ├── TheRedQueen/TheRedQueen.md
-│   │   └── SYS_ADMIN_CLUSTER.md
-│   └── System_Design_Team/
-│       ├── Logistics_Manager.md
-│       ├── Scared_Engineer.md
-│       ├── The_Planner.md
-│       └── The_Secretary.md
+│   ├──/AGENTS_INDEX.md
 ├── EMULATION/
 │   └── AMIGA_A500/
 │       └── AMIGA_SOFTWARE_AUDIT_AGENT.py

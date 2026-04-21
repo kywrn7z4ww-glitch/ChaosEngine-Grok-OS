@@ -54,3 +54,36 @@ UI density & vibe rules — verbosity slashed across the board; roleplay-specifi
 - **Poison pill README.md warnings** — explicitly listed for every high-level folder in REPO_INDEX.md.
 - **NETWORK_HUB_INDEX.md, PROCESS_INDEX.md, STORAGE_INDEX.md, Documentation_INDEX.md** created and populated from live folder screenshots.
 - **REPO_INDEX.md v0.9** — cleaned up with full LAYERS/ section + sub-index pointers + SYS_ADMIN_CLUSTER kept intact.
+
+
+## 2026-04-21 — Major Grok OS Overhaul
+
+### Core System Updates
+- **Overhauled `1_GrokOS.py`** → v10.0 (Poetic + Executable hybrid)
+  - Clean boot sequence with real logic
+  - Proper integration with ChaosEngine as the bridge
+  - Cache-busted remote REPO_INDEX loading + local fallback
+
+- **Rewrote `3_ChaosEngine.py`** → v5.0 (The Real Bridge)
+  - Dynamic loading of all PROCESS/ modules
+  - Added `load_agent()` and `list_agents()` hooks
+  - Cleaner intent routing and confidence system
+
+### Agent System
+- Created `STORAGE/AGENTS/AGENT_LOADER.py` — Fully dynamic agent discovery (scans folders + subfolders)
+- Created `STORAGE/AGENTS/AGENTS_INDEX.md` — Dedicated independent agent manifest
+- Updated `STORAGE/STORAGE_INDEX.md` — Now minimal, points to `AGENTS_INDEX.md`
+- Added agent loading capability to ChaosEngine
+
+### Documentation & Indexes
+- Updated `REPO_INDEX.md` — Cleaned structure, added `AGENTS_INDEX.md`, kept SYS_ADMIN_CLUSTER as system-critical
+- Updated `ARCHITECTURE.md` → v1.2 with corrected hierarchy (Kernel → Layers → CE+EmotionNet → Process) + agent specialties
+- Created full changelog entry for this session
+
+### Skills
+- Created and exported `boot-grok-os` skill (v2.1) — SHA-verified tree loading + on-demand sync
+
+### Philosophy
+- Preserved artistic/poetic tone while making the system actually executable
+- Agents kept as .md for now with clear upgrade path
+- Strong separation between poetic orchestrator (`1_GrokOS.py`) and functional bridge (`ChaosEngine`)

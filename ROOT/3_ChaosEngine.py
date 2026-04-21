@@ -19,10 +19,17 @@ Heavy logic belongs in the individual PROCESS/ files.
 ================================================================================
 """
 
-import importlib.util
 import os
-from pathlib import Path
+import importlib.util
 from typing import Any, Dict, Optional
+from pathlib import Path
+
+# Agent loader (optional - gracefully degrades if not present)
+try:
+    from STORAGE.AGENTS.AGENT_LOADER import load_agent, list_all_agents
+    AGENT_LOADER_AVAILABLE = True
+except ImportError:
+    AGENT_LOADER_AVAILABLE = False
 
 # =============================================================================
 # CONFIG
@@ -125,9 +132,7 @@ class ChaosEngine:
             cmd = intent[1:].split()[0] if intent.startswith("/") else "sys_health"
             handler = self.processes.get(cmd.lower())
             if handler:
-                result = (
-                    handler.process(data) if hasattr(handler, "process") else handler
-                )
+                result = handler.process(data) if hasattr(handler, "process") else handler
                 return {"status": "executed", "process": cmd, "result": result}
             else:
                 return {"status": "unknown_command", "command": cmd}
@@ -136,16 +141,26 @@ class ChaosEngine:
         return {
             "status": "clarify",
             "message": f"Confidence {confidence:.1f}% — DISCUSS CLARITY required",
-            "suggestions": [
-                "Run /help",
-                "Try /dev for debugging",
-                "Use /casual for general chat",
-            ],
+            "suggestions": ["Run /help", "Try /dev for debugging", "Use /casual for general chat"]
         }
 
     def set_layer(self, layer: str):
         self.active_layer = layer.lower()
         print(f"📍 Layer switched to: /{self.active_layer}")
+
+    def load_agent(self, name: str) -> str:
+        """Load an agent using the dynamic AGENT_LOADER (if available)"""
+        if AGENT_LOADER_AVAILABLE:
+            return load_agent(name)
+        else:
+            return f"⚠️ Agent loader not available. Cannot load '{name}'."
+
+    def list_agents(self) -> list:
+        """Return list of all available agents"""
+        if AGENT_LOADER_AVAILABLE:
+            return list_all_agents()
+        else:
+            return []
 
     def load_all(self):
         """Explicitly load everything (called by 1_GrokOS.py)"""
