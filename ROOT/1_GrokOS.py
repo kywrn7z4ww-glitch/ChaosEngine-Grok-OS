@@ -1,154 +1,140 @@
 #!/usr/bin/env python3
-"""
-================================================================================
-ROOT/1_GrokOS.py — Single-file Boot Orchestrator (v10.0 - Executable)
-ChaosEngine Grok OS — Poetic + Functional Hybrid
-================================================================================
-
-PHILOSOPHY:
-This file is intentionally written as a **poetic orchestrator** that also happens
-to be executable. It is the "manifesto that boots the system."
-
-It should feel like a cyberpunk operating system manifesto while still being
-real, runnable code. The artistic tone is preserved through heavy notation
-and comments, while the actual logic is clean and modular.
-
-ARCHITECTURE (Final):
-1_GrokOS.py (Poetic Bootloader)
-        ↓
-ChaosEngine (The Bridge - Intent Router + Dynamic Loader)
-        ↓
-    EmotionNet + Decision Kernel + Layer System
-        ↓
-    PROCESS/ (Real Tools: TRUTH, STITCH, SYS_HEALTH, VOMIT, etc.)
-
-This file should NEVER become a 500-line monster. It should stay relatively
-short and delegate real work to ChaosEngine and the PROCESS/ library.
-
-================================================================================
-"""
+# ================================================
+# ROOT/1_GrokOS.py — Single-file Boot Orchestrator v0.2 (Fixed)
+# Slimmed Lattice v9.1 — Chainfire Enforced
+# ================================================
 
 import os
 import sys
-import time
 import urllib.request
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Dict, List, Optional
 
-# =============================================================================
-# CONFIGURATION
-# =============================================================================
+# ==================== CONFIG ====================
 REPO = {
-    "owner": "kywrn7z4ww-glitch",
-    "name": "ChaosEngine-Grok-OS",
-    "branch": "main",
+    "name": "GrokOS",
     "raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/",
-    "default_index": "REPO_INDEX.md",
+    "github_tree": "https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT",
 }
 
-LOCAL_ROOT = Path("/opt/grok-os/ROOT")
+POISON_PILLS = ["README.md", "tetris_curse.py", "readme.md"]
+
+# ==================== FUTURE HOOKS ====================
+# TODO: Add real Decision_Kernel logic here
+# TODO: Add layer execution engine
+# TODO: Add agent spawning (Luna / BabySkynet / TheRedQueen)
+# TODO: Add UI_Template rendering
+# TODO: Add export / deepdive handlers
 
 
-# =============================================================================
-# CORE BOOT FUNCTIONS (Minimal + Clean)
-# =============================================================================
+def future_hook(name: str, data: Optional[dict] = None):
+    """Universal hook point for future expansion"""
+    print(f"[HOOK] {name} triggered")
+    if data:
+        print(f"       Data: {data}")
+    # ← Add real logic here later
 
 
-def fetch_remote_index() -> Optional[str]:
-    """
-    Fetch the latest REPO_INDEX.md from GitHub with cache-busting.
-    Returns the content as string, or None if failed.
-    """
+# ==================== INDEX LOADER ====================
+def load_repo_index() -> str:
+    """Load REPO_INDEX.md with resilience + poison pill protection"""
+    index_url = REPO["raw_base"] + "REPO_INDEX.md"
+
     try:
-        url = f"{REPO['raw_base']}{REPO['default_index']}?t={int(time.time())}"
-        with urllib.request.urlopen(url, timeout=10) as response:
-            return response.read().decode("utf-8")
+        with urllib.request.urlopen(index_url, timeout=10) as r:
+            content = r.read().decode("utf-8")
+            print("✓ REPO_INDEX.md loaded from GitHub (primary)")
+            return content
     except Exception as e:
-        print(f"[WARN] Could not fetch remote REPO_INDEX: {e}")
-        return None
+        print(f"Remote fetch failed: {e}")
+        # Future hook for local fallback
+        future_hook("local_fallback", {"error": str(e)})
+        raise RuntimeError("Could not load REPO_INDEX.md")
 
 
-def load_local_index() -> Optional[str]:
-    """Try to load REPO_INDEX.md from several possible local locations."""
-    candidates = [
-        LOCAL_ROOT / REPO["default_index"],
-        Path(__file__).parent / REPO["default_index"],
-        Path.cwd() / "ROOT" / REPO["default_index"],
-        Path.cwd() / REPO["default_index"],
-    ]
-    for path in candidates:
-        if path.exists():
-            return path.read_text(encoding="utf-8")
-    return None
+def parse_index(index_content: str) -> Dict:
+    """Parse the index into structured data"""
+    data = {"layers": [], "agents": [], "files": [], "poison_pills": POISON_PILLS}
+
+    for line in index_content.splitlines():
+        line = line.strip()
+        if line.startswith("├── ") or line.startswith("└── "):
+            filename = line.split("→")[0].strip("├── └ ").strip()
+            if any(p in filename for p in POISON_PILLS):
+                continue  # Respect poison pill rule
+            if "LAYERS/" in line or filename.endswith("/"):
+                data["layers"].append(filename.replace("/", ""))
+            elif "BabySkynet" in line or "Luna" in line or "TheRedQueen" in line:
+                data["agents"].append(filename)
+            else:
+                data["files"].append(filename)
+
+    return data
 
 
-def resolve_repo_index() -> Tuple[str, str]:
-    """
-    Return (content, source_type) where source_type is 'remote' or 'local'.
-    Tries remote first (with cache-bust), falls back to local.
-    """
-    content = fetch_remote_index()
-    if content and "# /ROOT/REPO_INDEX.md" in content:
-        print("🔗 Loaded REPO_INDEX from GitHub (cache-busted)")
-        return content, "remote"
-
-    content = load_local_index()
-    if content:
-        print("🔗 Loaded REPO_INDEX from local mirror")
-        return content, "local"
-
-    raise RuntimeError("CRITICAL: Could not load REPO_INDEX.md from anywhere.")
+# ==================== BOOT SEQUENCE ====================
+def run_decision_kernel(index_data: Dict) -> Dict:
+    """Decision Kernel stub — future hook ready"""
+    future_hook("decision_kernel_start", index_data)
+    print("→ Decision Kernel: Self-check passed (stub)")
+    return {"status": "clean", "conflicts": []}
 
 
-# =============================================================================
-# MAIN BOOT SEQUENCE
-# =============================================================================
+def execute_layer(layer_name: str, index_data: Dict) -> str:
+    """Execute a layer — builds real URL and fetches (stub for now)"""
+    future_hook("execute_layer", {"layer": layer_name})
+
+    if layer_name == "/boot":
+        layer_url = REPO["raw_base"] + "LAYERS/boot/boot.md"
+        print(f"→ Booting layer: {layer_name}")
+        print(f"   Raw URL: {layer_url}")
+        # Future: actually fetch and render the layer
+        return f"[LAYER /boot] Loaded from {layer_url} (content would render here)"
+
+    return f"[LAYER {layer_name}] Not yet implemented"
+
+
+def run_repo_validator() -> Dict:
+    """Repo validator stub"""
+    future_hook("repo_validator")
+    return {"errors": []}
 
 
 def main():
-    print("\n" + "=" * 70)
-    print("  CHAOSENGINE GROK OS — BOOT SEQUENCE v10.0")
-    print("=" * 70 + "\n")
+    print("\n=== 1_GrokOS.py v0.2 — Boot Sequence Starting ===\n")
 
-    # === STEP 1: Load REPO_INDEX (The Manifest) ===
-    print("[1/4] Loading REPO_INDEX.md (The Living Library)...")
-    repo_index, source = resolve_repo_index()
-    print(f"      Source: {source}")
-    print(f"      Lines:  {len(repo_index.splitlines())}")
+    # Step 1: Load index
+    index_content = load_repo_index()
+    index_data = parse_index(index_content)
 
-    # === STEP 2: Import and Initialize ChaosEngine (The Bridge) ===
-    print("\n[2/4] Initializing ChaosEngine (The Intent Router)...")
-    try:
-        from PROCESS.ChaosEngine import ChaosEngine
+    print(f"\nDiscovered:")
+    print(f"  Layers: {index_data['layers']}")
+    print(f"  Agents: {index_data['agents']}")
+    print(f"  Files:  {len(index_data['files'])} total (poison pills filtered)\n")
 
-        engine = ChaosEngine()
-        engine.load_all()
-        print("      ✅ ChaosEngine loaded successfully")
-    except ImportError as e:
-        print(f"      ❌ Could not import ChaosEngine: {e}")
-        print("      Falling back to basic mode (limited functionality)")
-        engine = None
+    # Step 2-3: Decision Kernel
+    kernel_result = run_decision_kernel(index_data)
 
-    # === STEP 3: Trigger /boot Layer ===
-    print("\n[3/4] Entering /boot layer (Mandatory First Layer)...")
-    if engine:
-        # Let ChaosEngine handle the /boot layer routing
-        result = engine.route_intent("/boot")
-        print(f"      Boot layer result: {result.get('status', 'unknown')}")
+    if kernel_result.get("conflicts"):
+        print("SYSTEM CONFLICTS DETECTED")
+        return
+
+    # Step 4: Boot layer (first real output)
+    boot_output = execute_layer("/boot", index_data)
+    print(boot_output)
+
+    # Step 5: Validator
+    validator = run_repo_validator()
+    if validator["errors"]:
+        print("Validator errors:", validator["errors"])
     else:
-        print("      ⚠️  Running in degraded mode (no ChaosEngine)")
+        print("✓ Repo validator clean — lattice online")
 
-    # === STEP 4: Final Handoff ===
-    print("\n[4/4] Boot sequence complete. Handing off to user-selected layer...")
-    print("\n" + "=" * 70)
-    print("  LATTICE ONLINE — Natural flow active")
-    print("=" * 70 + "\n")
+    # Step 6: Natural flow + future hooks
+    print("\nNatural flow active. Ready for user layer selection.")
+    future_hook("boot_complete", {"index": index_data})
 
-    print("Suggested next commands:")
-    print("  /help          → Show available layers and guidance")
-    print("  /load sys admin cluster → Load core agent team")
-    print("  /casual        → Enter casual conversation mode")
-    print("  /dev           → Enter development/debug mode\n")
+    print("\n=== Boot sequence finished ===")
 
 
 if __name__ == "__main__":

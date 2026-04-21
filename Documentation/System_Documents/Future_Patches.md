@@ -24,7 +24,7 @@
 ^ in progress 
 
 - **/coding** – Heavy coding harness layer (dynamic library import, toolset assembly, parallel workflows).
-- New layers to define: /coding, /help, /simulation - Create /youtube and /music layers (HTML wrapper style).
+- New layers to define: /coding, /help, /simulation - rework /music layer to have (HTML wrapper style)?.
 - Add the new general workflow logic into Decision_Kernel or /update.
 - Improve agent/character nesting under STORAGE/AGENTS.
 - Test /help layer with the new split indexes.
