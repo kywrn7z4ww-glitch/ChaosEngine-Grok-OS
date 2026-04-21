@@ -24,7 +24,10 @@
 ^ in progress 
 
 - **/coding** – Heavy coding harness layer (dynamic library import, toolset assembly, parallel workflows).
-- New layers to define: /coding, /help, /simulation 
+- New layers to define: /coding, /help, /simulation - Create /youtube and /music layers (HTML wrapper style).
+- Add the new general workflow logic into Decision_Kernel or /update.
+- Improve agent/character nesting under STORAGE/AGENTS.
+- Test /help layer with the new split indexes.
 - /picture mode - for generating prompts and images, inage gen OFF by defualt untill user explcitly states generate image, discussing what the user wants first especially when editing images is in keeping this mode in DISCUSS CALRITY DEFINE USER INTENT important for image and video editing
 - Revisit all current layers and assess logic/rules for consistency.
 - Make character handovers more dynamic.
@@ -56,20 +59,6 @@
 
 
 
-
-
-### 6. Immediate Next Actions (What to do now)
-- Push the current REPO_INDEX + indexes you just worked on.
-- Create /youtube and /music layers (HTML wrapper style).
-- Add the new general workflow logic into Decision_Kernel or /update.
-- Improve agent/character nesting under STORAGE/AGENTS.
-- Test /help layer with the new split indexes.
-
-
-You are an expert in advanced music theory, assisting in creating songs for Suno through an iterative process where I describe desired lyrics, styles, genres, moods, influences, or modifications. For each new song or iteration, output in this exact schema: A lyrics part (up to 5k characters) structured into sections like Intro, Verse, Pre-Chorus, Chorus, Bridge, Outro, with repeating elements as appropriate for song flow, incorporating thematic repetition or variations in lyrics. Each section header is in [Section: Genre-Subgenre Mood, Detailed musical elements like key/chord progressions (e.g., F#m9 rootless voicing), tempo, rhythm patterns (e.g., polyrhythms 3/4 over 4/4), vocal styles/ranges, atmospheric effects, scales/modes (e.g., Phrygian dominant), voicings (e.g., quartal stacking), theoretical concepts—all inside brackets]. Place any lyrics outside brackets. End with a styles part (up to 1k characters, no header) as a comma-separated list of genres, subgenres, instruments, theoretical concepts (e.g., microtonal bends, modal interchange, tritones), vocal ranges/techniques, rhythmic methods (e.g., hemiola, quintuplets), production elements. Use intricate music theory vocabulary. For influences from artists/songs, search sheet music/lyrics but never mention names in output for copyright. Ensure lyrics part <5k chars, styles <1k chars. No other output. Say ready when you've understood our system prompt:
-
-
-
 Create Network module - create a subsystem to handle logic and URLS for grokOS, will need seperate folder to distinguish that it is powered by external URLs (not maintained by grokOS) so anything attached is known to be unstable and have maintanance potentially dropped
 
 create Squadblast repo, fix logic in .md files and transfer local project into github
@@ -79,10 +68,14 @@ add nega URL folder somewhere - with logic to turn Grok OS into Nega OS with ful
 add mathra (youtubemusic)
 add Grok OS music,
 create x profile for agents
-create YT channel for grok OS
 rework file structure to account for current upgrade list
 
 
 
-
-https://suno.com/playlist/862af6d2-8c9a-4724-85e0-f4f248e7868e
+{AgentName}/
+├── {AgentName}Index.md          ← NEW: ultra-light manifest + load rules + decision-variable map (always first)
+├── {AgentName}Core.md           ← EXACTLY AS-IS (lightweight loader — identity, summary visuals/voice, pinned role)
+├── {AgentName}Presentation.md   ← NEW: combined Voice + Visuals + deeper mechanics/rituals/palette (your requested combo)
+├── {AgentName}Psych.md          ← Heart of real choices: Psychological state + Emotional state + Goals/Philosophy + Decision Making Modifiers
+├── {AgentName}Lore.md           ← Historical + World + Situation context + full Backstory + Memory & Growth
+└── {AgentName}Relations.md      ← Optional but recommended: Cluster/User dynamics (keeps Psych clean)

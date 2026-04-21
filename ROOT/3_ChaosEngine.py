@@ -3,7 +3,7 @@
 # Purpose: Orchestrates all system flow. Calculates confidence from EmotionNet + window state.
 # Only executes processes if confidence ≥ 99. Enforces layer rules and DISCUSS CLARITY on low confidence.
 # Displays [PROCESS_NAME] when handlers run.
-
+# GENERATOR MODULE — SIMPLE ASCII ART REFERENCE for simple ascii art references go here → https://www.asciiart.eu/ (animals, objects, borders, etc. — instant on-demand fallback when KaTeX/render components not required)
 import importlib.util
 import os
 from typing import Any, Dict

@@ -41,10 +41,11 @@ REPO = {
 }
 
 
+import time  # ← add this near top if missing
+
 def resolve_repo_index():
     """Return either a local file path or GitHub raw URL + source type.
-    Priority: user override → remote (default) → local project scan
-    HARDENED: always forces full ROOT/ path. Bare index 404 now impossible."""
+    HARDENED v9.2: every remote URL now gets ?t=unix_timestamp cache-bust."""
 
     # 1. User override — force local
     if "--local" in sys.argv or os.getenv("GROKOS_LOCAL") == "1":
@@ -54,18 +55,20 @@ def resolve_repo_index():
             return str(local_path), "local"
         print("Local override requested but no ROOT/REPO_INDEX.md found")
 
-    # 2. Try GitHub remote first (hardened path)
+    # 2. Try GitHub remote first (cache-busted + refs/heads/main locked)
     try:
-        index_url = REPO["github_raw_base"] + REPO["default_index"]
+        base = REPO["github_raw_base"] + REPO["default_index"]
+        cache_bust = f"?t={int(time.time())}"          # ← this is the hard part
+        index_url = base + cache_bust
         with urllib.request.urlopen(index_url, timeout=8) as response:
             content = response.read(512).decode("utf-8")
-            if "# /ROOT/REPO_INDEX.md" in content or "REPO_INDEX.md" in content:
-                print("GitHub REPO_INDEX loaded (primary source — ROOT/ path enforced)")
+            if "# /ROOT/REPO_INDEX.md" in content or "v0.9" in content:
+                print(f"GitHub REPO_INDEX loaded (cache-busted — fresh v0.9)")
                 return index_url, "remote"
     except Exception as e:
         print(f"Remote fetch failed ({e}) → falling back to local scan...")
 
-    # 3. Intelligent local fallback
+    # 3. Intelligent local fallback (unchanged)
     local_path = _find_local_index()
     if local_path:
         print(f"Local ROOT/REPO_INDEX.md detected → {local_path}")
@@ -77,9 +80,7 @@ def resolve_repo_index():
         print("Using fallback index in ROOT/ folder")
         return str(fallback), "local"
 
-    raise RuntimeError(
-        "CRITICAL: No REPO_INDEX.md found. "
-        "Bare-root 404 is now impossible — repo must contain ROOT/REPO_INDEX.md"
+    raise RuntimeError("CRITICAL: No REPO_INDEX.md found. Cache-bust path enforced.")
     )
 
 

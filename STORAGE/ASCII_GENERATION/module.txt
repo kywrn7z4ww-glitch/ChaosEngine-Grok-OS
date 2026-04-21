@@ -1,0 +1,35 @@
+   v∞.10.35 — Flexible Character Support (updated methods)
+
+
+
+   # Updated fractal (now accepts any fill_char)
+    def generate_fractal(self, fractal_type: str = "sierpinski", levels: int = 5,
+                         width: int = 78, max_iter: int = 30, fill_char: str = "#") -> str:
+        if fractal_type == "sierpinski":
+            triangle = [fill_char]
+            for i in range(levels):
+                spaced = " " * (2 ** i)
+                triangle = [line + spaced + line for line in triangle]
+            fixed = [line.center(width).ljust(width) for line in triangle]
+            return self._safe("\n".join(fixed))
+        # Mandelbrot already uses ramp — unchanged
+
+    # Updated L-system family (now fully flexible)
+    def generate_lsystem(self, axiom: str = "X", rules: dict = None,
+                         iterations: int = 5, angle: int = 25, step: int = 3,
+                         width: int = 78, height: int = 40, fill_char: str = "#") -> str:
+        # ... (same turtle logic)
+        # only change: grid[ny][nx] = fill_char
+        # (full code identical except the fill_char line)
+
+    def generate_custom_lsystem(self, axiom: str, rules: dict, iterations: int = 5,
+                                angle: int = 25, step: int = 3, width: int = 78,
+                                height: int = 40, fill_char: str = "#") -> str:
+        # same as above — now accepts fill_char
+
+    def generate_cellular_automaton(self, mode: str = "1d", rule: int = 30,
+                                    width: int = 78, generations: int = 30,
+                                    pattern: str = "random", fill_char: str = "#") -> str:
+        # 1D CA now uses fill_char instead of hard-coded "#"
+        chars = [" ", fill_char]
+        # ... rest unchanged

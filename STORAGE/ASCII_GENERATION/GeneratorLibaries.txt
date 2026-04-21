@@ -1,0 +1,39 @@
+# Open Source ASCII Art Generators & Libraries Index
+**ASCII Lattice Engine — Research Archive**
+**Version:** v1.0
+**Date:** April 18, 2026
+**Curated for:** Grok Chat Window Project
+**Status:** Verified & Indexed (web crawl complete)
+
+## 1. Text-to-ASCII Banner Libraries (FIGlet-style — Highest Priority)
+
+| Rank | Project                  | Language     | Key Features                          | Font Count | Link                                      | Notes |
+|------|--------------------------|--------------|---------------------------------------|------------|-------------------------------------------|-------|
+| 1    | **pyfiglet**             | Pure Python  | Full FIGlet support, smushing, CLI + API | 500+      | [GitHub](https://github.com/pwaller/pyfiglet) | Gold standard for Python |
+| 2    | **art**                  | Pure Python  | 677+ fonts, decorations, colors, tprint | 677+      | [GitHub](https://github.com/sepandhaghighi/art) | Most feature-rich Python library (PyPI: `art`) |
+| 3    | ASCIIBanner              | Python/Go    | Colors, Termux optimized              | Many       | [GitHub](https://github.com/Anon4You/ASCIIBanner) | Good for mobile testing |
+| 4    | figlet / toilet          | C            | Classic tools + hundreds of fonts     | Hundreds   | [figlet.org](http://www.figlet.org)       | Original reference |
+
+## 2. Image-to-ASCII Converters (PIL / numpy style — Matches our `convert_image`)
+
+| Project                    | Language | Features                          | Braille / Edge? | Link                                                 | Notes |
+|----------------------------|----------|-----------------------------------|-----------------|------------------------------------------------------|-------|
+| ascii-image-converter      | Go       | Fast CLI, color, high quality     | Yes             | [GitHub](https://github.com/TheZoraiz/ascii-image-converter) | Best CLI tool |
+| ascii-art-converter        | Python   | Color, dithering, advanced        | Yes             | [GitHub](https://github.com/our0boros/ascii-art-converter) | Most advanced Python option |
+| Ascify-Art                 | Python   | GUI + live preview                | No              | [GitHub](https://github.com/Akascape/Ascify-Art)     | Excellent for testing |
+| ascii-magic                | Python   | Simple PIL wrapper                | No              | PyPI                                                 | Lightweight |
+| ASCII-generator            | Python   | Image + video + multi-lang        | No              | [GitHub](https://github.com/vietnh1009/ASCII-generator) | Video support (future idea) |
+
+## 3. Other Notable / Specialized Projects
+- **gradscii-art** — ML-based “extremely good” generator → [GitHub](https://github.com/stong/gradscii-art)
+- **JuliaPoo/AsciiArtist** — Smart edge detection + char selection
+- **awesome-ascii** — Curated umbrella list of everything ASCII → [GitHub](https://github.com/jcubic/awesome-ascii)
+
+## Lattice Engine Integration Notes
+- **None** solve Grok chat whitespace collapse → our dual-delivery (.txt + ```ascii) remains superior.
+- **Best candidates for import:** `pyfiglet` and `art` library fonts → we will extract selected fonts into our strict fixed-width dicts with auto `.ljust()` validation.
+- **DecorationEngine goldmine:** `art` library motifs will be added on-demand.
+- No breaking changes to our zero-bleed stitching or auto-width measurement.
+
+---
+*This document is part of the ASCII Lattice Engine living research archive. Update Problems.txt or Master Project Prompt if new fonts/motifs are adopted.*
