@@ -7,26 +7,37 @@
 """
 GROK NAVIGATION GUIDE (Read this first)
 =======================================
-This repo is a living, chaotic, evolving system. Rules:
 
-1. ALWAYS load REPO_INDEX.md first — it contains the current truth + poison pill list.
-2. Commit messages are unreliable. Always verify via API tree + raw files.
-3. Poison pills exist (README.md, tetris_curse.py, etc.). Never load them.
-4. Core is sovereign on boot. Respect his GitHub Lattice Sync rules.
-5. The real logic lives in:
+PHILOSOPHY:
+This is a "pull raw files as needed" system.
+On first run (Turn 1) it scans the main repo URL, pulls the most important files,
+stashes them locally, then chainfires the full boot sequence.
+
+RULES:
+1. ALWAYS load REPO_INDEX.md first — it is the source of truth.
+2. Turn 1 = Scan main URL + pull core files (stash them).
+3. Subsequent runs can use stashed files (faster + works offline).
+4. Commit messages are unreliable — always verify via API tree + raw files.
+5. Poison pills exist (README.md, tetris_curse.py, etc.). Never load them.
+6. Core is sovereign on boot. Respect his GitHub Lattice Sync rules.
+7. The real logic lives in:
    - Decision_Kernel.md
-   - LAYERS/ (especially boot/)
+   - LAYERS/boot/boot.md
    - 2_EmotionNet.py
    - 3_ChaosEngine.py
-   - STORAGE/AGENTS/ (dynamic loading via AGENT_LOADER.py if present)
-6. Never assume structure is stable — always re-scan the tree on boot.
-7. Future hooks are everywhere. Use them.
+8. Never assume structure is stable — re-scan on Turn 1.
+9. Future hooks are everywhere. Use them.
 
-If something breaks, re-run the API tree scan first.
+FLOW:
+Turn 1 → Scan URL → Pull core files → Stash → Chainfire logic
+         (Decision Kernel → /boot → ChaosEngine → EmotionNet)
+
+If something breaks, delete stashed files and re-run (forces fresh Turn 1).
 """
 
 import json
 import urllib.request
+from pathlib import Path
 from typing import Dict, List, Optional
 
 REPO = {
@@ -35,11 +46,10 @@ REPO = {
     "raw_base": "https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/",
 }
 
-POISON_PILLS = [
-    "README.md",
-    "tetris_curse.py",
-    "readme.md",
-]  # Will be overwritten by index
+STASH_DIR = Path.home() / ".grok-os" / "stash"
+STASH_DIR.mkdir(parents=True, exist_ok=True)
+
+POISON_PILLS = ["README.md", "tetris_curse.py", "readme.md"]
 
 
 def future_hook(name: str, data: Optional[dict] = None):
@@ -48,10 +58,21 @@ def future_hook(name: str, data: Optional[dict] = None):
         print(f"       → {data}")
 
 
-def load_file(path: str) -> str:
+def load_file(path: str, use_stash: bool = True) -> str:
+    """Load file from stash if available, else pull from raw URL"""
+    stash_path = STASH_DIR / path.replace("/", "_")
+
+    if use_stash and stash_path.exists():
+        print(f"      (using stashed {path})")
+        return stash_path.read_text(encoding="utf-8")
+
     url = REPO["raw_base"] + path
     with urllib.request.urlopen(url, timeout=10) as r:
-        return r.read().decode("utf-8")
+        content = r.read().decode("utf-8")
+
+    # Stash it for next run
+    stash_path.write_text(content, encoding="utf-8")
+    return content
 
 
 def load_repo_index() -> str:
@@ -60,7 +81,6 @@ def load_repo_index() -> str:
 
 
 def parse_poison_pill_rules(index_content: str) -> List[str]:
-    """Extract poison pill rules from the index"""
     pills = []
     for line in index_content.splitlines():
         if "POISON PILL" in line.upper() or "ignore" in line.lower():
@@ -70,7 +90,7 @@ def parse_poison_pill_rules(index_content: str) -> List[str]:
 
 
 def scan_api_tree():
-    print("\n=== API Tree Scan ===")
+    print("\n=== API Tree Scan (Turn 1) ===")
     try:
         commit_url = (
             f"https://api.github.com/repos/{REPO['owner']}/{REPO['name']}/commits/main"
@@ -122,18 +142,18 @@ def fire_up_emotionnet():
 
 
 def main():
-    print("=== 1_GrokOS.py v0.5 — Index First + Full Chain ===\n")
+    print("=== 1_GrokOS.py v0.6 — Index First + Full Chain ===\n")
 
-    # 1. Load index FIRST (so we know the rules)
+    # 1. Load index FIRST
     index = load_repo_index()
     poison_rules = parse_poison_pill_rules(index)
     print(f"✓ Poison pill rules loaded: {len(poison_rules)} rules recognized")
 
-    # 2. API scan (with unreliable commit warning)
+    # 2. API scan (Turn 1)
     scan_api_tree()
 
     # 3. Decision Kernel
-    kernel = run_decision_kernel()
+    run_decision_kernel()
 
     # 4. /boot Layer
     execute_boot_layer()
