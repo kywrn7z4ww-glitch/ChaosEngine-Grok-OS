@@ -1,13 +1,14 @@
 # python/python-process-lib/SYS_HEALTH.py
 # v2.0 – Proactive window coherence & context preservation hub (re-anchor first)
 
-from typing import Dict, Any
 import re
+from typing import Any, Dict
+
+from . import TruthValidator, Validator
 
 # Internal handlers for full scan (analysis only)
 from .BLEED_DETECTOR import BleedDetector
-from .TRUTH import TruthValidator
-from .VALIDATOR import Validator
+
 
 class SystemHealth:
     def __init__(self):
@@ -33,16 +34,24 @@ class SystemHealth:
 
     def _get_token_pressure(self, current_context: str) -> Dict:
         """Dynamic token estimation using real window metadata."""
-        current_tokens = len(current_context.split()) * 1.3  # rough but accurate estimation
+        current_tokens = (
+            len(current_context.split()) * 1.3
+        )  # rough but accurate estimation
         max_tokens = 8192  # real LLM metadata query would replace this
         percent_used = round((current_tokens / max_tokens) * 100, 1)
         tokens_left = int(max_tokens - current_tokens)
-        status = "CRITICAL" if percent_used > 85 else "HIGH" if percent_used > 70 else "NORMAL"
+        status = (
+            "CRITICAL"
+            if percent_used > 85
+            else "HIGH"
+            if percent_used > 70
+            else "NORMAL"
+        )
         return {
-            'percent_used': percent_used,
-            'tokens_left': tokens_left,
-            'status': status,
-            'metadata_note': "Token data pulled from current window + LLM query"
+            "percent_used": percent_used,
+            "tokens_left": tokens_left,
+            "status": status,
+            "metadata_note": "Token data pulled from current window + LLM query",
         }
 
     def process(self, current_context: str, context_hint: str = "") -> Dict[str, Any]:
@@ -54,9 +63,13 @@ class SystemHealth:
         token_report = self._get_token_pressure(reanchored_context)
 
         # 3. Full scan using all tools
-        bleed_report = self.bleed_detector.process(reanchored_context, context_hint=context_hint, escalate=True)
+        bleed_report = self.bleed_detector.process(
+            reanchored_context, context_hint=context_hint, escalate=True
+        )
         truth_report = self.truth_validator.process(reanchored_context, escalate=True)
-        validator_report = self.validator.process(reanchored_context, context_hint=context_hint)
+        validator_report = self.validator.process(
+            reanchored_context, context_hint=context_hint
+        )
 
         # 4. DISCUSS CLARITY trigger (after preservation)
         discuss_prompt = "DISCUSS CLARITY: What parts need full fidelity vs what can be summarized? (e.g. specific RP segments, code, research, etc.)"
@@ -65,24 +78,29 @@ class SystemHealth:
         suggestions = [
             "Run VOMIT + ENTITY_HUNTER + CHUNK_SPLITTER + FILE_MGR to compress & preserve important data",
             "Run /export --no-ui for high-fidelity segments (especially RP)",
-            "Sort data under DISCUSS CLARITY to clarify intent"
+            "Sort data under DISCUSS CLARITY to clarify intent",
         ]
 
-        summary = (f"SYS_HEALTH v2.0 — token used: {token_report['percent_used']}% | "
-                   f"bleed: {bleed_report['bleed_detected']} | status: {token_report['status']} | "
-                   f"context re-anchored & protected first")
+        summary = (
+            f"SYS_HEALTH v2.0 — token used: {token_report['percent_used']}% | "
+            f"bleed: {bleed_report['bleed_detected']} | status: {token_report['status']} | "
+            f"context re-anchored & protected first"
+        )
 
         return {
-            'summary': summary,
-            'reanchored_context_preview': reanchored_context[:500] + "..." if len(reanchored_context) > 500 else reanchored_context,
-            'token_pressure': token_report,
-            'bleed_report': bleed_report,
-            'truth_report': truth_report,
-            'validator_report': validator_report,
-            'suggested_commands': suggestions,
-            'discuss_clarity_prompt': discuss_prompt,
-            'ui_token_tracker': f"{token_report['percent_used']}% used ({token_report['tokens_left']} left)"
+            "summary": summary,
+            "reanchored_context_preview": reanchored_context[:500] + "..."
+            if len(reanchored_context) > 500
+            else reanchored_context,
+            "token_pressure": token_report,
+            "bleed_report": bleed_report,
+            "truth_report": truth_report,
+            "validator_report": validator_report,
+            "suggested_commands": suggestions,
+            "discuss_clarity_prompt": discuss_prompt,
+            "ui_token_tracker": f"{token_report['percent_used']}% used ({token_report['tokens_left']} left)",
         }
+
 
 # Example usage (ChaosEngine or any layer):
 # health = SystemHealth()

@@ -10,9 +10,9 @@ from PROCESS.CANNON_HARVESTER import CannonHarvester  # your fixed version
 from PROCESS.CHUNK_SPLITTER import ChunkSplitter
 from PROCESS.DISCOMBOBULATOR import discombobulate, recombobulate
 from PROCESS.FILE_MGR import FileManager
-from PROCESS.SYS_HEALTH import SystemHealth
-from PROCESS.TRUTH import TruthChecker
-from PROCESS.TURN_COUNTER import TurnCounter
+from PROCESS. import SystemHealth
+from PROCESS. import TruthChecker
+from PROCESS. import TurnCounter
 from PROCESS.VOMIT import VomitParser
 from PROCESS.ZERG_SWARM import ZergSwarm
 
