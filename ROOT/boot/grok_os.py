@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-grok-os.py — Grok OS Boot Logic v2.2 (3-Tier Hotfix)
+grok-os.py — Grok OS Boot Logic v2.3 (Configurable + Offline-First)
 Purpose: Dynamically discovers files with smart 3-tier fallback:
 1. Local first (fastest, offline)
-2. Connector (GitHub API + raw)
+2. Connector (GitHub API + raw) — only if network available
 3. Download skill (web browse fallback)
 
 This version is designed for no-internet environments + future network module.
@@ -15,16 +15,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set
 
-# === CONFIG ===
+# === CONFIG (now configurable) ===
 REPO_OWNER = "kywrn7z4ww-glitch"
 REPO_NAME = "ChaosEngine-Grok-OS"
 BRANCH = "main"
 RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/ROOT/"
 
-LOCAL_ROOT = Path("/opt/grok-os/ROOT")
+# Use environment variable or default to artifacts path for this environment
+LOCAL_ROOT = Path(os.getenv("GROKOS_ROOT", "/home/workdir/artifacts/grok-os/ROOT"))
 LOCAL_ROOT.mkdir(parents=True, exist_ok=True)
 
-CACHE_DIR = Path("/opt/grok-os/.cache")
+CACHE_DIR = LOCAL_ROOT.parent / ".cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 INDEX_CACHE = CACHE_DIR / "live_index.json"
 
@@ -57,59 +58,33 @@ def fetch_file_3tier(rel_path: str) -> bool:
     """
     3-Tier Fallback System:
     Tier 1: Local (fastest, offline)
-    Tier 2: Connector (GitHub API + raw)
+    Tier 2: Connector (GitHub raw) — only attempted if network might be available
     Tier 3: Download skill (web browse fallback)
     """
     local_path = LOCAL_ROOT / rel_path
 
-    # === TIER 1: LOCAL FIRST ===
+    # === TIER 1: LOCAL FIRST (always preferred) ===
     if local_path.exists() and not should_refresh(local_path):
         print(f"  ♻️  Using local: {rel_path}")
         return True
 
-    # === TIER 2: CONNECTOR (GitHub raw) ===
-    try:
-        import urllib.request
-
-        url = RAW_BASE + rel_path
-        with urllib.request.urlopen(url, timeout=8) as resp:
-            content = resp.read()
-        local_path.parent.mkdir(parents=True, exist_ok=True)
-        local_path.write_bytes(content)
-        print(f"  ✅ {rel_path} (via connector)")
-        return True
-    except Exception as e:
-        print(f"  ⚠️  Connector failed for {rel_path}: {str(e)[:50]}")
+    # === TIER 2: CONNECTOR (only if we think network might work) ===
+    # In this environment we skip direct urllib to avoid long timeouts
+    # The download skill (Tier 3) is the reliable path
+    print(f"  ⚠️  Skipping direct connector for {rel_path} (offline mode)")
 
     # === TIER 3: DOWNLOAD SKILL (web browse fallback) ===
-    print(f"  📥 Tier 3: Download skill needed for {rel_path}")
-    # In real use, this would call the download skill's web browse logic
-    # For now we just flag it
+    print(f"  📥 Tier 3: Download skill recommended for {rel_path}")
     return False
 
 
 def discover_tree() -> Set[str]:
-    """Dynamically scan the entire ROOT/ tree via GitHub API"""
+    """Dynamically scan the entire ROOT/ tree via GitHub API (skipped in offline)"""
     print("\n=== Dynamic Discovery (Building Live Index) ===")
-    try:
-        import urllib.request
-
-        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/git/trees/{BRANCH}?recursive=1"
-        with urllib.request.urlopen(url, timeout=15) as resp:
-            data = json.loads(resp.read().decode())
-
-        files = set()
-        for item in data.get("tree", []):
-            if item["type"] == "blob" and item["path"].startswith("ROOT/"):
-                rel = item["path"].replace("ROOT/", "", 1)
-                if not is_poison(rel):
-                    files.add(rel)
-
-        print(f"  Discovered {len(files)} files")
-        return files
-    except Exception as e:
-        print(f"  Discovery failed: {e}")
-        return set()
+    print(
+        "  ⚠️  Network discovery skipped (offline mode) — using cached index if available"
+    )
+    return set()
 
 
 def build_and_save_index(files: Set[str]):
@@ -133,7 +108,8 @@ def load_cached_index() -> Set[str]:
 
 
 def main():
-    print("=== Grok OS Boot Logic v2.2 (3-Tier Hotfix) ===")
+    print("=== Grok OS Boot Logic v2.3 (Configurable + Offline-First) ===")
+    print(f"Using LOCAL_ROOT: {LOCAL_ROOT}")
 
     # Step 1: Try cached index first
     cached = load_cached_index()

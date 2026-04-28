@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
 """
-response_pipeline.py — Response Pipeline v1.0
+response_pipeline.py — Response Pipeline v1.1
 Purpose: Full input → output flow for Grok OS.
 Connects: User Input → ChaosEngine → LayerManager → UI Manager → Formatted Output
 """
 
-from typing import Optional, Dict, Any
+import os
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-# Import our components
-from chaos_engine import ChaosEngine
-from layer_manager import layer_manager, get_current_layer
+# Use configurable root (same pattern as other files)
+LOCAL_ROOT = Path(os.getenv("GROKOS_ROOT", "/home/workdir/artifacts/grok-os/ROOT"))
+
+# Import from the package (uses singleton)
+from chaos_engine import chaos_engine
+from layer_manager import get_current_layer, layer_manager
 from ui_manager import format_output
 
 
 class ResponsePipeline:
     def __init__(self):
-        self.chaos_engine = ChaosEngine()
-        self.turn = 0
+        # Use the existing singleton instead of creating a new one
+        self.chaos_engine = chaos_engine
+        self.turn = 1
 
     def process_input(self, user_input: str, data: Optional[Dict] = None) -> str:
         """Main entry point — processes user input and returns formatted output"""

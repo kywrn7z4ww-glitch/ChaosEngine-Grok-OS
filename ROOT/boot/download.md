@@ -1,11 +1,6 @@
----
-name: grok-download
-description: Production-grade generic download-from-URL skill. Fetches any URL using browse_page with exact-content mode, saves with write_file + SHA sidecars, local-first caching (configurable), optional poison filtering, batch support, GitHub folder discovery, pluggable .py connector logic, and profiles for different use cases (generic / grok-os / strict). Designed as foundation for future network modules. Triggers: "download from URL", "fetch this", "grab folder from github.com/...", or any connector comment. Fully blank-slate and shareable.
----
+# Grok Download Skill — v1.2 (SHA + Commit Aware)
 
-# Grok Download Skill — Generic URL Fetch & Save (v1.1 — Enhanced)
-
-**Status:** Production-ready, heavily improved, ready for broad use and future network module integration.
+**Status:** Production-ready with proper remote freshness checking.
 
 **Purpose:** A single, powerful, reusable skill that handles **all** URL-based downloads reliably — from single files to entire GitHub folders — with smart caching, exact content fidelity, optional safety filters, and clean connector logic for `.py` files. Serves as the foundation for your future network module.
 
@@ -13,6 +8,7 @@ description: Production-grade generic download-from-URL skill. Fetches any URL u
 - 100% generic / blank-slate (no hard-coded repos)
 - Optional poison filtering (opt-in per request or profile)
 - Local-first + SHA sidecar caching (configurable freshness)
+- **Proper remote SHA + commit checking** (new in v1.2)
 - Exact content preservation (never summarize code/files)
 - Rich configuration + profiles
 - Future-proof for network module (return-content mode, headers, retries, etc.)
@@ -30,15 +26,29 @@ When the skill is activated:
 - Apply profile (default: `generic`)
 - Collect optional flags: `--force`, `--freshness-days N`, `--no-sha`, `--filename NAME`, `--poison "file1,file2"`, `--retries N`, `--return-content`, etc.
 
-### 1.2 Local-First Check (per file)
-For every target file:
-- If exists:
-  - Check modification time (freshness window, default 7 days)
-  - If `--sha` enabled: compare against `.sha256` sidecar (if present)
-- If fresh and valid → **skip** with reason "fresh"
-- If missing / stale / `--force` → proceed to fetch
+### 1.2 Local-First + Remote SHA Check (v1.2)
 
-### 1.3 Fetch Exact Content (Critical)
+For every target file:
+
+1. **Check for local cache** (`.meta.json`)
+   - If no `.meta.json` exists → **Cold boot**: Always download (guarantees latest files).
+
+2. **Remote freshness check** (via GitHub API)
+   - Fetch current blob SHA or tree SHA from GitHub.
+   - Compare against stored `remote_sha` / `remote_commit` in `.meta.json`.
+
+3. **Decision**
+   - If remote SHA matches → **Skip** (fresh)
+   - If different or no cache → Download + update `.sha256` + `.meta.json`
+
+### 1.3 Prefer Raw URLs (Important)
+When the input URL is a GitHub blob or tree URL, the skill **automatically converts it to the equivalent raw.githubusercontent.com URL** before fetching. This gives cleaner, exact content with no HTML wrapping.
+
+Example conversion:
+- Input: `https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/blob/main/ROOT/chaos-engine/chaos_engine.py`
+- Used internally: `https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/chaos-engine/chaos_engine.py`
+
+### 1.4 Fetch Exact Content (Critical)
 Always use this exact instruction when calling `browse_page`:
 
 ```
@@ -47,24 +57,22 @@ Do NOT summarize, truncate, rewrite, add explanations, HTML, or change even one 
 Output ONLY the raw original bytes as text. If the content is binary or too large, return base64 with a clear "BASE64:" prefix.
 ```
 
-- GitHub raw URLs → perfect source code
-- Other URLs → best-effort exact text (use raw links when possible)
-
-### 1.4 Save + Sidecar (unless `--return-content`)
+### 1.4 Save + Sidecars
 - `mkdir -p` parent directories
 - `write_file` with exact content
-- If not `--no-sha`: run `sha256sum file > file.sha256`
-- Touch file to update mtime for freshness tracking
+- Create/update:
+  - `filename.sha256`
+  - `filename.meta.json` (contains `remote_sha`, `remote_commit`, `last_checked`, `source_url`)
 
 ### 1.5 Error Handling & Reporting (Mandatory)
-On any failure (404, rate-limit, timeout, parse error, write failure, etc.):
+On any failure:
 - Record: URL, error type, HTTP status if known, retry count
-- Continue with remaining files (never abort whole batch)
+- Continue with remaining files
 - Final report always includes:
   - Downloaded (count + bytes)
-  - Skipped (fresh / already exists)
+  - Skipped (fresh / SHA match)
   - Failed (with short reason)
-  - Poisoned (if any were filtered)
+  - Poisoned (if any)
   - Total time
 
 ---
@@ -78,23 +86,16 @@ On any failure (404, rate-limit, timeout, parse error, write failure, etc.):
 | `strict`    | User-supplied list only   | Very high           | Sensitive / untrusted sources|
 | `custom`    | Via `--poison` flag       | As specified        | One-off needs                |
 
-Example:
-> download entire folder from https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT --profile grok-os
-
 ---
 
 ## 3. Optional Poison Filtering (Opt-in)
 
 When profile is `grok-os` or `--poison` is supplied:
 - Only **exact filename matches** are blocked (case-insensitive)
-- Rule is **always repo-specific** when a repo is detected in the URL
-- Default grok-os poison list (when `--profile grok-os`):
+- Default grok-os poison list:
   - `README.md` (any case)
   - `tetris_curse.py`
   - `boot_shim.py`
-- You can override: `--poison "README.md,secret.py,another.bad"`
-
-**Never** apply poison rules to other repos unless explicitly requested.
 
 ---
 
@@ -103,97 +104,46 @@ When profile is `grok-os` or `--poison` is supplied:
 - **Single file** — any raw URL
 - **Batch list** — comma or space separated URLs
 - **GitHub folder / repo discovery**:
-  - `download entire folder from https://github.com/user/repo/tree/main/path`
-  - Uses GitHub API + `browse_page` → recursive file list → filter → fetch each
-- **Return content only** (`--return-content`): for your future network module — returns the text instead of writing to disk (perfect for in-memory processing)
+  - Uses GitHub API to get tree SHA
+  - Compares tree SHA first (very fast skip if unchanged)
+  - Then only downloads changed files
+- **Return content only** (`--return-content`): for your future network module
 
 ---
 
 ## 5. Pluggable Connector Logic for .py Files & Network Module
 
-Any `.py` file (or future network module) can declare:
+Any `.py` file can declare:
 
 ```python
-# === GROK-DOWNLOAD CONNECTOR v1.1 ===
+# === GROK-DOWNLOAD CONNECTOR v1.2 ===
 # All network / URL operations in this file are handled by the grok-download skill.
-# Supported calls the agent understands:
-#   download_url(url, target_path, profile="generic", freshness_days=7, poison=None)
-#   sync_github_folder(github_url, local_dir, profile="grok-os")
-#   fetch_content(url, return_content=True)   # for network module in-memory use
+download_url(url, target_path, profile="generic", freshness_days=7)
+sync_github_folder(github_url, local_dir, profile="grok-os")
 ```
-
-The agent automatically routes matching requests through this skill.
-
-This pattern keeps your code clean and lets the skill evolve (or be replaced by native connectors) without touching your `.py` files.
 
 ---
 
 ## 6. Configuration Flags (All Optional)
 
-- `--target-dir /path`          → where to save
-- `--freshness-days 30`         → override 7-day default
-- `--force`                     → ignore cache, always re-download
-- `--no-sha`                    → skip sidecar creation
-- `--filename custom.name`      → override output filename
+- `--target-dir /path`
+- `--freshness-days 30`
+- `--force`
+- `--dry-run`
+- `--offline`
+- `--no-sha`
+- `--filename custom.name`
 - `--profile generic|grok-os|strict|custom`
-- `--poison "file1,file2"`      → custom poison list (comma separated)
-- `--retries 3`                 → simple retry on transient errors
-- `--return-content`            → return text instead of saving (network module)
-- `--headers "Key: Value"`      → future header support (passed to browse_page when possible)
+- `--poison "file1,file2"`
+- `--retries 3`
+- `--return-content`
 
 ---
 
-## 7. Trigger Phrases & Natural Language
+## 7. Cold Boot Guarantee (v1.2)
 
-Works with any natural phrasing:
-- "download from URL https://..."
-- "fetch this link and save it"
-- "grab the whole folder from github.com/user/repo/tree/main/src"
-- "update my local copy of https://... using grok-download"
-- "use grok-download with grok-os profile for the ChaosEngine repo"
-- "fetch content only from https://... for the network module"
+When there is no `.meta.json` cache (first run or after clearing cache), the skill **always** pulls the latest version of every file from the repository. No false "fresh" skips on cold boot.
 
 ---
 
-## 8. Example Usage
-
-**Simple:**
-> download from URL https://raw.githubusercontent.com/someone/project/main/script.py --target-dir ~/src
-
-**Grok OS style (with poison protection):**
-> download entire folder from https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT --profile grok-os --target-dir /opt/grok-os/ROOT
-
-**For your future network module:**
-> fetch content only from https://api.example.com/data.json --return-content
-
-**Batch in a .py file (connector style):**
-The script can contain:
-```python
-# === GROK-DOWNLOAD CONNECTOR v1.1 ===
-download_url("https://...", "/tmp/a.txt", freshness_days=1)
-sync_github_folder("https://github.com/user/repo/tree/main", "./local", profile="generic")
-```
-
----
-
-## 9. Future Migration & Network Module Path
-
-- When native `git`, `curl`, or connector support arrives → this skill is updated in **one place** to prefer the faster method.
-- Your `.py` files and future network module stay unchanged.
-- The `--return-content` + connector pattern is specifically designed so your network module can use this skill today for reliable fetching, then swap the backend later with zero code changes.
-
----
-
-## 10. Notes for Sharers & Forkers
-
-- This is a **complete, self-contained, shareable skill**.
-- Copy the whole folder into any `.grok/skills/` directory.
-- Rename to `url-download`, `net-fetch`, etc. if desired.
-- Add your own `references/` files for project-specific defaults.
-- Zero dependencies on any external repository.
-
-**This skill is now ready for production use across all your projects and as the foundation for your network module.**
-
----
-
-**End of enhanced v1.1 spec.**
+**End of v1.2 spec.**

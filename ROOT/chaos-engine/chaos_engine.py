@@ -15,18 +15,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional, Set
 
-# Add these imports at the top
-from layer_manager import layer_manager, get_current_layer, set_layer
-from ui_manager import format_output
-
-# In route_intent method, replace the return with:
-formatted = format_output(raw_output, current_layer, self.turn)
-return {
-    "status": "executed",
-    "process": cmd,
-    "result": formatted
-}
-
 # =============================================================================
 # CONFIG
 # =============================================================================
@@ -265,3 +253,13 @@ if __name__ == "__main__":
     engine.load_all()
     print(engine.route_intent("/boot"))
     print(engine.route_intent("check system health"))
+
+
+# ============================================================
+# CHAIN-FIRE MODE: Module-level singleton for package __init__.py
+# ============================================================
+chaos_engine = None
+try:
+    chaos_engine = ChaosEngine()
+except Exception as e:
+    print(f"[ChaosEngine] ⚠️  Chain-fire init deferred: {e}")

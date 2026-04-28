@@ -1,18 +1,18 @@
 """
-boot/__init__.py — Grok OS Master Boot v3.2 (Recursive + Two-Phase)
+boot/__init__.py — Grok OS Master Boot v3.3 (Configurable + Recursive)
 Phase 1: Mass Download → Phase 2: Recursive Scan + Chain
-Only scans under ROOT/ (core systems)
 """
 
 import importlib.util
 import os
 from pathlib import Path
 
-LOCAL_ROOT = Path("/opt/grok-os/ROOT")
+# === CONFIG (now configurable) ===
+LOCAL_ROOT = Path(os.getenv("GROKOS_ROOT", "/home/workdir/artifacts/grok-os/ROOT"))
 
 
 def boot_grok_os():
-    print("🚀 [boot] Grok OS Recursive Boot v3.2 Starting...")
+    print("🚀 [boot] Grok OS Recursive Boot v3.3 Starting...")
 
     # === PHASE 1: MASS DOWNLOAD (optional) ===
     print("\n📥 Phase 1: Mass Download")
