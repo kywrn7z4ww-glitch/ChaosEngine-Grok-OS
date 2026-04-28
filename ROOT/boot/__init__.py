@@ -1,13 +1,49 @@
 """
-boot/ package — Grok OS Boot Layer v2.1
-Initializes the boot system and exposes core boot components.
+boot/__init__.py — Grok OS Master Boot v3.2 (Two-Phase)
+Phase 1: Mass Download → Phase 2: Install & Chain
 """
 
-# Safe import of grok_os (the main boot script)
-try:
-    from .grok_os import main as boot_grok_os
-except ImportError:
-    boot_grok_os = None
-    print("[boot] Warning: grok_os.py not found or failed to import")
+import importlib
+import pkgutil
+from pathlib import Path
 
-print("[boot] Grok OS boot package initialized")
+LOCAL_ROOT = Path("/opt/grok-os/ROOT")
+
+
+def boot_grok_os():
+    print("🚀 [boot] Grok OS Two-Phase Boot Starting...")
+
+    # === PHASE 1: MASS DOWNLOAD ===
+    print("\n📥 Phase 1: Mass Download")
+    try:
+        from grok_download import sync_github_folder
+
+        sync_github_folder(
+            "https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT",
+            str(LOCAL_ROOT),
+            profile="grok-os",
+        )
+        print("  ✅ All core files downloaded")
+    except Exception as e:
+        print(f"  ⚠️  Download failed or not available: {e}")
+        print("  → Continuing with local files only...")
+
+    # === PHASE 2: INSTALL & CHAIN ===
+    print("\n🔗 Phase 2: Install & Chain Systems")
+    loaded = []
+
+    for importer, modname, ispkg in pkgutil.iter_modules([str(LOCAL_ROOT)]):
+        if ispkg:
+            try:
+                importlib.import_module(f".{modname}", package="ROOT")
+                print(f"  ✅ {modname}")
+                loaded.append(modname)
+            except Exception as e:
+                print(f"  ⚠️  {modname} failed: {e}")
+
+    print(f"\n✅ Grok OS booted — {len(loaded)} systems loaded")
+    return loaded
+
+
+if __name__ == "__main__":
+    boot_grok_os()

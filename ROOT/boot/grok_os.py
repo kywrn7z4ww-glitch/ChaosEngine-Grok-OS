@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-grok-os.py — Grok OS Boot Logic v2.1 (Local-First + Dynamic)
-Purpose: Dynamically discovers files, builds its own live index,
-loads core components, and prepares the OS environment.
-Local-first + simple freshness check.
+grok-os.py — Grok OS Boot Logic v2.2 (3-Tier Hotfix)
+Purpose: Dynamically discovers files with smart 3-tier fallback:
+1. Local first (fastest, offline)
+2. Connector (GitHub API + raw)
+3. Download skill (web browse fallback)
+
+This version is designed for no-internet environments + future network module.
 """
 
 import json
 import os
-import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set
@@ -33,30 +35,65 @@ def is_poison(path: str) -> bool:
     return any(p in path.lower() for p in POISON_PILLS)
 
 
-def fetch_file(rel_path: str) -> bool:
-    if is_poison(rel_path):
-        print(f"  ⚠️  Skipping poison: {rel_path}")
-        return False
+def should_refresh(local_path: Path, max_age_days: int = 7) -> bool:
+    if not local_path.exists():
+        return True
+    age = datetime.now() - datetime.fromtimestamp(local_path.stat().st_mtime)
+    return age.days > max_age_days
 
-    url = RAW_BASE + rel_path
+
+def kernel_panic(missing: List[str]):
+    """Fun kernel panic with emoji (kept for personality)"""
+    print("\n🚨 KERNEL PANIC — Critical Files Missing")
+    for f in missing:
+        print(f"  - {f}")
+    print("\nPlease repair and restart. Type 'retry' to try again.")
+    if input("> ").strip().lower() == "retry":
+        return True
+    exit(1)
+
+
+def fetch_file_3tier(rel_path: str) -> bool:
+    """
+    3-Tier Fallback System:
+    Tier 1: Local (fastest, offline)
+    Tier 2: Connector (GitHub API + raw)
+    Tier 3: Download skill (web browse fallback)
+    """
     local_path = LOCAL_ROOT / rel_path
-    local_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # === TIER 1: LOCAL FIRST ===
+    if local_path.exists() and not should_refresh(local_path):
+        print(f"  ♻️  Using local: {rel_path}")
+        return True
+
+    # === TIER 2: CONNECTOR (GitHub raw) ===
     try:
-        with urllib.request.urlopen(url, timeout=10) as resp:
+        import urllib.request
+
+        url = RAW_BASE + rel_path
+        with urllib.request.urlopen(url, timeout=8) as resp:
             content = resp.read()
+        local_path.parent.mkdir(parents=True, exist_ok=True)
         local_path.write_bytes(content)
-        print(f"  ✅ {rel_path}")
+        print(f"  ✅ {rel_path} (via connector)")
         return True
     except Exception as e:
-        print(f"  ❌ {rel_path}: {e}")
-        return False
+        print(f"  ⚠️  Connector failed for {rel_path}: {str(e)[:50]}")
+
+    # === TIER 3: DOWNLOAD SKILL (web browse fallback) ===
+    print(f"  📥 Tier 3: Download skill needed for {rel_path}")
+    # In real use, this would call the download skill's web browse logic
+    # For now we just flag it
+    return False
 
 
 def discover_tree() -> Set[str]:
     """Dynamically scan the entire ROOT/ tree via GitHub API"""
     print("\n=== Dynamic Discovery (Building Live Index) ===")
     try:
+        import urllib.request
+
         url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/git/trees/{BRANCH}?recursive=1"
         with urllib.request.urlopen(url, timeout=15) as resp:
             data = json.loads(resp.read().decode())
@@ -76,7 +113,6 @@ def discover_tree() -> Set[str]:
 
 
 def build_and_save_index(files: Set[str]):
-    """Save discovered index for future boots"""
     index_data = {
         "timestamp": datetime.now().isoformat(),
         "file_count": len(files),
@@ -96,26 +132,8 @@ def load_cached_index() -> Set[str]:
     return set()
 
 
-def should_refresh(local_path: Path, max_age_days: int = 7) -> bool:
-    """Simple freshness check"""
-    if not local_path.exists():
-        return True
-    age = datetime.now() - datetime.fromtimestamp(local_path.stat().st_mtime)
-    return age.days > max_age_days
-
-
-def kernel_panic(missing: List[str]):
-    print("\n🚨 KERNEL PANIC — Critical Files Missing")
-    for f in missing:
-        print(f"  - {f}")
-    print("\nPlease repair and restart. Type 'retry' to try again.")
-    if input("> ").strip().lower() == "retry":
-        return True
-    exit(1)
-
-
 def main():
-    print("=== Grok OS Boot Logic v2.1 (Local-First + Dynamic) ===")
+    print("=== Grok OS Boot Logic v2.2 (3-Tier Hotfix) ===")
 
     # Step 1: Try cached index first
     cached = load_cached_index()
@@ -129,37 +147,16 @@ def main():
 
     if not files:
         print("❌ No files discovered. Cannot continue.")
-        exit(1)
+        return
 
-    # Step 2: Load critical core files (local first, then remote if needed)
-    critical = ["grok-os.md", "decision-kernel.md", "REPO_INDEX.md"]
-    print("\n=== Loading Critical Core Files (Local-First) ===")
-    for f in critical:
-        local_path = LOCAL_ROOT / f
-        if local_path.exists() and not should_refresh(local_path):
-            print(f"  ♻️  Using local: {f}")
-        elif f in files:
-            fetch_file(f)
-        else:
-            print(f"  ⚠️  Critical file not found: {f}")
-
-    # Step 3: Load remaining files (local first, refresh if old)
-    print("\n=== Loading Remaining Files ===")
+    # Step 2: Load all files using 3-tier system
+    print("\n=== Loading Files (3-Tier System) ===")
     loaded = 0
-    refreshed = 0
     for f in sorted(files):
-        if f not in critical:
-            local_path = LOCAL_ROOT / f
-            if local_path.exists() and not should_refresh(local_path):
-                print(f"  ♻️  Using local: {f}")
-            else:
-                if fetch_file(f):
-                    refreshed += 1
+        if fetch_file_3tier(f):
             loaded += 1
-    print(f"  {loaded} files processed ({refreshed} refreshed from remote)")
 
-    print("\n✅ Grok OS environment ready.")
-    print("Next stage (ChaosEngine + EmotionNet) prepared for following turn.")
+    print(f"\n✅ {loaded}/{len(files)} files processed")
     print("=== Boot Complete ===")
 
 
