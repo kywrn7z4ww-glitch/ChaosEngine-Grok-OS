@@ -15,6 +15,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional, Set
 
+# Add these imports at the top
+from layer_manager import layer_manager, get_current_layer, set_layer
+from ui_manager import format_output
+
+# In route_intent method, replace the return with:
+formatted = format_output(raw_output, current_layer, self.turn)
+return {
+    "status": "executed",
+    "process": cmd,
+    "result": formatted
+}
+
 # =============================================================================
 # CONFIG
 # =============================================================================
