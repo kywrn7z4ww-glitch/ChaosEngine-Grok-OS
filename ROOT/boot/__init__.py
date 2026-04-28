@@ -1,19 +1,20 @@
 """
-boot/__init__.py — Grok OS Master Boot v3.2 (Two-Phase)
-Phase 1: Mass Download → Phase 2: Install & Chain
+boot/__init__.py — Grok OS Master Boot v3.2 (Recursive + Two-Phase)
+Phase 1: Mass Download → Phase 2: Recursive Scan + Chain
+Only scans under ROOT/ (core systems)
 """
 
-import importlib
-import pkgutil
+import importlib.util
+import os
 from pathlib import Path
 
 LOCAL_ROOT = Path("/opt/grok-os/ROOT")
 
 
 def boot_grok_os():
-    print("🚀 [boot] Grok OS Two-Phase Boot Starting...")
+    print("🚀 [boot] Grok OS Recursive Boot v3.2 Starting...")
 
-    # === PHASE 1: MASS DOWNLOAD ===
+    # === PHASE 1: MASS DOWNLOAD (optional) ===
     print("\n📥 Phase 1: Mass Download")
     try:
         from grok_download import sync_github_folder
@@ -23,25 +24,33 @@ def boot_grok_os():
             str(LOCAL_ROOT),
             profile="grok-os",
         )
-        print("  ✅ All core files downloaded")
-    except Exception as e:
-        print(f"  ⚠️  Download failed or not available: {e}")
-        print("  → Continuing with local files only...")
+        print("  ✅ Core systems downloaded")
+    except:
+        print("  ⚠️  Download skill not available — using local files")
 
-    # === PHASE 2: INSTALL & CHAIN ===
-    print("\n🔗 Phase 2: Install & Chain Systems")
+    # === PHASE 2: RECURSIVE SCAN + CHAIN ===
+    print("\n🔗 Phase 2: Recursive Scan & Chain")
     loaded = []
 
-    for importer, modname, ispkg in pkgutil.iter_modules([str(LOCAL_ROOT)]):
-        if ispkg:
+    for root, dirs, files in os.walk(LOCAL_ROOT):
+        if "__init__.py" in files:
             try:
-                importlib.import_module(f".{modname}", package="ROOT")
-                print(f"  ✅ {modname}")
-                loaded.append(modname)
-            except Exception as e:
-                print(f"  ⚠️  {modname} failed: {e}")
+                rel_path = Path(root).relative_to(LOCAL_ROOT)
+                module_name = str(rel_path).replace("/", ".").replace("\\", ".")
 
-    print(f"\n✅ Grok OS booted — {len(loaded)} systems loaded")
+                if module_name:
+                    spec = importlib.util.spec_from_file_location(
+                        module_name, Path(root) / "__init__.py"
+                    )
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+
+                    print(f"  ✅ {module_name}")
+                    loaded.append(module_name)
+            except Exception as e:
+                print(f"  ⚠️  {root} failed: {e}")
+
+    print(f"\n✅ Grok OS booted — {len(loaded)} systems loaded (full recursive)")
     return loaded
 
 
