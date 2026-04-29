@@ -14,6 +14,20 @@ This file exists so that **any automated system** (including future versions of 
 - How to handle failures gracefully
 - The overall philosophy: **"Mirror first → Install second"**
 
+---
+
+## Step 0: Download Skill Check (Critical First Step)
+
+**Before doing anything else**, the system **must** check:
+
+1. Is the `grok-download` skill installed?
+2. If **NO** → Install it immediately from GitHub:
+   - Primary: Raw URL `https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/grok-download.md`
+   - Fallback: Use `skill-installer` if available
+3. If **YES** → Proceed to Phase 1
+
+**This step is mandatory** because the entire mirror + installation process depends on `grok-download` being active.
+
 Without this, systems make assumptions and cause breakages (as we have seen).
 
 ---
@@ -57,17 +71,3 @@ When fetching files:
 These must remain **flat** (not nested inside Grok OS skill) until nesting is fully tested.
 
 ---
-
-## Current Status (2026-04-29)
-
-- Most layer `.md` files synced
-- Several skills installed from `PROCESS/skills/`
-- Many `.py` files in `PROCESS/` subfolders still returning 404 (not yet pushed)
-- `emotion-net.md` core ready for fetch
-
-**Next Action**: Complete full mirror of `PROCESS/`, `STORAGE/AGENTS/`, and core `ROOT/` files using `grok-download` skill.
-
----
-
-**Last Updated:** 2026-04-29
-
