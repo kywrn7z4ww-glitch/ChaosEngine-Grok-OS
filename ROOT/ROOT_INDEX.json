@@ -1,3 +1,11 @@
+"boot_sequence": [
+  "Phase 0: Pre-Boot — Download skill active + fetch all *_INDEX + logs first",
+  "Phase 1: Core Mirror (only REPO_INDEX.core_components)",
+  "Phase 1.5: ROOT/ batch (layers/, boot/, chaos-engine/ priority; emotion-net partial)",
+  "Phase 2: PROCESS/ + STORAGE/AGENTS/SYS_ADMIN_CLUSTER",
+  "Phase 3: Handoff + lazy on-demand"
+]
+
 {
   "version": "1.0",
   "purpose": "**ROOT Index**\n\nThis index tracks every file under the ROOT/ folder. The mirror logic automatically adds new files here when discovered and marks them as pulled when successfully written.",

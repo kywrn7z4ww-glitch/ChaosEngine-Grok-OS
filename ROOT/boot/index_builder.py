@@ -1,90 +1,35 @@
-"""
-index_builder.py — Grok OS Index Builder v1.0
-Purpose: Scans folders and builds/updates the corresponding _INDEX.json files.
-Adds short purpose tags and logs everything.
-
-Location: /ROOT/boot/index_builder.py
-"""
-
-import json
-import os
-from datetime import datetime
-from pathlib import Path
-
-# === CONFIG ===
-LOCAL_ROOT = Path(os.getenv("GROKOS_ROOT", "/home/workdir/artifacts/grok-os/ROOT"))
-LOGS_DIR = Path("/home/workdir/artifacts/grokos/logs")
-BOOT_LOG = LOGS_DIR / "boot_log.json"
-BUG_REPORTS = LOGS_DIR / "bug_reports.json"
-
-
-def log_event(event: str, status: str = "success", details: str = ""):
-    """Write to Boot_Log.json"""
-    timestamp = datetime.now().isoformat()
-    entry = {
-        "timestamp": timestamp,
-        "event": event,
-        "status": status,
-        "details": details,
-    }
-    try:
-        if BOOT_LOG.exists():
-            data = json.loads(BOOT_LOG.read_text())
-        else:
-            data = {"version": "1.0", "entries": []}
-        data["entries"].append(entry)
-        BOOT_LOG.write_text(json.dumps(data, indent=2))
-    except Exception as e:
-        print(f"[index_builder] Log write failed: {e}")
-
-
-def build_index(folder_name: str, index_path: Path):
-    """Build or update a single _INDEX.json"""
-    folder = LOCAL_ROOT / folder_name
-    if not folder.exists():
-        log_event("index_build_skipped", "warning", f"Folder not found: {folder_name}")
-        return
-
-    files = []
-    for root, dirs, filenames in os.walk(folder):
-        for f in filenames:
-            if f.endswith((".py", ".md")) and not f.startswith("__"):
-                rel_path = os.path.relpath(os.path.join(root, f), LOCAL_ROOT)
-                files.append(
-                    {
-                        "path": rel_path,
-                        "purpose": "Auto-generated stub — needs manual description",
-                        "size": os.path.getsize(os.path.join(root, f)),
-                        "last_modified": datetime.fromtimestamp(
-                            os.path.getmtime(os.path.join(root, f))
-                        ).isoformat(),
-                    }
-                )
-
-    index_data = {
-        "version": "1.0",
-        "folder": folder_name,
-        "last_updated": datetime.now().isoformat(),
-        "total_files": len(files),
-        "files": files,
-    }
-
-    index_path.write_text(json.dumps(index_data, indent=2))
-    log_event("index_built", "success", f"{folder_name} → {len(files)} files")
-
-
-def main():
-    print("🔧 Grok OS Index Builder v1.0")
-
-    # Build core indexes
-    build_index("PROCESS", LOGS_DIR / "PROCESS_INDEX.json")
-    build_index("layers", LOGS_DIR / "LAYERS_INDEX.json")
-    build_index("chaos-engine", LOGS_DIR / "CHAOS_ENGINE_INDEX.json")
-    build_index("emotion-net", LOGS_DIR / "EMOTION_NET_INDEX.json")
-
-    log_event("index_builder_complete", "success", "All core indexes updated")
-    print("✅ Index build complete")
-
-
-if __name__ == "__main__":
-    main()
+{
+    "version": "2.5",
+    "purpose": "**Master REPO Index**\n\nThis is the top-level index for the entire GrokOS system. It defines the minimal core components needed to boot and points to all sub-indexes. The mirror logic updates this file and the sub-indexes in real time as files are downloaded.",
+    "last_updated": "{CURRENT_TIMESTAMP}",
+    "total_core_components": 9,
+    "total_sub_indexes": 5,
+    "core_components": [
+        "ROOT/boot/mirroring/mirror_logic.py",
+        "ROOT/boot/mirroring/__init__.py",
+        "ROOT/boot/grok-os.md",
+        "ROOT/boot/decision-kernel.md",
+        "ROOT/boot/index_builder.py",
+        "ROOT/UI_Template.md",
+        "ROOT/layers/boot/boot.md",
+        "ROOT/chaos-engine/__init__.py",
+        "ROOT/chaos-engine/chaos_engine.py",
+    ],
+    "sub_indexes": {
+        "ROOT": "ROOT_INDEX.json",
+        "PROCESS": "PROCESS_INDEX.json",
+        "STORAGE/AGENTS": "AGENT_INDEX.json",
+        "STORAGE": "STORAGE_INDEX.json",
+        "NETWORK_HUB": "NETWORK_HUB_INDEX.json",
+    },
+    "boot_log": "boot_log.json",
+    "bug_reports": "bug_reports.json",
+    "notes": "Core components are the minimum required to boot Grok OS. Everything else lives in sub-indexes. Mirror logic updates the relevant sub-index in real-time as files are downloaded. emotion-net is intentionally left out of core_components — it gets partial load only in Phase 1.5. index_builder.py should be called early (Phase 0 or 1) to populate local indexes.",
+    "boot_sequence": [
+        "Phase 0 — Pre-Boot: Activate Download Skill module first. Fetch ALL *_INDEX.json + logs (boot_log.json + bug_reports.json) before anything else. Call index_builder.py to ensure local indexes are populated. These files are the live manifest and source of truth.",
+        "Phase 1 — Core Mirror: Pull ONLY the files listed in core_components array. After each successful pull: update the relevant sub-index (mark pulled: true + timestamp) and append to boot_log.json. Respect poison rules (skip README.md, tetris_curse.py, hidden files, tests).",
+        "Phase 1.5 — ROOT Batch Load: Controlled batch mirroring of ROOT/ folder. Priority order: layers/ → boot/ → chaos-engine/. emotion-net/ receives partial load only (core files). Update ROOT_INDEX.json + boot_log.json after every batch. Log errors to bug_reports.json.",
+        "Phase 2 — Next Batch: Mirror PROCESS/ (high-priority subfolders first) + STORAGE/AGENTS/SYS_ADMIN_CLUSTER + any remaining high-value folders from sub_indexes. Update all affected indexes and boot_log.json after each batch.",
+        "Phase 3 — Handoff + Lazy Runtime: Mark boot complete in boot_log.json. Enable on-demand / lazy pulls for any missing files using the indexes. Handoff to user-selected layer or ChaosEngine. Future pulls (when connectors available) can use git clone / full install on top of this mirror.",
+    ],
+}

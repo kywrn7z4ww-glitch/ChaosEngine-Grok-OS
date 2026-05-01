@@ -1,0 +1,40 @@
+{
+  "version": "2.5",
+  "purpose": "**Master REPO Index**\n\nThis is the top-level index for the entire GrokOS system. It defines the minimal core components needed to boot and points to all sub-indexes. The mirror logic updates this file and the sub-indexes in real time as files are downloaded.",
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "total_core_components": 9,
+  "total_sub_indexes": 5,
+
+  "core_components": [
+    "ROOT/boot/mirroring/mirror_logic.py",
+    "ROOT/boot/mirroring/__init__.py",
+    "ROOT/boot/grok-os.md",
+    "ROOT/boot/decision-kernel.md",
+    "ROOT/boot/index_builder.py",
+    "ROOT/UI_Template.md",
+    "ROOT/layers/boot/boot.md",
+    "ROOT/chaos-engine/__init__.py",
+    "ROOT/chaos-engine/chaos_engine.py"
+  ],
+
+  "sub_indexes": {
+    "ROOT": "ROOT_INDEX.json",
+    "PROCESS": "PROCESS_INDEX.json",
+    "STORAGE/AGENTS": "AGENT_INDEX.json",
+    "STORAGE": "STORAGE_INDEX.json",
+    "NETWORK_HUB": "NETWORK_HUB_INDEX.json"
+  },
+
+  "boot_log": "boot_log.json",
+  "bug_reports": "bug_reports.json",
+
+  "notes": "Core components are the minimum required to boot Grok OS. Everything else lives in sub-indexes. Mirror logic updates the relevant sub-index in real-time as files are downloaded. emotion-net is intentionally left out of core_components — it gets partial load only in Phase 1.5. index_builder.py should be called early (Phase 0 or 1) to populate local indexes.",
+
+  "boot_sequence": [
+    "Phase 0 — Pre-Boot: Activate Download Skill module first. Fetch ALL *_INDEX.json + logs (boot_log.json + bug_reports.json) before anything else. Call index_builder.py to ensure local indexes are populated. These files are the live manifest and source of truth.",
+    "Phase 1 — Core Mirror: Pull ONLY the files listed in core_components array. After each successful pull: update the relevant sub-index (mark pulled: true + timestamp) and append to boot_log.json. Respect poison rules (skip README.md, tetris_curse.py, hidden files, tests).",
+    "Phase 1.5 — ROOT Batch Load: Controlled batch mirroring of ROOT/ folder. Priority order: layers/ → boot/ → chaos-engine/. emotion-net/ receives partial load only (core files). Update ROOT_INDEX.json + boot_log.json after every batch. Log errors to bug_reports.json.",
+    "Phase 2 — Next Batch: Mirror PROCESS/ (high-priority subfolders first) + STORAGE/AGENTS/SYS_ADMIN_CLUSTER + any remaining high-value folders from sub_indexes. Update all affected indexes and boot_log.json after each batch.",
+    "Phase 3 — Handoff + Lazy Runtime: Mark boot complete in boot_log.json. Enable on-demand / lazy pulls for any missing files using the indexes. Handoff to user-selected layer or ChaosEngine. Future pulls (when connectors available) can use git clone / full install on top of this mirror."
+  ]
+}
