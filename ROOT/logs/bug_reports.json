@@ -1,0 +1,24 @@
+{
+  "version": "1.1",
+  "purpose": "**Boot Log**\n\nThis file records every major step of the mirror and install process. It acts as a full audit trail so we can see exactly what happened, when it happened, and whether each step succeeded or failed. \n\nThe system should append a new entry every time a significant action occurs (mirror start, file written, index updated, install started, etc.). Use the `data` object to include any extra relevant information at runtime.",
+
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "total_entries": "{TOTAL_ENTRIES}",
+
+  "entries": [
+    {
+      "id": "boot-{DATE}-{INCREMENTAL_NUMBER}",
+      "timestamp": "{CURRENT_TIMESTAMP}",
+      "event": "{EVENT_TYPE}",
+      "status": "{STATUS}",
+      "message": "{EVENT_MESSAGE}",
+      "data": {
+        "folder": "{FOLDER_BEING_PROCESSED}",
+        "file": "{FILE_PATH}",
+        "bytes_written": {BYTES_WRITTEN},
+        "sub_index_updated": "{SUB_INDEX_NAME}",
+        "details": "{ADDITIONAL_DETAILS}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "purpose": "Machine-readable future patches. Can import from Future_Patches.md for human notes.",
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "entries": [
+    {
+      "id": "patch-{INCREMENTAL_NUMBER}",
+      "date": "{DATE}",
+      "title": "{PATCH_TITLE}",
+      "description": "{PATCH_DESCRIPTION}",
+      "priority": "{PRIORITY}",
+      "status": "{STATUS}",
+      "source_md": "Future_Patches.md"
+    }
+  ],
+  "notes": "This file can be programmatically updated from Future_Patches.md when needed. Use {VARIABLE} placeholders for dynamic data."
+}

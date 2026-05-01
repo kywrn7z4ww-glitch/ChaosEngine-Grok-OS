@@ -1,73 +1,88 @@
-# ROOT/
+# ROOT/ — Grok OS Core Repository
 
 **Grok OS Core Repository**  
-**Status:** Active Development — 4.3 Migration in Progress
+**Status:** Active Development — v4.0 Architecture (3-Phase Boot + Logs-First)
 
 ---
 
 ## Purpose of This README
 
-This file exists so that **any automated system** (including future versions of Grok) that enters this folder immediately knows:
+This is the **high-level architecture document** for the entire Grok OS system.
 
-- The current state of the project
-- The **correct order** of operations
-- How to handle failures gracefully
-- The overall philosophy: **"Mirror first → Install second"**
+It explains:
+- The overall philosophy and design
+- The mandatory boot flow
+- How everything connects
+- Where to find more details (subfolder READMEs)
 
----
-
-## Step 0: Download Skill Check (Critical First Step)
-
-**Before doing anything else**, the system **must** check:
-
-1. Is the `grok-download` skill installed?
-2. If **NO** → Install it immediately from GitHub:
-   - Primary: Raw URL `https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/grok-download.md`
-   - Fallback: Use `skill-installer` if available
-3. If **YES** → Proceed to Phase 1
-
-**This step is mandatory** because the entire mirror + installation process depends on `grok-download` being active.
-
-Without this, systems make assumptions and cause breakages (as we have seen).
+**Rule:** This document stays high-level. All detailed explanations live in subfolder READMEs.
 
 ---
 
-## Core Rule: Mirror First, Install Second
+## Core Philosophy (v4.0)
 
-**Never** begin Grok OS installation until the **full local mirror** is complete.
+**"Mirror First → Self-Check → Install Second"**
 
-### Phase 1 – Build Local Mirror (Required First)
-1. Install `grok-download` skill (if not already present)
-2. Use it to scan GitHub and fetch **all** files from:
-   - `PROCESS/`
-   - `STORAGE/AGENTS/`
-   - Core `ROOT/` files (including `emotion-net.md`)
-3. Handle 404s, missing files, and breakages using the rules below
-4. Only proceed to Phase 2 when mirror is 100% complete
+Grok OS follows a strict **3-Phase Boot Flow**:
 
-### Phase 2 – Grok OS Installation (Only After Mirror Complete)
-1. Follow `/boot` layer as the single entry point
-2. Install everything as a **full nested Grok OS skill**
-3. Run final validation
+1. **Download Phase** (any method: Download Skill / Traditional Curling / Git Clone)
+   - File structure is built first
+   - All `*_INDEX.json` + `boot_log.json` + `bug_reports.json` are fetched early
+   - These become the live manifest
+
+2. **Self-Check Phase**
+   - Validate structure against `REPO_INDEX.json`
+   - Run poison detection
+   - Confirm core components exist
+   - Log everything
+
+3. **Installation Phase**
+   - Convert real skills to `SKILL.md` format
+   - Register Grok OS as a full master skill
+   - Load ChaosEngine + layers
+   - Final handoff to runtime
+
+**Non-Negotiable Rule:** Logs and indexes come **first**. No blind recursion. Everything is auditable.
+
+---
+
+## Key Folders & Their Purpose
+
+| Folder              | Purpose                                      | Details In                  |
+|---------------------|----------------------------------------------|-----------------------------|
+| `boot/`             | Boot orchestrator + index builder            | `boot/README.md`            |
+| `logs/`             | All system logs (`boot_log.json`, etc.)      | `logs/README.md`            |
+| `PROCESS/`          | High-level callable skills                   | `PROCESS/README.md`         |
+| `layers/`           | Layer definitions (`/casual`, `/dev`, etc.)  | `layers/README.md`          |
+| `chaos-engine/`     | Central brain + dynamic loader               | `chaos-engine/README.md`    |
+| `emotion-net/`      | Emotional state engine                       | `emotion-net/README.md`     |
+| `NETWORK_HUB/`      | External URLs, modules prone to deprecation, future expansion (music hosting, etc.) | `NETWORK_HUB/README.md` |
+| `Documentation/`    | User-created docs, templates, not frequently updated | `Documentation/README.md` |
+| `STORAGE/`          | Storage for agents, data, and persistent state | `STORAGE/README.md`         |
+| `AGENTS/`           | Agent definitions and clusters (including SYS_ADMIN_CLUSTER) | `AGENTS/README.md` |
+| `Archive/`          | Old data from big file changes, sorted by date | (Historical only)           |
 
 ---
 
-## Fetch & Mirror Rules (grok-download behavior)
+## Important Design Documents
 
-When fetching files:
-
-- **Primary method**: GitHub API via `browse_page` (for SHA/commit checking)
-- **Fallback**: Raw URL (`raw.githubusercontent.com`)
-- **If both fail (404)**:
-  - Create placeholder file with expected structure
-  - Log clearly: "MISSING: [filepath] — created placeholder"
-  - Continue with next file (never halt the entire process)
-- **If file exists but is broken**:
-  - Move to `BROKEN/` folder
-  - Log reason
-  - Continue
-
-**Special Rule for `PROCESS/skills/`**:  
-These must remain **flat** (not nested inside Grok OS skill) until nesting is fully tested.
+- `grok-os.md` → **Master design document** (read this first)
+- `INSTALLATION_GUIDE.md` → Traditional + batch mirroring methods
+- `mirroring_guide.md` → Detailed batch mirroring strategy
+- `boot.md` → `/boot` layer rules
 
 ---
+
+## Current Status (2026-05-01)
+
+- `boot/__init__.py` + `grok_os.py` + `chaos_engine.py` = v4.1 (full logging + index builder)
+- All core indexes and logs use proper template format with `{VARIABLE}` placeholders
+- System is stable and ready for further expansion
+
+---
+
+**This is the beating heart of Grok OS.**
+
+Everything else is implementation detail.
+
+**Pinned. Update only when the high-level architecture changes.**

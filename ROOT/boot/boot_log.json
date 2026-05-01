@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "description": "Tracks every boot and install attempt. Used for debugging and rollback decisions.",
+  "last_updated": "2026-04-30T19:00:00Z",
+  "entries": [
+    {
+      "timestamp": "2026-04-30T18:59:12Z",
+      "event": "mirror_start",
+      "status": "success",
+      "details": "Started mirroring /ROOT and /PROCESS",
+      "files_processed":
+    },
+    {
+      "timestamp": "2026-04-30T19:00:03Z",
+      "event": "install_complete",
+      "status": "success",
+      "details": "Core components installed successfully",
+      "modules_loaded": ["{FOLDER_NAME}"]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "purpose": "**AGENT Index (STORAGE/AGENTS)**\n\nThis index tracks all files under STORAGE/AGENTS/ (including SYS_ADMIN_CLUSTER, Echo, Kerrigan, System_Design_Team, etc). The mirror logic should keep this index updated with the live repo state and mark files as pulled when successfully downloaded.",
+
+  "folder": "STORAGE/AGENTS",
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "total_files": "{TOTAL_FILES}",
+  "pulled_files": "{PULLED_COUNT}",
+
+  "files": [
+    {
+      "path": "{FILE_PATH}",
+      "sha": "{FILE_SHA}",
+      "size": {FILE_SIZE},
+      "pulled": {true_or_false},
+      "pulled_at": "{TIMESTAMP or null}"
+    }
+  ]
+}

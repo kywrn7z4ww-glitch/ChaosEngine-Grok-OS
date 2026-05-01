@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "purpose": "**ROOT Index**\n\nThis index tracks every file under the ROOT/ folder. The mirror logic automatically adds new files here when discovered and marks them as pulled when successfully written.",
+
+  "folder": "ROOT",
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "total_files": "{TOTAL_FILES}",
+  "pulled_files": "{PULLED_COUNT}",
+
+  "files": [
+    {
+      "path": "{FILE_PATH}",
+      "sha": "{FILE_SHA}",
+      "size": {FILE_SIZE},
+      "pulled": {true_or_false},
+      "pulled_at": "{TIMESTAMP or null}"
+    }
+  ]
+}

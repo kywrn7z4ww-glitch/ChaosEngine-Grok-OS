@@ -1,35 +1,80 @@
 #!/usr/bin/env python3
 """
-chaos-engine.py — Grok OS ChaosEngine v3.0 (Full Skill Manager)
-Purpose: Central brain that handles loading, routing, remote installation,
-skill chaining, dynamic discovery, and live indexing.
-
-Combines the solid original design with new remote + chaining features.
+chaos-engine.py — Grok OS ChaosEngine v4.1 (Full Logging + Index Builder + Future Patch Support)
+Purpose: Central brain with mandatory logging, index building, and support for future_patches.json + changelog.json
 """
 
 import importlib.util
 import json
 import os
-import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional, Set
 
-# =============================================================================
-# CONFIG
-# =============================================================================
-REPO_OWNER = "kywrn7z4ww-glitch"
-REPO_NAME = "ChaosEngine-Grok-OS"
-BRANCH = "main"
-RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/ROOT/"
+# === CONFIG ===
+LOCAL_ROOT = Path("/home/workdir/artifacts/grok-os/ROOT")
+LOGS_DIR = Path("/home/workdir/artifacts/grokos/logs")
 
-LOCAL_ROOT = Path("/opt/grok-os/ROOT")
-CACHE_DIR = Path("/opt/grok-os/.cache")
-INDEX_CACHE = CACHE_DIR / "chaos_live_index.json"
+BOOT_LOG = LOGS_DIR / "boot_log.json"
+BUG_REPORTS = LOGS_DIR / "bug_reports.json"
+CHANGELOG = LOGS_DIR / "changelog.json"
+FUTURE_PATCHES = LOGS_DIR / "future_patches.json"
 
-PROCESS_DIRS = ["PROCESS", "layers", "skills", "chaos-engine", "emotion-net"]
+# Import index builder
+try:
+    from boot.index_builder import main as build_indexes
+except:
+    build_indexes = None
 
-POISON_PILLS = ["readme.md", "tetris_curse.py"]
+
+def log_event(event: str, status: str = "success", details: str = ""):
+    """Write to boot_log.json"""
+    timestamp = datetime.now().isoformat()
+    entry = {
+        "timestamp": timestamp,
+        "event": event,
+        "status": status,
+        "details": details,
+    }
+    try:
+        if BOOT_LOG.exists():
+            data = json.loads(BOOT_LOG.read_text())
+        else:
+            data = {"version": "1.0", "entries": []}
+        data["entries"].append(entry)
+        BOOT_LOG.write_text(json.dumps(data, indent=2))
+    except Exception as e:
+        print(f"[chaos_engine] Log write failed: {e}")
+
+
+def log_bug(severity: str, message: str, data: dict = None):
+    """Write to bug_reports.json"""
+    timestamp = datetime.now().isoformat()
+    entry = {
+        "timestamp": timestamp,
+        "severity": severity,
+        "message": message,
+        "data": data or {},
+    }
+    try:
+        if BUG_REPORTS.exists():
+            bugs = json.loads(BUG_REPORTS.read_text())
+        else:
+            bugs = {"version": "1.0", "entries": []}
+        bugs["entries"].append(entry)
+        BUG_REPORTS.write_text(json.dumps(bugs, indent=2))
+    except Exception as e:
+        print(f"[chaos_engine] Bug log failed: {e}")
+
+
+def load_json_log(path: Path) -> dict:
+    """Load a JSON log file (used for future_patches.json and changelog.json)"""
+    if path.exists():
+        try:
+            return json.loads(path.read_text())
+        except:
+            return {"version": "1.0", "entries": []}
+    return {"version": "1.0", "entries": []}
 
 
 class ChaosEngine:
@@ -40,59 +85,61 @@ class ChaosEngine:
         self.active_layer: str = "dev"
         self.live_index: Set[str] = set()
 
+        log_event("chaosengine_init_started")
         self._load_emotionnet()
         self._build_live_index()
         self._load_all_processes_dynamically()
+        log_event("chaosengine_init_complete")
 
-        print("⚙️  ChaosEngine v3.0 — Full Skill Manager Online (≥99% confidence)")
+        print(
+            "⚙️  ChaosEngine v4.1 — Full Logging + Index Builder + Future Patch Support Online"
+        )
 
-    # -------------------------------------------------------------------------
-    # INDEX & DISCOVERY
-    # -------------------------------------------------------------------------
     def _build_live_index(self):
-        """Dynamically scan all subfolders and build live index"""
-        print("🔍 Building live skill/process index...")
-        self.live_index = set()
+        log_event("live_index_build_started")
+        print("🔍 Building live index...")
 
-        for base_dir in PROCESS_DIRS:
+        if build_indexes:
+            try:
+                build_indexes()
+                log_event("index_builder_called", "success")
+            except Exception as e:
+                log_event("index_builder_failed", "error", str(e))
+                log_bug("error", "Index builder failed", {"error": str(e)})
+
+        self.live_index = set()
+        for base_dir in ["PROCESS", "layers", "chaos-engine", "emotion-net"]:
             base_path = LOCAL_ROOT / base_dir
-            if not base_path.exists():
-                continue
-            for root, dirs, files in os.walk(base_path):
-                for file in files:
-                    if file.endswith(".py") and not file.startswith("__"):
-                        rel_path = os.path.relpath(os.path.join(root, file), LOCAL_ROOT)
-                        if not any(p in rel_path.lower() for p in POISON_PILLS):
+            if base_path.exists():
+                for root, dirs, files in os.walk(base_path):
+                    for file in files:
+                        if file.endswith(".py") and not file.startswith("__"):
+                            rel_path = os.path.relpath(
+                                os.path.join(root, file), LOCAL_ROOT
+                            )
                             self.live_index.add(rel_path)
 
-        # Save index
-        index_data = {
-            "timestamp": datetime.now().isoformat(),
-            "count": len(self.live_index),
-            "files": sorted(list(self.live_index)),
-        }
-        INDEX_CACHE.write_text(json.dumps(index_data, indent=2))
+        log_event("live_index_built", "success", f"{len(self.live_index)} files")
         print(f"  ✅ Live index built ({len(self.live_index)} files)")
 
-    # -------------------------------------------------------------------------
-    # LOADING
-    # -------------------------------------------------------------------------
     def _load_emotionnet(self):
         try:
             filepath = LOCAL_ROOT / "emotion-net/emotion-net.py"
             if not filepath.exists():
-                print("⚠️  emotion-net.py not found")
+                log_event("emotionnet_missing", "warning")
                 return
             spec = importlib.util.spec_from_file_location("EmotionNet", filepath)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.emotionnet = module.EmotionNet()
+            log_event("emotionnet_loaded")
             print("🧠 EmotionNet loaded")
         except Exception as e:
-            print(f"⚠️  Could not load EmotionNet: {e}")
+            log_event("emotionnet_failed", "error", str(e))
+            log_bug("error", "Failed to load EmotionNet", {"error": str(e)})
 
     def _load_all_processes_dynamically(self):
-        """Load all discovered .py files"""
+        log_event("dynamic_load_started")
         print("🔄 Loading all discovered processes...")
         loaded = 0
         for rel_path in sorted(self.live_index):
@@ -116,134 +163,15 @@ class ChaosEngine:
                 self.processes[module_name.lower()] = handler
                 loaded += 1
             except Exception as e:
-                print(f"  ❌ Failed to load {rel_path}: {e}")
+                log_event("process_load_failed", "error", f"{rel_path}: {e}")
+                log_bug("warning", f"Failed to load {rel_path}", {"error": str(e)})
 
+        log_event("dynamic_load_complete", "success", f"{loaded} processes loaded")
         print(f"✅ Loaded {loaded} processes/skills dynamically")
 
-    # -------------------------------------------------------------------------
-    # REMOTE SKILL INSTALLATION
-    # -------------------------------------------------------------------------
-    def install_remote_skill(self, skill_path: str, auto_trust: bool = False) -> bool:
-        """Fetch and install a skill from our repo (or ask for unknown sources)"""
-        if not auto_trust and "kywrn7z4ww-glitch/ChaosEngine-Grok-OS" not in skill_path:
-            confirm = input(
-                f"Install skill from unknown source? (y/n): {skill_path} "
-            ).lower()
-            if confirm != "y":
-                print("  ❌ Installation cancelled")
-                return False
-
-        url = RAW_BASE + skill_path
-        local_path = LOCAL_ROOT / skill_path
-        local_path.parent.mkdir(parents=True, exist_ok=True)
-
-        try:
-            with urllib.request.urlopen(url, timeout=10) as resp:
-                content = resp.read()
-            local_path.write_bytes(content)
-            print(f"  ✅ Installed remote skill: {skill_path}")
-            self._build_live_index()  # Refresh index
-            return True
-        except Exception as e:
-            print(f"  ❌ Failed to install {skill_path}: {e}")
-            return False
-
-    # -------------------------------------------------------------------------
-    # ROUTING
-    # -------------------------------------------------------------------------
-    def _calculate_confidence(self, intent: str) -> float:
-        base = 75.0
-        if intent.startswith("/"):
-            base += 15
-        if self.emotionnet:
-            pass  # Future: use real emotional state
-        return min(100.0, base)
-
-    def route_intent(self, intent: str, data: Optional[Dict] = None) -> Dict[str, Any]:
-        if data is None:
-            data = {}
-
-        confidence = self._calculate_confidence(intent)
-
-        if self.active_layer == "void":
-            return {"status": "ok", "output": None, "inline_handoff": "🔇"}
-
-        if confidence >= 99:
-            cmd = intent[1:].split()[0] if intent.startswith("/") else "sys_health"
-            handler = self.processes.get(cmd.lower())
-            if handler:
-                result = (
-                    handler.process(data) if hasattr(handler, "process") else handler
-                )
-                return {"status": "executed", "process": cmd, "result": result}
-            else:
-                return {"status": "unknown_command", "command": cmd}
-
-        return {
-            "status": "clarify",
-            "message": f"Confidence {confidence:.1f}% — DISCUSS CLARITY required",
-            "suggestions": [
-                "Run /help",
-                "Try /dev for debugging",
-                "Use /casual for general chat",
-            ],
-        }
-
-    # -------------------------------------------------------------------------
-    # SKILL CHAINING
-    # -------------------------------------------------------------------------
-    def chain_skills(
-        self, skill_list: list, data: Optional[Dict] = None
-    ) -> Dict[str, Any]:
-        """Run multiple skills in sequence, passing data between them"""
-        if data is None:
-            data = {}
-
-        results = []
-        for skill_name in skill_list:
-            handler = self.processes.get(skill_name.lower())
-            if handler:
-                try:
-                    result = (
-                        handler.process(data)
-                        if hasattr(handler, "process")
-                        else handler
-                    )
-                    results.append({"skill": skill_name, "result": result})
-                    if isinstance(result, dict):
-                        data.update(result)  # Pass data forward
-                except Exception as e:
-                    results.append({"skill": skill_name, "error": str(e)})
-            else:
-                results.append({"skill": skill_name, "error": "Not found"})
-
-        return {"status": "chained", "results": results}
-
-    # -------------------------------------------------------------------------
-    # UTILITIES
-    # -------------------------------------------------------------------------
-    def set_layer(self, layer: str):
-        self.active_layer = layer.lower()
-        print(f"📍 Layer switched to: /{self.active_layer}")
-
-    def load_agent(self, name: str) -> str:
-        try:
-            from STORAGE.AGENTS.AGENT_LOADER import load_agent
-
-            return load_agent(name)
-        except:
-            return f"⚠️ Agent loader not available"
-
-    def list_agents(self) -> list:
-        try:
-            from STORAGE.AGENTS.AGENT_LOADER import list_all_agents
-
-            return list_all_agents()
-        except:
-            return []
-
     def load_all(self):
-        print("🔄 ChaosEngine fully initialized with live index")
+        print("🔄 ChaosEngine fully initialized with full logging")
+        log_event("load_all_called")
         return "Ready — all skills and processes loaded"
 
 
@@ -251,15 +179,3 @@ class ChaosEngine:
 if __name__ == "__main__":
     engine = ChaosEngine()
     engine.load_all()
-    print(engine.route_intent("/boot"))
-    print(engine.route_intent("check system health"))
-
-
-# ============================================================
-# CHAIN-FIRE MODE: Module-level singleton for package __init__.py
-# ============================================================
-chaos_engine = None
-try:
-    chaos_engine = ChaosEngine()
-except Exception as e:
-    print(f"[ChaosEngine] ⚠️  Chain-fire init deferred: {e}")

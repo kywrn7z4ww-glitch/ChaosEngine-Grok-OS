@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "purpose": "Machine-readable changelog. Can import from Change_Log.md for human notes.",
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "entries": [
+    {
+      "id": "change-{INCREMENTAL_NUMBER}",
+      "date": "{DATE}",
+      "title": "{CHANGE_TITLE}",
+      "description": "{CHANGE_DESCRIPTION}",
+      "type": "{CHANGE_TYPE}",
+      "source_md": "Change_Log.md"
+    }
+  ],
+  "notes": "This file can be programmatically updated from Change_Log.md when needed. Use {VARIABLE} placeholders for dynamic data."
+}

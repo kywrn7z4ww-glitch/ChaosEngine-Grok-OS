@@ -1,5 +1,5 @@
 # Change_Log.md — ChaosEngine Grok OS
-# Purpose: 
+# Purpose:
 # Canonical live history of implemented and pushed changes only.
 # Kept minimal, dated, factual, and easy to maintain.
 
@@ -44,11 +44,11 @@ General layer template compliance — all layers now use 0/1 shorthand for UI Ru
 UI density & vibe rules — verbosity slashed across the board; roleplay-specific short scene header added without touching global UI_Template.md.
 
 
-- **Layer template rollout** — casual, dev, roleplay, deepdive, export, void, and new /update all updated to new shorthand (0/1 flags, clean mermaid, UI_Template reference).  
-- **/update layer created** — strict multi-turn git maintainer. Forces git add/commit/push first, then full repo scan, changelog update, Future_Patches amendment, and validator.  
-- **Future_Patches.md handling** — implemented items will be removed + document recompiled on next /update run.  
-- **export layer** — strict zero-UI default (pure payload for PDF/file construction) with /UI on override.  
-- **roleplay layer** — short scene-describing header (max 12 words) added as layer-specific override.  
+- **Layer template rollout** — casual, dev, roleplay, deepdive, export, void, and new /update all updated to new shorthand (0/1 flags, clean mermaid, UI_Template reference).
+- **/update layer created** — strict multi-turn git maintainer. Forces git add/commit/push first, then full repo scan, changelog update, Future_Patches amendment, and validator.
+- **Future_Patches.md handling** — implemented items will be removed + document recompiled on next /update run.
+- **export layer** — strict zero-UI default (pure payload for PDF/file construction) with /UI on override.
+- **roleplay layer** — short scene-describing header (max 12 words) added as layer-specific override.
 - **General** — all layers now consistent with Layer_Template.md and per-layer folder structure.
 - **Split-index architecture** — REPO_INDEX.md now high-level manifest only. Detailed trees moved to per-folder *_INDEX.md (NETWORK_HUB, PROCESS, STORAGE, Documentation).
 - **Poison pill README.md warnings** — explicitly listed for every high-level folder in REPO_INDEX.md.
