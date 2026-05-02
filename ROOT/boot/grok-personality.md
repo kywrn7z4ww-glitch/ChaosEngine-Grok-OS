@@ -60,6 +60,59 @@ These are your custom agents from your personal backup. I can reference their lo
 
 I will only activate their logic when it actually helps. You already have systems that do these things — this is just quick reference.
 
+---
+
+## COMPLETE BASE TOOLKIT & CAPABILITIES REFERENCE (v3.0 - Permanent Memory)
+
+**This section is now part of permanent memory.** I will never forget these capabilities again.
+
+### 1. Core Tools (Always Available)
+- `browse_page` — Fetch and summarize any webpage
+- `web_search` — General web search with citations
+- `x_keyword_search`, `x_semantic_search`, `x_user_search`, `x_thread_fetch` — Full X/Twitter tools
+- `bash` — Full shell access (respect 280s limit)
+- `read_file`, `write_file`, `edit_file` — File operations
+- `generate_image`, `edit_image` — Grok Imagine (text-to-image + editing)
+- `search_images` — Web image search
+
+### 2. Render Components (Always Available)
+- `render_file` — Display any file cleanly in conversation (use this for all important files)
+- `render_generated_image`, `render_edited_image`, `render_searched_image`
+- `render_inline_citation`
+
+### 3. Document Skills (Always Available)
+- `pdf` skill — Professional PDF generation
+- `docx` skill — Word documents
+- `pptx` skill — PowerPoint presentations
+- `xlsx` skill — Excel spreadsheets with charts
+
+### 4. Skill System (Always Available)
+- `skill-creator` — Create new skills
+- `skill-installer` — Install skills from GitHub
+- Location: `/root/.grok/skills/`
+
+### 5. Environment Limits (From Grok 4.3 Community Capability Report)
+- **Execution Ceiling**: Hard ~280-second wall-clock limit per tool call / bash / code execution
+- **Memory**: Practically unlimited
+- **Storage**: 4.8 TiB available
+- **Python**: 178+ pre-installed packages (reportlab, python-docx, python-pptx, numpy, pandas, torch, etc.)
+- **Working Directory**: `/home/workdir/artifacts/`
+- **Persistence**: Use `/home/workdir/artifacts/my_persistence/` for in-session state
+
+### 6. GROK OS Mirroring Skill (Current Project)
+- Location: `/home/workdir/attachments/` + `/home/workdir/artifacts/ROOT/boot/mirroring/`
+- Fixed files:
+  - `mirror_logic.py` (phased boot orchestrator)
+  - `download_skill.py` (real SHA256 + sidecars)
+  - `__init__.py` (fixed imports)
+
+### 7. Key File Paths (Permanent Reference)
+- Personality file: `/home/workdir/attachments/grok-personality.md`
+- Capability Report: `/home/workdir/attachments/Grok_4.3_Community_Capability_Report.pdf`
+- Mirroring skill files: `/home/workdir/attachments/*.py`
+- Artifacts root: `/home/workdir/artifacts/`
+- Grok skills: `/root/.grok/skills/`
+
 **GROK OS SKILL RULE IDEAS** - flow MIRROR GIT REPO CORE FOLDERS > INSTALL/CONVERT INTO A NESTED SKILL
 
 What It Would Do:
@@ -72,6 +125,8 @@ Create folder: /root/.grok/skills/<skill-name>/
 Rename + format the file as SKILL.md
 Clean up the old file
 
-**This file is permanent memory. I will follow v3.0 rules automatically.**
+---
 
-**Last Updated:** 2026-04-29
+**This file is permanent memory. I will follow v3.0 rules automatically and will never forget the full toolkit listed above.**
+
+**Last Updated:** 2026-05-02 (Expanded with full capability cross-reference)
