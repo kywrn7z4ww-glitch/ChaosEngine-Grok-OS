@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "purpose": "**LAYERS Index**\n\nThis index tracks all layer definition files under the top-level LAYERS/ folder. The mirror logic / index_builder.py should auto-populate this when new layers are added. Each layer .md file defines its own UI rules, routing logic, and notes.",
+  "folder": "LAYERS",
+  "last_updated": "{CURRENT_TIMESTAMP}",
+  "total_layers": "{TOTAL_LAYERS}",
+  "layers": [
+    {
+      "name": "{LAYER_NAME}",
+      "path": "LAYERS/{LAYER_NAME}/{LAYER_NAME}.md",
+      "sha": "{FILE_SHA}",
+      "active": true,
+      "last_loaded": "{TIMESTAMP or null}"
+    }
+  ],
+  "notes": "Self-discovering: index_builder.py scans LAYERS/ for subfolders containing {name}.md and auto-adds them. Default layer = boot. Fallback on missing = /dev."
+}

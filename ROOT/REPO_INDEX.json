@@ -19,6 +19,7 @@
 
   "sub_indexes": {
     "ROOT": "ROOT_INDEX.json",
+    "LAYERS": "LAYERS_INDEX.json"
     "PROCESS": "PROCESS_INDEX.json",
     "STORAGE/AGENTS": "AGENT_INDEX.json",
     "STORAGE": "STORAGE_INDEX.json",
