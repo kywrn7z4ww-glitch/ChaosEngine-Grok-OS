@@ -1,0 +1,9 @@
+# Deprecated Legacy Archive
+
+This directory holds old snapshot folders moved from the previous `Archive/` structure.
+
+**Moved on:** 2026-05-10
+**Reason:** Repo restructuring to new ARCHIVE/ layout (changelog/, deprecated-archive/, minor_fixes/).
+**Source:** Old Archive/ dated folders preserved here for rollback/reference.
+
+Do not edit directly - use for historical reference only.
