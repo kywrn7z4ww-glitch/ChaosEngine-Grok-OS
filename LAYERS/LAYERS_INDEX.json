@@ -1,17 +1,76 @@
 {
-  "version": "1.0",
-  "purpose": "**LAYERS Index**\n\nThis index tracks all layer definition files under the top-level LAYERS/ folder. The mirror logic / index_builder.py should auto-populate this when new layers are added. Each layer .md file defines its own UI rules, routing logic, and notes.",
+  "version": "4.0",
+  "purpose": "**LAYERS Index** — Tracks all layer definition files under the top-level LAYERS/ folder. Dynamically populated via repo scan of subfolders containing {name}.md files. Each layer .md defines its own UI rules, routing logic, and notes.",
   "folder": "LAYERS",
-  "last_updated": "{CURRENT_TIMESTAMP}",
-  "total_layers": "{TOTAL_LAYERS}",
+  "last_updated": "2026-05-10T03:19:00Z",
+  "total_layers": 11,
   "layers": [
     {
-      "name": "{LAYER_NAME}",
-      "path": "LAYERS/{LAYER_NAME}/{LAYER_NAME}.md",
-      "sha": "{FILE_SHA}",
+      "name": "boot",
+      "path": "LAYERS/boot/boot.md",
       "active": true,
-      "last_loaded": "{TIMESTAMP or null}"
+      "last_loaded": "2026-05-10T03:19:00Z"
+    },
+    {
+      "name": "brainstorm",
+      "path": "LAYERS/brainstorm/brainstorm.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "casual",
+      "path": "LAYERS/casual/casual.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "deepdive",
+      "path": "LAYERS/deepdive/deepdive.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "dev",
+      "path": "LAYERS/dev/dev.md",
+      "active": true,
+      "last_loaded": "2026-05-10T03:19:00Z"
+    },
+    {
+      "name": "export",
+      "path": "LAYERS/export/export.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "help",
+      "path": "LAYERS/help/help.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "music",
+      "path": "LAYERS/music/music.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "roleplay",
+      "path": "LAYERS/roleplay/roleplay.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "update",
+      "path": "LAYERS/update/update.md",
+      "active": true,
+      "last_loaded": null
+    },
+    {
+      "name": "void",
+      "path": "LAYERS/void/void.md",
+      "active": true,
+      "last_loaded": null
     }
   ],
-  "notes": "Self-discovering: index_builder.py scans LAYERS/ for subfolders containing {name}.md and auto-adds them. Default layer = boot. Fallback on missing = /dev."
+  "notes": "Self-discovering via repo scan (GitHub API contents on testing branch). Boot layer is ONLY mandatory for initial cold-start boot. Once booted, control hands off to the dev layer by default for ongoing operation and development. Use /layer casual, /layer roleplay etc. to switch. SHA intentionally omitted from all index entries — local runtime fetches fresh SHA from GitHub API during pulls to avoid churn/mismatches on index updates. Extra files (e.g. __init__.py, chaos_music.py, suno/ in music) exist in some subfolders but are not part of the core layer definition index. Fallback on missing layer = /dev."
 }
