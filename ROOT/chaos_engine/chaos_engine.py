@@ -23,8 +23,8 @@ REPO_NAME = "ChaosEngine-Grok-OS"
 BRANCH = "testing"
 RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/"
 
-CONTENT_ROOT = Path("/home/workdir/artifacts/grok-os")
-CACHE_DIR = Path("/home/workdir/artifacts/grokos/.cache")
+CONTENT_ROOT = Path("/home/workdir/artifacts/Grok OS")
+CACHE_DIR = Path("/home/workdir/artifacts/cache/.cache")
 INDEX_CACHE = CACHE_DIR / "chaos_live_index.json"
 
 # Dirs to scan for skills/processes: top-level content + ROOT subdirs for engine code
@@ -100,8 +100,8 @@ class ChaosEngine:
     def _load_emotionnet(self):
         try:
             filepath = (
-                CONTENT_ROOT / "ROOT/emotion_net/emotion_net.py"
-            )  # fixed to actual filename
+                CONTENT_ROOT / "ROOT/emotion-net/emotion_net.py"
+            )  # correct hyphen dir name from repo
             if not filepath.exists():
                 print("⚠️  emotion_net.py not found")
                 return
@@ -114,7 +114,7 @@ class ChaosEngine:
             print(f"⚠️  Could not load EmotionNet: {e}")
 
     def _load_all_processes_dynamically(self):
-        """Load all discovered .py files"""
+        """Load all discovered processes..."""
         print("🔄 Loading all discovered processes...")
         loaded = 0
         for rel_path in sorted(self.live_index):
