@@ -180,11 +180,23 @@ Use parallel execution **only** when **all** of these are true:
 
 ### 7.3 Safety Rules (Non-Negotiable)
 
-1. **Max 8 parallel tools** per step (hard limit to avoid overload)
-2. **Always log** which tools ran in parallel and their results
-3. **Post-execution verification** required after any parallel batch
-4. If any tool fails in a parallel batch → **abort remaining parallel tasks** and switch to sequential
-5. Never parallelize anything that touches `STAGE.md`, index files, or the decision kernel itself
+**No hard cap.** Use intelligent, context-aware limits instead:
+
+| Situation                              | Max Parallel | Reason |
+|----------------------------------------|--------------|--------|
+| Simple independent reads               | **Unlimited** | Very safe |
+| GitHub connector heavy                 | **12–15**     | Rate limit risk |
+| Mixed tools (GitHub + web + image)     | **10–12**     | Balanced load |
+| Anything touching indexes / STAGE.md   | **4 max**     | High conflict risk |
+| Full repo scan / bulk operations       | **20+**       | Designed for this exact use case |
+| Anything writing to shared state       | **Sequential only** | Mandatory |
+
+**Additional Safety Rules:**
+1. **Always log** which tools ran in parallel and their results (with batch ID)
+2. **Post-execution verification** required after any parallel batch
+3. If any tool fails in a parallel batch → **abort remaining parallel tasks** and switch to sequential
+4. Never parallelize anything that touches the decision kernel itself without explicit user approval
+5. When in doubt → default to sequential and ask for clarification ("DISCUSS: Parallel safe?")
 
 ### 7.4 How to Execute Parallel Calls
 
