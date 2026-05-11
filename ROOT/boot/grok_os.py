@@ -10,11 +10,11 @@ from datetime import datetime
 from pathlib import Path
 
 # === ROBUST PATH SETUP (Critical for cold start) ===
-BASE = Path("/home/workdir/artifacts/grok-os")
+BASE = Path("/home/workdir/artifacts/Grok OS")
 ROOT_DIR = BASE / "ROOT"
 sys.path.insert(0, str(ROOT_DIR))  # Make chaos_engine importable
 
-RUNTIME_BASE = Path("/home/workdir/artifacts/grokos")
+RUNTIME_BASE = Path("/home/workdir/artifacts/Grok OS")
 LOGS_DIR = RUNTIME_BASE / "logs"
 BOOT_LOG = LOGS_DIR / "boot_log.json"
 
