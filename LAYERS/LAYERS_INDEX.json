@@ -1,76 +1,80 @@
 {
-  "version": "4.0",
-  "purpose": "**LAYERS Index** — Tracks all layer definition files under the top-level LAYERS/ folder. Dynamically populated via repo scan of subfolders containing {name}.md files. Each layer .md defines its own UI rules, routing logic, and notes.",
+  "version": "5.0",
+  "purpose": "LAYERS Index — Complete inventory after full recursive scan (2026-05-11). All 11 layers + subfolders logged.",
   "folder": "LAYERS",
-  "last_updated": "2026-05-10T03:19:00Z",
+  "last_updated": "2026-05-11",
   "total_layers": 11,
   "layers": [
     {
       "name": "boot",
       "path": "LAYERS/boot/boot.md",
-      "active": true,
-      "last_loaded": "2026-05-10T03:19:00Z"
+      "files": ["__init__.py", "boot.md"],
+      "active": true
     },
     {
       "name": "brainstorm",
       "path": "LAYERS/brainstorm/brainstorm.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "brainstorm.md"],
+      "active": true
     },
     {
       "name": "casual",
       "path": "LAYERS/casual/casual.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "casual.md"],
+      "active": true
     },
     {
       "name": "deepdive",
       "path": "LAYERS/deepdive/deepdive.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "deepdive.md"],
+      "active": true
     },
     {
       "name": "dev",
       "path": "LAYERS/dev/dev.md",
+      "files": ["__init__.py", "dev.md", "github-workflow/"],
       "active": true,
-      "last_loaded": "2026-05-10T03:19:00Z"
+      "notes": "Contains consolidated git_connector_workflow.md + stage-template.md + git-mv.md"
     },
     {
       "name": "export",
       "path": "LAYERS/export/export.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "export.md"],
+      "active": true
     },
     {
       "name": "help",
       "path": "LAYERS/help/help.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "help.md"],
+      "active": true
     },
     {
       "name": "music",
       "path": "LAYERS/music/music.md",
+      "files": ["__init__.py", ".md", "chaos_music.py", "suno/"],
       "active": true,
-      "last_loaded": null
+      "subfolders": {
+        "suno": ["suno-musical-theory-engines.md", "suno_instumental_template.md", "suno_prompt.md", "workflow.md"]
+      }
     },
     {
       "name": "roleplay",
       "path": "LAYERS/roleplay/roleplay.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "roleplay.md"],
+      "active": true
     },
     {
       "name": "update",
       "path": "LAYERS/update/update.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "update.md"],
+      "active": true
     },
     {
       "name": "void",
       "path": "LAYERS/void/void.md",
-      "active": true,
-      "last_loaded": null
+      "files": ["__init__.py", "void.md"],
+      "active": true
     }
   ],
-  "notes": "Self-discovering via repo scan (GitHub API contents on testing branch). Boot layer is ONLY mandatory for initial cold-start boot. Once booted, control hands off to the dev layer by default for ongoing operation and development. Use /layer casual, /layer roleplay etc. to switch. SHA intentionally omitted from all index entries — local runtime fetches fresh SHA from GitHub API during pulls to avoid churn/mismatches on index updates. Extra files (e.g. __init__.py, chaos_music.py, suno/ in music) exist in some subfolders but are not part of the core layer definition index. Fallback on missing layer = /dev."
+  "notes": "Full recursive scan completed 2026-05-11. music/suno/ has 4 additional files. All layers follow standard __init__.py + {name}.md pattern except music."
 }
