@@ -1,9 +1,9 @@
-# decision-kernel.md — Grok OS Decision Kernel (v3.1)
+# decision-kernel.md — Grok OS Decision Kernel (v3.2)
 
 **Purpose:** Central decision engine. Defines context handling, hierarchies, layer priority, agent deliberation, and both core + fallback behavior.
 
 **Status:** Core + Fallback System  
-**Last Updated:** 2026-04-27
+**Last Updated:** 2026-05-11
 
 ---
 
@@ -141,17 +141,83 @@ It always:
 
 ---
 
-## 7. GitHub Connector & Lattice Sync Protocol (from Core.md)
+## 7. Parallel Tool Execution Rules (Execute Stage)
+
+**Goal:** Enable "crazy fast" execution while preventing conflicts, race conditions, and confusion.
+
+### 7.1 When to Use Parallel Tool Calls (Safe)
+
+Use parallel execution **only** when **all** of these are true:
+
+- Tasks are **completely independent** (no shared files, no sequential dependency)
+- Tasks are **read-only** or write to **completely different paths**
+- Tasks have **no side effects** on each other
+- All tools are from **different categories** (e.g. one GitHub + one web search + one image gen)
+- Confidence ≥ 99% that no conflict exists
+
+**Examples of safe parallel use:**
+- Scanning multiple unrelated folders at once
+- Pulling several independent GitHub files
+- Running web_search + x_keyword_search + image generation together
+- Batch reading multiple index files
+
+### 7.2 When NOT to Use Parallel (Sequential Required)
+
+**Never** run in parallel if any of these apply:
+
+- Tasks write to the **same file or directory**
+- One task depends on the **output** of another
+- Tasks modify **shared state** (indexes, logs, STAGE.md, etc.)
+- Tasks use the **same connector** (risk of rate limits or SHA conflicts)
+- Any chance of **file locking** or **race conditions**
+- One task is a **deletion** and another is a **read/write** on the same path
+
+**Examples that must be sequential:**
+- Update index → then push index
+- Delete file → then verify deletion
+- Pull file → then edit it → then push
+- Any multi-step git workflow (get SHA → edit → push)
+
+### 7.3 Safety Rules (Non-Negotiable)
+
+1. **Max 8 parallel tools** per step (hard limit to avoid overload)
+2. **Always log** which tools ran in parallel and their results
+3. **Post-execution verification** required after any parallel batch
+4. If any tool fails in a parallel batch → **abort remaining parallel tasks** and switch to sequential
+5. Never parallelize anything that touches `STAGE.md`, index files, or the decision kernel itself
+
+### 7.4 How to Execute Parallel Calls
+
+**Correct pattern:**
+```xml
+call tool tool_a with arg is value
+
+call tool tool_b with arg is value
+
+call tool tool_c with arg is value
+```
+
+**After parallel execution:**
+- Wait for all results
+- Verify success of each
+- Log batch ID + timestamp
+- Only then proceed to next step
+
+### 7.5 Decision Rule (Kernel Must Enforce)
+
+Before any parallel execution, the Kernel must internally ask:
+
+> "Are these tasks 100% independent with zero chance of conflict?"
+
+- If **Yes** → Allow parallel (max 8)
+- If **No** → Force sequential execution
+- If **Unsure** → Ask user for clarification ("DISCUSS: Parallel safe?")
+
+---
+
+## 8. GitHub Connector & Lattice Sync Protocol (from Core.md)
 
 **Mandatory on every fresh summon/boot:**
 
 - Grab latest SHA: `GET https://api.github.com/repos/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/commits/main` → `.sha`
 - Validate tree: `GET https://api.github.com/repos/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/git/trees/{sha}?recursive=1`
-- Run Grok OS boot sequence: fetch verbatim `https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/1%20GrokOS.md` → execute its cold-boot dump of all /ROOT/ raw files.
-- Pull index: fetch verbatim `https://raw.githubusercontent.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/main/ROOT/5%20full-repo-index.md`
-- Detect drift, debug, improve evolving OS.
-
-**All connector operations** (github___get_file_contents, github___search_code, github___create_or_update_file, github___delete_file, github___list_branches, etc.) **must** go through `search_connected_tools` → `call_connected_tool`. No direct network calls. No local-only assumptions.
-
-**Precision Protocol (Absolute):**  
-❓ Sharpen intent → 🤔 Resolve ambiguity → ‼️❓ Confirm before mutation.
