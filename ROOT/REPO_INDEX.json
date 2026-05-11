@@ -1,40 +1,28 @@
 {
   "version": "4.0",
-  "purpose": "Master REPO Index - Source of truth for Grok OS boot. Defines the core components and sub-indexes for the v4.0+ system using grok-download connectors and ChaosEngine dynamic loading.",
-  "last_updated": "{CURRENT_TIMESTAMP}",
-  "total_core_components": 8,
-  "total_sub_indexes": 6,
-
+  "purpose": "Master REPO Index - Source of truth for Grok OS boot. Dynamically reflects full repo layout for repo pulls via GitHub connectors.",
+  "last_updated": "2026-05-11T12:42:13.008997",
+  "total_core_components": 10,
+  "total_sub_indexes": 4,
   "core_components": [
+    "ROOT/boot/boot.sh",
+    "ROOT/boot/decision-kernel.md",
     "ROOT/boot/grok_os.py",
     "ROOT/boot/index_builder.py",
-    "ROOT/boot/decision-kernel.md",
     "ROOT/boot/grok-os.md",
     "ROOT/chaos_engine/__init__.py",
     "ROOT/chaos_engine/chaos_engine.py",
     "ROOT/chaos_engine/layer_manager.py",
+    "ROOT/chaos_engine/ui_manager.py",
     "ROOT/chaos_engine/response_pipeline.py"
   ],
-
   "sub_indexes": {
-    "ROOT": "ROOT_INDEX.json",
-    "LAYERS": "LAYERS_INDEX.json",
-    "PROCESS": "PROCESS_INDEX.json",
-    "STORAGE": "STORAGE_INDEX.json",
-    "STORAGE/AGENTS": "AGENT_INDEX.json",
-    "NETWORK_HUB": "NETWORK_HUB.json"
+    "ROOT": "ROOT/ROOT_INDEX.json",
+    "PROCESS": "PROCESS/PROCESS_INDEX.json",
+    "STORAGE": "STORAGE/STORAGE_INDEX.json",
+    "LAYERS": "LAYERS/LAYERS_INDEX.json"
   },
-
   "boot_log": "boot_log.json",
   "bug_reports": "bug_reports.json",
-
-  "notes": "v4.0 clean boot path. Legacy mirror logic (v2.5) and mirroring/ folder fully deprecated and removed. All indexes are now populated dynamically via grok-download skill and ChaosEngine connectors. Core components are the minimum required to boot Grok OS. emotion-net is intentionally left out of core_components — it gets partial load only in Phase 1.5. index_builder.py should be called early (Phase 0 or 1) to populate local indexes.",
-
-  "boot_sequence": [
-    "Phase 0 — Pre-Boot: Activate grok-download skill first. Fetch ALL *_INDEX.json + logs (boot_log.json + bug_reports.json) before anything else. Call index_builder.py to ensure local indexes are populated. These files are the live manifest and source of truth.",
-    "Phase 1 — Core Load: Pull ONLY the files listed in core_components array using connectors or grok-download. After each successful pull: update the relevant sub-index (mark pulled: true + timestamp) and append to boot_log.json. Respect poison rules (skip README.md, tetris_curse.py, hidden files, tests).",
-    "Phase 1.5 — ROOT Batch Load: Controlled batch load of ROOT/ folder. Priority order: layers/ → boot/ → chaos_engine/. emotion-net/ receives partial load only (core files). Update ROOT_INDEX.json + boot_log.json after every batch. Log errors to bug_reports.json.",
-    "Phase 2 — Next Batch: Load PROCESS/ (high-priority subfolders first) + STORAGE/AGENTS/SYS_ADMIN_CLUSTER + any remaining high-value folders from sub_indexes. Update all affected indexes and boot_log.json after each batch.",
-    "Phase 3 — Handoff + Lazy Runtime: Mark boot complete in boot_log.json. Enable on-demand / lazy pulls for any missing files using the indexes. Handoff to user-selected layer or ChaosEngine. Future pulls (when connectors available) can use git clone / full install on top of this system."
-  ]
+  "notes": "v4.0 full repo layout mode. Indexes auto-built from filesystem to match remote repo structure. Supports dynamic pulls, validation, and lazy loading. Mirror logic fully deprecated. SHA handling: SHA intentionally omitted from index entries (local runtime fetches via GitHub API on pull/validate to avoid churn/mismatches)."
 }
