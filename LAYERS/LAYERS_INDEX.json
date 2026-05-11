@@ -2,14 +2,14 @@
   "version": "4.0",
   "purpose": "**LAYERS Index** — Dynamically scanned from repo for all Layer: definitions. Tracks available runtime layers.",
   "folder": "LAYERS",
-  "last_updated": "2026-05-11T19:52:46.009649",
+  "last_updated": "2026-05-11T19:56:14.267031",
   "total_layers": 10,
   "layers": [
     {
       "name": "boot",
       "path": "LAYERS/boot/boot.md",
       "active": true,
-      "last_loaded": "2026-05-11T19:52:45.614291"
+      "last_loaded": "2026-05-11T19:56:12.069165"
     },
     {
       "name": "brainstorm",
@@ -33,7 +33,7 @@
       "name": "dev",
       "path": "LAYERS/dev/dev.md",
       "active": true,
-      "last_loaded": "2026-05-11T19:52:45.897418"
+      "last_loaded": "2026-05-11T19:56:13.022066"
     },
     {
       "name": "export",
@@ -66,5 +66,5 @@
       "last_loaded": null
     }
   ],
-  "notes": "Boot layer is ONLY mandatory for initial system boot (cold start). Once booted, control hands off to the dev layer by default for ongoing operation and development. Use /layer casual, /layer roleplay etc. to switch. Currently 10 layers fully crawled and indexed (music layer partially detected). SHA intentionally omitted — local runtime fetches fresh SHA from GitHub API during pulls."
+  "notes": "Full deeper scan complete: /dev/github-workflow/ (3 files) + /music/suno/ (4 files) added. 10 layers indexed. Music layer partial (no top-level music.md). All subfiles saved and warm. SHA intentionally omitted."
 }
