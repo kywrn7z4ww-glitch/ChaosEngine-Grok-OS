@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-chaos-engine.py — Grok OS ChaosEngine v3.0 (Full Skill Manager)
+chaos_engine.py — Grok OS ChaosEngine v3.0 (Full Skill Manager)
 Purpose: Central brain that handles loading, routing, remote installation,
 skill chaining, dynamic discovery, and live indexing.
 
@@ -20,7 +20,7 @@ from typing import Any, Dict, Optional, Set
 # =============================================================================
 REPO_OWNER = "kywrn7z4ww-glitch"
 REPO_NAME = "ChaosEngine-Grok-OS"
-BRANCH = "main"
+BRANCH = "testing"  # Locked to testing per MAIN READ-ONLY / TESTING FULL READ-WRITE rule
 RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/ROOT/"
 
 LOCAL_ROOT = Path("/home/workdir/artifacts/Grok OS/ROOT")
@@ -238,7 +238,7 @@ class ChaosEngine:
 
             return load_agent(name)
         except:
-            return f"⚠️ Agent loader not available"
+            return "⚠️ Agent loader not available"
 
     def list_agents(self) -> list:
         try:
