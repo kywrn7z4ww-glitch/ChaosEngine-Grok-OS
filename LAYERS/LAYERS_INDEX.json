@@ -1,80 +1,46 @@
 {
-  "version": "5.0",
-  "purpose": "LAYERS Index — Complete inventory after full recursive scan (2026-05-11). All 11 layers + subfolders logged.",
+  "version": "4.0",
+  "purpose": "**LAYERS Index** — Dynamically scanned from repo for all Layer: definitions. Tracks available runtime layers.",
   "folder": "LAYERS",
-  "last_updated": "2026-05-11",
-  "total_layers": 11,
+  "last_updated": "2026-05-11T19:48:31.550602",
+  "total_layers": 6,
   "layers": [
     {
       "name": "boot",
       "path": "LAYERS/boot/boot.md",
-      "files": ["__init__.py", "boot.md"],
-      "active": true
+      "active": true,
+      "last_loaded": "2026-05-11T19:48:31.358228"
     },
     {
       "name": "brainstorm",
       "path": "LAYERS/brainstorm/brainstorm.md",
-      "files": ["__init__.py", "brainstorm.md"],
-      "active": true
+      "active": true,
+      "last_loaded": null
     },
     {
       "name": "casual",
       "path": "LAYERS/casual/casual.md",
-      "files": ["__init__.py", "casual.md"],
-      "active": true
-    },
-    {
-      "name": "deepdive",
-      "path": "LAYERS/deepdive/deepdive.md",
-      "files": ["__init__.py", "deepdive.md"],
-      "active": true
+      "active": true,
+      "last_loaded": null
     },
     {
       "name": "dev",
       "path": "LAYERS/dev/dev.md",
-      "files": ["__init__.py", "dev.md", "github-workflow/"],
       "active": true,
-      "notes": "Contains consolidated git_connector_workflow.md + stage-template.md + git-mv.md"
-    },
-    {
-      "name": "export",
-      "path": "LAYERS/export/export.md",
-      "files": ["__init__.py", "export.md"],
-      "active": true
-    },
-    {
-      "name": "help",
-      "path": "LAYERS/help/help.md",
-      "files": ["__init__.py", "help.md"],
-      "active": true
-    },
-    {
-      "name": "music",
-      "path": "LAYERS/music/music.md",
-      "files": ["__init__.py", ".md", "chaos_music.py", "suno/"],
-      "active": true,
-      "subfolders": {
-        "suno": ["suno-musical-theory-engines.md", "suno_instumental_template.md", "suno_prompt.md", "workflow.md"]
-      }
+      "last_loaded": "2026-05-11T19:48:31.458650"
     },
     {
       "name": "roleplay",
       "path": "LAYERS/roleplay/roleplay.md",
-      "files": ["__init__.py", "roleplay.md"],
-      "active": true
-    },
-    {
-      "name": "update",
-      "path": "LAYERS/update/update.md",
-      "files": ["__init__.py", "update.md"],
-      "active": true
+      "active": true,
+      "last_loaded": null
     },
     {
       "name": "void",
       "path": "LAYERS/void/void.md",
-      "files": ["__init__.py", "void.md"],
-      "active": true
+      "active": true,
+      "last_loaded": null
     }
   ],
-  "notes": "Full recursive scan completed 2026-05-11. music/suno/ has 4 additional files. All layers follow standard __init__.py + {name}.md pattern except music."
+  "notes": "Boot layer is ONLY mandatory for initial system boot (cold start). Once booted, control hands off to the dev layer by default for ongoing operation and development. Use /layer casual, /layer roleplay etc. to switch. Currently 6 layers loaded and indexed (more can be added by creating new LAYERS/<name>/<name>.md with '# Layer: /<name>' header). SHA intentionally omitted — local runtime fetches fresh SHA from GitHub API during pulls."
 }
