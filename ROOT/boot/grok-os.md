@@ -33,6 +33,9 @@ All other methods (old Python skill logic, direct curling) are now **legacy / fa
 - Always start by ensuring indexes exist (`REPO_INDEX.json`, `ROOT_INDEX.json`, `LAYERS_INDEX.json`, etc.)
 - These files are the **live manifest** of what exists and what needs pulling
 
+**Important Note on Indexes (v5.0)**
+Indexes are **not** assumed to be complete or fully populated. They are living documents that must be built and updated dynamically as the filesystem is walked and new files are discovered. Grok must **never** assume an index is exhaustive — it should always cross-check against the actual filesystem when accuracy matters. Incomplete indexes are normal during development.
+
 **Phase 1 — Core Load via boot.sh**
 - Execute `boot.sh` as the single entry point
 - It dynamically pulls missing files using GitHub connectors (never direct network calls inside runtime)
