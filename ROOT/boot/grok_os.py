@@ -18,6 +18,9 @@ RUNTIME_BASE = Path("/home/workdir/artifacts/Grok OS")
 LOGS_DIR = RUNTIME_BASE / "logs"
 BOOT_LOG = LOGS_DIR / "boot_log.json"
 
+# Path setup follows exact /home/workdir/artifacts/Grok OS/ per style guide
+# and github-workflow docs (local-only STAGE.md enforcement)
+
 def log_event(event: str, status: str = "success", details: str = ""):
     timestamp = datetime.now().isoformat()
     entry = {
