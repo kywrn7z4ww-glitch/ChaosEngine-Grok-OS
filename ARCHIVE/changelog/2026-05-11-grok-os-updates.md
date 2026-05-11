@@ -12,3 +12,5 @@
 **Archive Note (new logic):** Changelog and stage files now live in cache/ for this session (ignore prior archive layout). Future entries follow year/month nesting in cache/changelog/ or main archive as needed.
 
 **Status:** All updates staged. Connectors-only. Ready for targeted push when authorized. /dev ready.
+
+**Amendment (2026-05-11):** Fixed EmotionNet auto-loading (path mismatch: code had underscore dir, repo uses hyphen "emotion-net"). Updated chaos_engine.py + pulled emotion_net.py. Now lazy loading works for core identity.
