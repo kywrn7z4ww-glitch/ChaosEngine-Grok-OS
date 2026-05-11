@@ -23,8 +23,8 @@ REPO_NAME = "ChaosEngine-Grok-OS"
 BRANCH = "main"
 RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}/ROOT/"
 
-LOCAL_ROOT = Path("/home/workdir/artifacts/grok-os/ROOT")
-CACHE_DIR = Path("/home/workdir/artifacts/grokos/.cache")
+LOCAL_ROOT = Path("/home/workdir/artifacts/Grok OS/ROOT")
+CACHE_DIR = Path("/home/workdir/artifacts/Grok OS/.cache")
 INDEX_CACHE = CACHE_DIR / "chaos_live_index.json"
 
 PROCESS_DIRS = ["PROCESS", "layers", "skills", "chaos_engine", "emotion-net"]
