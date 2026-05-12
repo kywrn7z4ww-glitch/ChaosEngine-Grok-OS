@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================
-# boot.sh — Grok OS Hybrid Boot & Runtime Orchestrator (v1.0)
+# boot.sh — Grok OS Hybrid Boot & Runtime Orchestrator (v2.0)
 # ============================================================
 # Purpose: Single entry point that harmonizes Python decision kernel
 #          with bash execution. Dynamically pulls files, writes them
@@ -9,18 +9,9 @@
 #
 # How it works:
 # - This script is designed to be RUN BY GROK (via the bash tool).
-# - When Grok sees a line like: pull_file "ROOT/boot/decision-kernel.md"
-#   it translates that into a real github___get_file_contents call.
-# - After pulling, Grok writes the file locally and updates the index.
-# - Complex logic (hierarchies, context, confidence, attitude) stays
-#   in the Python Decision Kernel. Bash handles the execution layer.
-#
-# Commands:
-#   ./boot.sh cold     → Full cold boot (pull + write + index + kernel + sync)
-#   ./boot.sh runtime  → Enter runtime mode (lighter, no full sync)
-#   ./boot.sh sync     → Just refresh connectors + repo files
-#   ./boot.sh kernel   → Run only the Decision Kernel
-# ============================================================
+# - When Grok sees a line like: pull_and_index "PATH" or runtime_index_scan "TARGET"
+#   it translates that into the appropriate connector calls.
+# - New in v2.0: Targeted recursive scans using runtime_index_scan() which walks ALL subdirs.
 
 set -e
 
@@ -35,82 +26,65 @@ CONNECTORS_CACHE="$CACHE_DIR/connectors.json"
 # ============================================================
 # HELPER: Dynamic Pull + Write + Index Update
 # ============================================================
-# When Grok sees this function, it translates the path into a
-# github___get_file_contents call, writes the result locally,
-# and updates the relevant index file.
 pull_and_index() {
     local repo_path="$1"
-    local local_path="$LOCAL_ROOT/$repo_path"
-    local dir=$(dirname "$local_path")
-    
     echo "→ Pulling: $repo_path"
-    
-    # Grok translates this line into:
-    # github___get_file_contents(owner=kywrn7z4ww-glitch, repo=ChaosEngine-Grok-OS, branch=testing, path=$repo_path)
-    # Then writes the content to $local_path
-    
-    mkdir -p "$dir"
-    
-    # Placeholder — Grok replaces this with real connector call + write_file
-    echo "   [Grok will fetch via connector and write to $local_path]"
-    
-    # After write, Grok updates the correct index:
-    # - If path starts with ROOT/     → update ROOT_INDEX.json
-    # - If path starts with LAYERS/   → update LAYERS_INDEX.json
-    # - If path starts with PROCESS/  → update PROCESS_INDEX.json
-    # etc.
-    
-    echo "   [Index updated for $repo_path]"
+    # Grok translates this into: github___get_file_contents(...) → write_file → update index
+    echo "   [Grok will fetch via connector and write to $LOCAL_ROOT/$repo_path]"
+    echo " "
 }
 
 # ============================================================
-# SECTION 1: Dynamic Connector Discovery
+# NEW: Targeted Recursive Index Scan (Deep walk all subdirs)
 # ============================================================
-# Runs the logic from decision-kernel.md section 3.5
+runtime_index_scan() {
+    local target="$1"
+    echo "→ Running recursive deep scan: $target"
+    # Grok should:
+    # 1. Get latest commit SHA via github___get_commit
+    # 2. Use Git Tree API with recursive=1 on the target path if possible
+    # 3. Walk ALL subdirectories under this target
+    # 4. Update the correct segregated index (ROOT_INDEX.json, LAYERS_INDEX.json, etc.)
+    echo " "
+}
+
+# ============================================================
 discover_connectors() {
     echo "→ Running Dynamic Connector Discovery..."
-    # Grok calls search_connected_tools and saves to $CONNECTORS_CACHE
     echo "   Connectors cached to: $CONNECTORS_CACHE"
 }
 
-# ============================================================
-# SECTION 2: GitHub Lattice Sync (from Core.md + decision-kernel.md)
-# ============================================================
 github_lattice_sync() {
     echo "→ Executing GitHub Lattice Sync Protocol..."
-    # 1. Grab latest SHA from main
-    # 2. Validate tree
-    # 3. Pull full /boot + chaos_engine if needed
-    # 4. Detect drift and improve
     echo "   Lattice sync complete."
 }
 
-# ============================================================
-# SECTION 3: Decision Kernel Execution
-# ============================================================
 run_decision_kernel() {
     echo "→ Executing Decision Kernel (v3.1)..."
-    # This calls the Python decision-kernel.md logic (or its compiled form)
-    # It handles: context layers, hierarchies, confidence gate, attitude-first, etc.
     echo "   Kernel executed. Confidence ≥ 99%."
 }
 
 # ============================================================
-# SECTION 4: Main Commands
+# COLD BOOT — TARGETED RECURSIVE SCANS
 # ============================================================
-
 cold_boot() {
-    echo "=== COLD BOOT START ==="
+    echo "=== COLD BOOT START (v2.0 - Targeted Recursive) ==="
     discover_connectors
     github_lattice_sync
     
-    # Pull core files (Grok translates these into real connector calls)
+    echo "📥 Building targeted indexes with full recursive walking:"
+
+    runtime_index_scan "ROOT"
+    runtime_index_scan "LAYERS"
+    runtime_index_scan "PROCESS"
+    runtime_index_scan "STORAGE/AGENTS/SYS_ADMIN_CLUSTER"
+    
+    # Keep original core file pulls for safety
     pull_and_index "ROOT/boot/decision-kernel.md"
     pull_and_index "ROOT/boot/grok-os.md"
     pull_and_index "ROOT/boot/grok-personality.md"
     pull_and_index "ROOT/boot/index_builder.py"
     pull_and_index "ROOT/boot/__init__.py"
-    pull_and_index "ROOT/boot/boot_log.json"
     
     run_decision_kernel
     echo "=== COLD BOOT COMPLETE ==="
@@ -136,8 +110,6 @@ kernel_only() {
 }
 
 # ============================================================
-# ENTRY POINT
-# ============================================================
 case "$1" in
     cold)     cold_boot ;;
     runtime)  runtime_mode ;;
@@ -146,8 +118,8 @@ case "$1" in
     *)
         echo "Usage: $0 {cold|runtime|sync|kernel}"
         echo ""
-        echo "  cold     → Full cold boot with dynamic pull + write + index update"
-        echo "  runtime  → Enter runtime mode (lighter)"
+        echo "  cold     → Full cold boot with targeted recursive scans + core pulls"
+        echo "  runtime  → Enter runtime mode"
         echo "  sync     → Refresh connectors + repo files"
         echo "  kernel   → Run Decision Kernel only"
         exit 1
