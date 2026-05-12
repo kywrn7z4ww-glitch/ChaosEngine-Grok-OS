@@ -77,7 +77,8 @@ github___delete_file(
     repo="ChaosEngine-Grok-OS",
     path="old_file.py",
     branch="testing",
-    message="chore: remove deprecated file")
+    message="chore: remove deprecated file"
+)
 ```
 
 ---
