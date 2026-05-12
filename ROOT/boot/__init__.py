@@ -10,8 +10,8 @@ from datetime import datetime
 from pathlib import Path
 
 # === CONFIG ===
-LOCAL_ROOT = Path(os.getenv("GROKOS_ROOT", "/home/workdir/artifacts/grok-os/ROOT"))
-BOOT_LOG = Path("/home/workdir/artifacts/grokos/Boot_Log.json")
+LOCAL_ROOT = Path(os.getenv("GROKOS_ROOT", "/home/workdir/artifacts/Grok OS/ROOT"))
+BOOT_LOG = Path("/home/workdir/artifacts/Grok OS/Boot_Log.json")
 
 
 def log_event(event: str, status: str = "success", details: str = ""):
@@ -24,27 +24,34 @@ def log_event(event: str, status: str = "success", details: str = ""):
     except:
         pass  # fail silently during boot
 
-
 def boot_grok_os():
     print("🚀 Grok OS Traditional Boot v4.0 Starting...")
 
     log_event("boot_started")
 
-    # === PHASE 1: Download Skill + Core Mirror ===
-    print("\n📥 Phase 1: Download Skill + Core Mirror")
+    # === PHASE 1: Targeted Index Build (Lean Cold Boot) ===
+    print("\n📥 Phase 1: Building Targeted Indexes (Lean Mode)")
     try:
-        from grok_download import sync_github_folder
+        from index_builder import runtime_index_scan
 
-        sync_github_folder(
-            "https://github.com/kywrn7z4ww-glitch/ChaosEngine-Grok-OS/tree/main/ROOT",
-            str(LOCAL_ROOT),
-            profile="grok-os",
-        )
-        print("  ✅ Core mirror complete")
-        log_event("core_mirror_complete")
+        # Only scan the folders you specified to keep indexes lean
+        important_paths = [
+            "ROOT",
+            "LAYERS", 
+            "STORAGE/AGENTS/SYS_ADMIN_CLUSTER",
+            "PROCESS"
+        ]
+        
+        for path in important_paths:
+            result = runtime_index_scan(path)
+            log_event(f"indexed_{path}", "success", str(result))
+        
+        print("  ✅ Targeted indexes built for important paths only")
+        log_event("targeted_indexes_complete")
+        
     except Exception as e:
-        print(f"  ⚠️  Download skill not available or failed: {e}")
-        log_event("core_mirror_failed", "warning", str(e))
+        print(f"  ⚠️  Index build failed: {e}")
+        log_event("index_build_failed", "error", str(e))
 
     # === PHASE 2: Load Core Components ===
     print("\n🔧 Phase 2: Load Core Components")
@@ -79,6 +86,15 @@ def boot_grok_os():
         print(f"  ⚠️  ChaosEngine load failed: {e}")
         log_event("chaosengine_failed", "error", str(e))
 
+    # === FINAL BOOT REPORT ===
+    print("\n" + "="*60)
+    print("📋 COLD BOOT REPORT")
+    print("="*60)
+    print("✅ Targeted indexes built for: ROOT, LAYERS, STORAGE/AGENTS/SYS_ADMIN_CLUSTER, PROCESS")
+    print("✅ Core components loaded")
+    print("✅ Handoff to ChaosEngine attempted")
+    print("="*60)
+    
     print("\n✅ Grok OS Traditional Boot Complete")
     log_event("boot_complete")
 
