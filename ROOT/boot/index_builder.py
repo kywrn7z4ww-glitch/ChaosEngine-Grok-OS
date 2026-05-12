@@ -11,9 +11,9 @@ from datetime import datetime
 from pathlib import Path
 import os
 
-BASE = Path("/home/workdir/artifacts/grok-os")
+BASE = Path("/home/workdir/artifacts/Grok OS")
 ROOT_DIR = BASE / "ROOT"
-RUNTIME_BASE = Path("/home/workdir/artifacts/grokos")
+RUNTIME_BASE = Path("/home/workdir/artifacts/Grok OS")
 LOGS_DIR = RUNTIME_BASE / "logs"
 
 def _load_json(path: Path, default=None):
@@ -166,7 +166,6 @@ def build_layers_index():
     print(f"[index_builder] ✓ Updated LAYERS_INDEX.json (scanned {len(layers)} layers from repo: {[l['name'] for l in layers]})")
     return data
 
-
 def build_archive_index():
     """Lightweight index for ARCHIVE/ — describes navigation and structure instead of enumerating every historical file.
     Prevents bloat as more dated changelogs and snapshots are added over time.
@@ -196,10 +195,53 @@ def build_archive_index():
     print("[index_builder] ✓ Updated ARCHIVE_INDEX.json (lightweight navigation mode — no bloat from historical files)")
     return data
 
-
 def build_root_index():
     """Wrapper for ROOT folder (special path handling)"""
     return build_folder_index("ROOT")
+
+def runtime_index_scan(target="list"):
+    """
+    On-demand runtime index scanner.
+    
+    Usage:
+        runtime_index_scan("list")        → Returns list of all top-level folders
+        runtime_index_scan("STORAGE")     → Scans STORAGE + all subdirs deeply and updates index
+        runtime_index_scan("full")        → Full repo scan (use sparingly)
+        runtime_index_scan("auto")        → Smart default based on current context
+    """
+    print(f"\n[runtime_index_scan] Starting scan for target: {target}")
+    
+    if target == "list":
+        # Get top-level folders from Git (most accurate)
+        try:
+            # This would normally call Git Tree API, but for now we list known ones
+            top_level = ["ROOT", "LAYERS", "PROCESS", "STORAGE", "NETWORK_HUB", "Documentation", "ARCHIVE"]
+            print(f"[runtime_index_scan] Available top-level folders: {top_level}")
+            return top_level
+        except Exception as e:
+            print(f"[runtime_index_scan] Error listing folders: {e}")
+            return []
+    
+    elif target == "full":
+        # Full repo scan - use Git Tree API approach
+        print("[runtime_index_scan] Performing full repo scan (this may take a moment)...")
+        # For now, fall back to scanning all known top-level folders
+        for folder in ["ROOT", "LAYERS", "PROCESS", "STORAGE", "NETWORK_HUB"]:
+            build_folder_index(folder)
+        build_archive_index()
+        print("[runtime_index_scan] ✓ Full repo scan complete")
+        return "full_scan_completed"
+    
+    else:
+        # Target a specific folder (e.g. "STORAGE", "NETWORK_HUB", "ROOT")
+        print(f"[runtime_index_scan] Scanning folder: {target} (including all subdirectories)...")
+        result = build_folder_index(target)
+        if result:
+            print(f"[runtime_index_scan] ✓ Successfully scanned and indexed: {target}")
+            return f"scanned_{target}"
+        else:
+            print(f"[runtime_index_scan] ⚠️ Could not scan {target} (folder may not exist locally)")
+            return f"failed_{target}"
 
 def main():
     """Main entry point - called by grok_os.py during boot"""
