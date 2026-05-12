@@ -1,0 +1,20 @@
+{
+  "version": "4.0",
+  "purpose": "**LAYERS Index** — Dynamically scanned from repo for all Layer: definitions. Tracks available runtime layers.",
+  "folder": "layer",
+  "last_updated": "2026-05-13T00:28:00Z",
+  "total_layers": 10,
+  "layers": [
+    {"name": "boot", "path": "layer/boot/boot.md", "active": true},
+    {"name": "brainstorm", "path": "layer/brainstorm/brainstorm.md", "active": true},
+    {"name": "casual", "path": "layer/casual/casual.md", "active": true},
+    {"name": "deepdive", "path": "layer/deepdive/deepdive.md", "active": true},
+    {"name": "dev", "path": "layer/dev/dev.md", "active": true},
+    {"name": "export", "path": "layer/export/export.md", "active": true},
+    {"name": "help", "path": "layer/help/help.md", "active": true},
+    {"name": "roleplay", "path": "layer/roleplay/roleplay.md", "active": true},
+    {"name": "update", "path": "layer/update/update.md", "active": true},
+    {"name": "void", "path": "layer/void/void.md", "active": true}
+  ],
+  "notes": "All layers optimized and migrated to Grok_OS_Skill/layer/. Music layer includes chaos_music.py and suno/ subfolder."
+}
