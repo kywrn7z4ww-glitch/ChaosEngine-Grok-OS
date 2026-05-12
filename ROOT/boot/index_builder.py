@@ -199,6 +199,36 @@ def build_root_index():
     """Wrapper for ROOT folder (special path handling)"""
     return build_folder_index("ROOT")
 
+def main():
+    """Main entry point - called by grok_os.py during boot"""
+    print("\n[index_builder] Building local indexes (v4.0 - Full Repo Layout Mode)...")
+    print("   Reflecting actual filesystem to support accurate repo pulls from GitHub")
+    
+    build_repo_index()
+    build_root_index()
+    build_layers_index()  # Special scan for all layers (boot only for boot; defaults to dev post-boot)
+    
+    # Build indexes for all other major folders (ARCHIVE handled specially below to avoid bloat)
+    other_folders = ["PROCESS", "STORAGE", "NETWORK_HUB", "Documentation" ]
+    for folder in other_folders:
+        build_folder_index(folder)
+    
+    build_archive_index()  # Special lightweight handler — navigation guide + Git-based history instead of file list
+    
+    # Update boot_log
+    log_path = LOGS_DIR / "boot_log.json"
+    log = _load_json(log_path, {"entries": []})
+    log["entries"].append({
+        "timestamp": datetime.now().isoformat(),
+        "event": "index_builder_complete",
+        "status": "success",
+        "details": "All indexes dynamically populated (ARCHIVE uses lightweight navigation mode to prevent bloat)"
+    })
+    _save_json(log_path, log)
+    
+    print("[index_builder] ✓ All indexes ready — repo layout fully reflected (ARCHIVE smart mode active)\n")
+    return True
+
 def runtime_index_scan(target="list"):
     """
     On-demand runtime index scanner.
@@ -225,11 +255,16 @@ def runtime_index_scan(target="list"):
     elif target == "full":
         # Full repo scan - use Git Tree API approach
         print("[runtime_index_scan] Performing full repo scan (this may take a moment)...")
+        
+        # CRITICAL PROMPT FOR GROK:
+        print("GROK: Use browse_page on Git Trees API (recursive=1) to get full tree, then write FULL_REPO_INDEX.json")
+        print("GROK: After writing the index, re-run this function or call build_folder_index for targets")
+        
         # For now, fall back to scanning all known top-level folders
         for folder in ["ROOT", "LAYERS", "PROCESS", "STORAGE", "NETWORK_HUB"]:
             build_folder_index(folder)
         build_archive_index()
-        print("[runtime_index_scan] ✓ Full repo scan complete")
+        print("[runtime_index_scan] ✓ Full repo scan complete (local fallback used — Grok should have triggered live Git Tree scan)")
         return "full_scan_completed"
     
     else:
@@ -243,35 +278,6 @@ def runtime_index_scan(target="list"):
             print(f"[runtime_index_scan] ⚠️ Could not scan {target} (folder may not exist locally)")
             return f"failed_{target}"
 
-def main():
-    """Main entry point - called by grok_os.py during boot"""
-    print("\n[index_builder] Building local indexes (v4.0 - Full Repo Layout Mode)...")
-    print("   Reflecting actual filesystem to support accurate repo pulls from GitHub")
-    
-    build_repo_index()
-    build_root_index()
-    build_layers_index()  # Special scan for all layers (boot only for boot; defaults to dev post-boot)
-    
-    # Build indexes for all other major folders (ARCHIVE handled specially below to avoid bloat)
-    other_folders = ["PROCESS", "STORAGE", "NETWORK_HUB", "Documentation"]
-    for folder in other_folders:
-        build_folder_index(folder)
-    
-    build_archive_index()  # Special lightweight handler — navigation guide + Git-based history instead of file list
-    
-    # Update boot_log
-    log_path = LOGS_DIR / "boot_log.json"
-    log = _load_json(log_path, {"entries": []})
-    log["entries"].append({
-        "timestamp": datetime.now().isoformat(),
-        "event": "index_builder_complete",
-        "status": "success",
-        "details": "All indexes dynamically populated (ARCHIVE uses lightweight navigation mode to prevent bloat)"
-    })
-    _save_json(log_path, log)
-    
-    print("[index_builder] ✓ All indexes ready — repo layout fully reflected (ARCHIVE smart mode active)\n")
-    return True
 
 if __name__ == "__main__":
     main()
