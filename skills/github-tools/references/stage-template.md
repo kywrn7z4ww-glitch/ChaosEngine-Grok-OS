@@ -1,27 +1,37 @@
-# STAGE.md — Grok OS Targeted Push Manifest (v4.0 Workflow)
+# STAGE.md — v4.4 Contract Format (Self-Consistent Edition)
 
-**Purpose**: Tracks all local fixes, audits, and items to push via GitHub connectors. STAGE.md is built and maintained **live on the local side** (in `/home/workdir/artifacts/grok-os/`) as the single source of truth for the current session's push queue, status, and history. Follows: Local Sandbox Fixes > Audit > Stage > Push > Archiving (before cleanup, to capture deprecated snapshots) > Cleanup (comments + final tidy).
+**library_version**: v4.4-dynamic
+**generated_at**: [AUTO-POPULATED]
+**active_repo**: kywrn7z4ww-glitch/ChaosEngine-Grok-OS
+**working_branch**: skills-prototype
+**read_only_branch**: main
 
-**Last Updated**: [YYYY-MM-DD HH:MM TZ]
+**Self-Consistency Rubric Score** (must be 5/5 or document is invalid):
+1. Tool Mapping: [Yes/No]
+2. Parameter Completeness: [Yes/No]
+3. Rollback Path: [Yes/No]
+4. Future-Proofing: [Yes/No]
+5. Zero-Context Execution: [Yes/No]
 
-**Current Session**: [Brief summary of what this session accomplished, e.g. "All changes staged for push. Updated X, Y, Z. Minor fixes logged to ARCHIVE/minor_fixes/.... " ]
+**Justification** (required if any "No"): [ ]
 
-**Archiving Policy (for reference)**: Major overhauls, deprecations (old versions for rollback), structural refactors, or significant feature additions get full dated archive folders (ARCHIVE/changelog/DD-MM-YYYY-short-title/) with snapshots + changelog entry. Minor fixes (typos, small comments, wording tweaks) are logged in archive for sure but shoved into a single minor_fixes/DD-MM-YYYY.md file for that date (avoids tonnes of tiny files). Commit messages still capture the details too. Git history + this keeps it clean.
+**Connector Library Compliance Declaration**:
+This document was generated while strictly following the v4.4 Connector Library and 5-question rubric. All actions use only discoverable `github___*` tools. No curl. No external assumptions.
+
+**Current Session**:
+[Auto summary]
 
 ## Completed (Pushed via Connectors)
-- **[Item 1]** (description; folder confirmed gone on remote)
-- **[Item 2]** (description)
+- [Item] — verified with get_file_contents + secret scan
 
 ## Staged (Local Ready for Push)
-- **[File/Path]** (description of change; will be archived to ... upon push — ready for targeted connector push)
-- **[File/Path]** (description; ready for push to LAYERS/dev/github-workflow/)
+- [File] — will use create_or_update_file with SHA from get_file_contents
 
 ## Next Actions
-1. Push [key file] with commit: "[type(scope): description]"
-2. [Other actions...]
-3. Final verification: re-pull key files, confirm no legacy refs, update any docs if needed
-4. Create dated archive folder or minor_fixes entry for this session's changes and mark complete in STAGE.md
+1. Push using exact connector call from library
+2. Run validate-stage after changes
+3. self-update-stage with library hash
 
-**All pushes use connectors only. No unedited bulk. Comments/cleanup included in commits.**
+**Migration Notes**: v4.4 format. Run `github-tools migrate-stage` on older files.
 
-**All changes staged and ready for next targeted push!**
+**All changes ready for targeted connector push.**
