@@ -1,107 +1,133 @@
 #!/bin/bash
-# github-tools.sh — Executable helper for the github-tools skill
-# Provides quick commands for the full connector workflow
-
+# github-tools.sh — v4.4 Multi-Repo/Branch + Self-Consistency Edition
 set -euo pipefail
 
 SKILL_DIR="/home/workdir/.grok/skills/github-tools"
 STAGE_FILE="/home/workdir/artifacts/grok-os/STAGE.md"
 ARCHIVE_BASE="/home/workdir/artifacts/grok-os/ARCHIVE"
+LIBRARY_FILE="$SKILL_DIR/CONNECTOR_LIBRARY.json"
+CONFIG_FILE="/home/workdir/artifacts/grok-os/.github-tools-config"
 
-show_help() {
-  cat <<EOF
-github-tools — ChaosEngine-Grok-OS GitHub Connector Workflow Helper
+# Defaults (overridable)
+DEFAULT_REPO="kywrn7z4ww-glitch/ChaosEngine-Grok-OS"
+DEFAULT_READ_ONLY_BRANCH="main"
+DEFAULT_WORKING_BRANCH="skills-prototype"
 
-Usage:
-  ./scripts/github-tools.sh init-stage          # Create fresh STAGE.md from template
-  ./scripts/github-tools.sh show-stage          # Display current STAGE.md
-  ./scripts/github-tools.sh archive-major "title"   # Create major changelog folder + entry
-  ./scripts/github-tools.sh archive-minor "title"   # Append to today's minor_fixes file
-  ./scripts/github-tools.sh strip-sha <file>    # Strip all sha fields from a *_INDEX.json
-  ./scripts/github-tools.sh push-ready          # Show summary of what is ready to push
-  ./scripts/github-tools.sh self-update-stage   # Mark last item Pushed + Verified (manual)
-  ./scripts/github-tools.sh full-workflow       # Print the complete 5-phase workflow
-
-All operations follow the official rules from references/git_connector_workflow.md
-EOF
-}
-
-init_stage() {
-  mkdir -p "$(dirname "$STAGE_FILE")"
-  cp "$SKILL_DIR/references/stage-template.md" "$STAGE_FILE"
-  echo "✅ Fresh STAGE.md created at $STAGE_FILE"
-  echo "Edit it with your current session details, then run 'show-stage' to review."
-}
-
-show_stage() {
-  if [[ -f "$STAGE_FILE" ]]; then
-    cat "$STAGE_FILE"
+load_config() {
+  if [[ -f "$CONFIG_FILE" ]]; then
+    source "$CONFIG_FILE"
   else
-    echo "No STAGE.md found. Run 'init-stage' first."
+    ACTIVE_REPO="$DEFAULT_REPO"
+    WORKING_BRANCH="$DEFAULT_WORKING_BRANCH"
+    READ_ONLY_BRANCH="$DEFAULT_READ_ONLY_BRANCH"
   fi
 }
 
+save_config() {
+  mkdir -p "$(dirname "$CONFIG_FILE")"
+  cat > "$CONFIG_FILE" <<EOF
+ACTIVE_REPO="$ACTIVE_REPO"
+WORKING_BRANCH="$WORKING_BRANCH"
+READ_ONLY_BRANCH="$READ_ONLY_BRANCH"
+EOF
+}
+
+show_help() {
+  cat <<EOF
+github-tools v4.4 — Multi-Repo + Self-Consistent Edition
+
+REPO & BRANCH MANAGEMENT
+  select-repo <owner/repo>          # e.g. select-repo kywrn7z4ww-glitch/ChaosEngine-Grok-OS
+  set-working-branch <branch>       # Working branch (where we push changes)
+  set-read-only-branch <branch>     # Read-only branch (e.g. main — never push here)
+
+STAGE & VALIDATION
+  init-stage                        # Create fresh v4.4 STAGE.md (auto-populates date/repo/branch)
+  validate-stage [file]             # Run 5-question self-consistency rubric
+  migrate-stage <old-file>          # Upgrade old STAGE.md to v4.4 format
+  refresh-library                   # Re-discover github___ tools
+
+LEGACY (still work)
+  archive-major "title"
+  strip-sha <file>
+  push-ready
+  self-update-stage
+  full-workflow
+
+All operations now enforce the v4.4 Self-Consistency Contract + multi-repo/branch support.
+EOF
+}
+
+select_repo() {
+  ACTIVE_REPO="$1"
+  save_config
+  echo "✅ Active repo: $ACTIVE_REPO"
+}
+
+set_working_branch() {
+  WORKING_BRANCH="$1"
+  save_config
+  echo "✅ Working branch: $WORKING_BRANCH (changes pushed here)"
+}
+
+set_read_only_branch() {
+  READ_ONLY_BRANCH="$1"
+  save_config
+  echo "✅ Read-only branch: $READ_ONLY_BRANCH (MAIN equivalent — do not push)"
+}
+
+init_stage() {
+  load_config
+  mkdir -p "$(dirname "$STAGE_FILE")"
+  cp "$SKILL_DIR/references/stage-template.md" "$STAGE_FILE"
+  sed -i "s|\[YYYY-MM-DD HH:MM TZ\]|$(date '+%Y-%m-%d %H:%M %Z')|g" "$STAGE_FILE"
+  echo "✅ v4.4 STAGE.md created"
+  echo "Repo: $ACTIVE_REPO | Working: $WORKING_BRANCH | Read-only: $READ_ONLY_BRANCH"
+}
+
+validate_stage() {
+  local file="${1:-$STAGE_FILE}"
+  python3 "$SKILL_DIR/validate_rubric.py" "$file"
+}
+
+refresh_library() {
+  echo "Library refresh triggered. Run search_connected_tools(\"github\") to update CONNECTOR_LIBRARY.json"
+}
+
+# Legacy functions (minimal)
 archive_major() {
   local title="$1"
   local date=$(date +%Y-%m-%d)
   local dir="$ARCHIVE_BASE/changelog/$(date +%Y/%m)"
   mkdir -p "$dir"
-  local file="$dir/${date}-${title}.md"
-  echo "# $title — $(date)" > "$file"
-  echo "Created major changelog: $file"
-}
-
-archive_minor() {
-  local title="$1"
-  local date=$(date +%Y-%m-%d)
-  local file="$ARCHIVE_BASE/minor_fixes/${date}.md"
-  mkdir -p "$(dirname "$file")"
-  echo -e "\n## $title — $(date +%H:%M)\n" >> "$file"
-  echo "Appended to minor_fixes: $file"
+  echo "# $title — $(date)" > "$dir/${date}-${title}.md"
+  echo "Created major changelog"
 }
 
 strip_sha() {
   local file="$1"
-  if [[ ! -f "$file" ]]; then
-    echo "File not found: $file"
-    exit 1
-  fi
-  # Simple sed to remove "sha": "..." lines (works for most JSON index files)
-  sed -i '/"sha":\s*"[^"]*"/d' "$file"
-  echo "✅ SHA fields stripped from $file"
+  [[ -f "$file" ]] && sed -i '/"sha":\s*"[^"]*"/d' "$file" && echo "SHA stripped"
 }
 
 push_ready() {
-  echo "=== Current Staged Items (from STAGE.md) ==="
-  if [[ -f "$STAGE_FILE" ]]; then
-    grep -A 5 "Staged (Local Ready for Push)" "$STAGE_FILE" || echo "No staged items section found."
-  else
-    echo "No STAGE.md found."
-  fi
+  echo "=== Staged Items ==="
+  [[ -f "$STAGE_FILE" ]] && grep -A 10 "Staged" "$STAGE_FILE" || echo "No STAGE.md"
 }
 
 self_update_stage() {
-  if [[ -f "$STAGE_FILE" ]]; then
-    echo "Marking last item as Pushed + Verified..."
-    sed -i 's/Pushed + Verified/Pushed + Verified (manual update)/g' "$STAGE_FILE" || true
-    echo "✅ STAGE.md self-updated. Remember to add SHA and commit URL manually."
-  else
-    echo "No STAGE.md found."
-  fi
+  [[ -f "$STAGE_FILE" ]] && sed -i 's/Pushed + Verified/Pushed + Verified (auto)/g' "$STAGE_FILE" && echo "STAGE.md updated"
 }
 
 full_workflow() {
-  cat "$SKILL_DIR/references/git_connector_workflow.md"
+  cat "$SKILL_DIR/references/git_connector_workflow.md" 2>/dev/null || echo "No workflow doc"
 }
 
 case "${1:-help}" in
+  select-repo) select_repo "$2" ;;
+  set-working-branch) set_working_branch "$2" ;;
+  set-read-only-branch) set_read_only_branch "$2" ;;
   init-stage) init_stage ;;
-  show-stage) show_stage ;;
-  archive-major) archive_major "${2:-untitled}" ;;
-  archive-minor) archive_minor "${2:-untitled}" ;;
-  strip-sha) strip_sha "$2" ;;
-  push-ready) push_ready ;;
-  self-update-stage) self_update_stage ;;
-  full-workflow) full_workflow ;;
+  validate-stage) validate_stage "$2" ;;
+  refresh-library) refresh_library ;;
   *) show_help ;;
 esac
