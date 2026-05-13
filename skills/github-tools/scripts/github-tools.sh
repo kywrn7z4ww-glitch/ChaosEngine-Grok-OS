@@ -46,6 +46,7 @@ STAGE & VALIDATION
   validate-stage [file]             # Run 5-question self-consistency rubric
   migrate-stage <old-file>          # Upgrade old STAGE.md to v4.4 format
   refresh-library                   # Re-discover github___ tools
+  cleanup                         # Remove deprecated files (safe)
 
 LEGACY (still work)
   archive-major "title"
@@ -94,6 +95,24 @@ refresh_library() {
   echo "Library refresh triggered. Run search_connected_tools(\"github\") to update CONNECTOR_LIBRARY.json"
 }
 
+cleanup() {
+  echo "=== github-tools v4.4 Cleanup ==="
+  echo "This will remove deprecated files from skills/github-tools/"
+  echo "- Old git_connector_workflow.md (superseded by SKILL.md v4.4)"
+  echo ""
+  read -p "Proceed with cleanup? (y/N) " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [[ -f "$SKILL_DIR/references/git_connector_workflow.md" ]]; then
+      rm "$SKILL_DIR/references/git_connector_workflow.md"
+      echo "✅ Removed old git_connector_workflow.md"
+    fi
+    echo "Cleanup complete."
+  else
+    echo "Cleanup cancelled."
+  fi
+}
+
 # Legacy functions (minimal)
 archive_major() {
   local title="$1"
@@ -129,5 +148,6 @@ case "${1:-help}" in
   init-stage) init_stage ;;
   validate-stage) validate_stage "$2" ;;
   refresh-library) refresh_library ;;
+  cleanup) cleanup ;;
   *) show_help ;;
 esac
