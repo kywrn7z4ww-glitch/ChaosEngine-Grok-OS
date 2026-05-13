@@ -1,0 +1,6 @@
+{
+  "version": "1.0",
+  "last_updated": null,
+  "description": "Master index of all snapshots created by snapshot_manager.py. This file is auto-managed. Do not edit manually unless you know what you're doing. Variable fields: 'snapshots' array is populated automatically with objects containing: timestamp (string), layer (string), filename (string), size_bytes (int), notes (string), eval_score (float 0.0-1.0), created_at (ISO timestamp). Add new entries only via the manager functions.",
+  "snapshots": []
+}
