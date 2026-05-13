@@ -1,0 +1,52 @@
+{
+  "version": "v4.4-dynamic",
+  "generated_at": "2026-05-13T20:53:00Z",
+  "source": "search_connected_tools(\"github\")",
+  "note": "This file is auto-generated at runtime. Do not edit manually.",
+  "tools": {
+    "github___get_file_contents": {
+      "description": "Read file or directory contents + SHA",
+      "required": ["owner", "repo", "path"],
+      "optional": ["ref", "sha"]
+    },
+    "github___create_or_update_file": {
+      "description": "Create or update file (SHA required for updates)",
+      "required": ["owner", "repo", "path", "content", "message", "branch"],
+      "optional": ["sha"]
+    },
+    "github___delete_file": {
+      "description": "Delete file from branch",
+      "required": ["owner", "repo", "path", "message", "branch"]
+    },
+    "github___search_repositories": {
+      "description": "Search repositories",
+      "required": ["query"],
+      "optional": ["sort", "order", "page", "perPage"]
+    },
+    "github___search_code": {
+      "description": "Search code across GitHub",
+      "required": ["query"],
+      "optional": ["sort", "order", "page", "perPage"]
+    },
+    "github___list_branches": {
+      "description": "List branches",
+      "required": ["owner", "repo"]
+    },
+    "github___create_branch": {
+      "description": "Create branch",
+      "required": ["owner", "repo", "branch"],
+      "optional": ["from_branch"]
+    },
+    "github___get_me": {
+      "description": "Get authenticated user",
+      "required": []
+    },
+    "github___run_secret_scanning": {
+      "description": "Scan content for secrets",
+      "required": ["files", "owner", "repo"]
+    }
+  },
+  "default_repo": "kywrn7z4ww-glitch/ChaosEngine-Grok-OS",
+  "default_read_only_branch": "main",
+  "default_working_branch": "skills-prototype"
+}
