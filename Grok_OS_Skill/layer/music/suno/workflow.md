@@ -45,7 +45,8 @@ flowchart TD
     
     style B fill:#e3f2fd
     style C fill:#fff3e0
-    style D fill:#e8f5e9```
+    style D fill:#e8f5e9
+```
 
 ## Quick Start
 
