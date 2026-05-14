@@ -1,26 +1,38 @@
 ---
 name: repo-cleaner
-description: "Safe Repo Hygiene Tool. Suggests cleanup actions first, always creates backup branch before any changes, and focuses on commit cleaning + smart file hygiene. Trigger with: 'clean repo', 'repo cleaner', 'repo hygiene'. Use when your repo is getting messy and you want safe, guided cleanup."
+description: "Safe Repo Hygiene Tool v1.1. Suggests cleanup actions first, always creates backup branch before any changes. Now includes skill archiving, deprecation, and manifest cleanup. Trigger with: 'clean repo', 'repo cleaner', 'repo hygiene', 'archive skill', 'deprecate skill'. Use when your repo is getting messy and you want safe, guided cleanup."
 ---
 
-# Repo Cleaner — Safe Hygiene Tool
+# Repo Cleaner — Safe Hygiene Tool v1.1
 
 **Core Philosophy:**
-**"Suggest First. Backup Always. Clean Safely."**
+**"Suggest First. Backup Always. Clean Safely. Archive Before Delete."**
 
-This skill helps keep repositories healthy by suggesting cleanup actions **before** doing anything. It always creates a backup branch first, respects files that "look useless but might be important", and focuses especially on **commit history cleaning**.
+This skill helps keep repositories healthy by suggesting cleanup actions **before** doing anything. It always creates a backup branch first, respects files that "look useless but might be important", and focuses especially on **commit history cleaning** and **skill lifecycle management** (archiving, deprecation, manifest cleanup).
 
 **Non-Negotiable Rules:**
 1. **Suggest First** — Never auto-execute. Always show proposed actions first.
 2. **Backup Branch Always** — Create a backup branch (e.g. `backup-before-clean-YYYYMMDD`) before any destructive action.
 3. **Respect "Looks Useless" Files** — Flag files that might actually be important and ask for confirmation.
 4. **Commit Cleaning Focus** — Prioritize cleaning commit history (squash, rewrite messages, remove noise).
-5. **Limited Self-Improvement** — Only logs patterns. Never aggressively changes behavior without strong justification.
-6. **User Must Approve Everything** — No auto-cleaning ever.
+5. **Archive Before Delete** — Never delete important files. Always move to `skills/archive/` first.
+6. **Limited Self-Improvement** — Only logs patterns. Never aggressively changes behavior without strong justification.
+7. **User Must Approve Everything** — No auto-cleaning ever.
 
 ---
 
-**Execution Flow**
+**New Commands (v1.1)**
+
+| Command                    | What It Does |
+|---------------------------|--------------|
+| `archive skill [name]`    | Moves skill folder to `skills/archive/[name]/` and updates manifest |
+| `deprecate skill [name]`  | Marks skill as deprecated in manifest + suggests archiving |
+| `clean manifest archives` | Removes all skills marked as "archived" from the manifest |
+| `clean repo`              | General repo hygiene (original behavior) |
+
+---
+
+**Execution Flow (General)**
 
 **Phase 0 — Analysis**
 - Scan the repository
@@ -28,8 +40,7 @@ This skill helps keep repositories healthy by suggesting cleanup actions **befor
   - Messy commit history
   - Old/unused branches
   - Duplicate or broken files
-  - Large binary files in history
-  - Poor commit messages
+  - Deprecated/archived skills that can be cleaned from manifest
 
 **Phase 1 — Backup Branch Creation**
 - Always create a backup branch before suggesting any changes
@@ -53,11 +64,14 @@ This skill helps keep repositories healthy by suggesting cleanup actions **befor
 
 ---
 
-**Current Capabilities (v1.0)**
-- Commit history analysis + suggestions (squash, message cleanup, merge commit removal)
+**Current Capabilities (v1.1)**
+- Commit history analysis + suggestions
 - File hygiene suggestions (with safety warnings)
 - Automatic backup branch creation
 - Clear suggestion + approval flow
+- **Skill archiving** (`archive skill [name]`)
+- **Skill deprecation** (`deprecate skill [name]`)
+- **Manifest cleanup** (`clean manifest archives`)
 - Limited pattern logging (light self-improvement)
 
 **Recommended Future Upgrades**
@@ -66,17 +80,16 @@ This skill helps keep repositories healthy by suggesting cleanup actions **befor
 - Branch cleanup suggestions
 - Integration with `skills-backup` for full hygiene + backup workflows
 - More aggressive cleaning options (with extra warnings)
+- Auto-detect deprecated skills from manifest
 
 ---
 
-**Anti-Patterns**
-- Never auto-clean without approval
-- Never rewrite history without backup branch
-- Never assume a file is useless without warning the user
-
-**Trigger Phrases
+**Trigger Phrases**
 - clean repo
 - repo cleaner
 - repo hygiene
+- archive skill [name]
+- deprecate skill [name]
+- clean manifest archives
 
-**End of repo-cleaner v1.0 — Suggest first. Backup always. Clean safely.**
+**End of repo-cleaner v1.1 — Suggest first. Backup always. Archive before delete. Safe skill lifecycle management.**
