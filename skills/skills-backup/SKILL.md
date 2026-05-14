@@ -1,18 +1,19 @@
 ---
 name: skills-backup
-description: "Smart Skills Backup Tool. Backs up all custom skills to the skills-prototype branch. Supports current skills folder and future Grok OS Skill folder. Trigger with: 'backup skills', 'skills backup', 'backup grok skills'. Use for regular repo backup of all custom skills."
+description: "Smart Skills Backup Tool v1.3. Backs up all custom skills to the skills-prototype branch. Automatically updates manifest on backup. Supports current skills folder and future Grok OS Skill folder. Trigger with: 'backup skills', 'skills backup', 'backup grok skills'. Use for regular repo backup of all custom skills."
 ---
 
-# Skills Backup — Smart Repo Backup Tool
+# Skills Backup — Smart Repo Backup Tool v1.3
 
 **Core Philosophy (Locked):**
-**"Backup the Skill Library Safest Way Possible — Efficient, Compatible, and Conflict-Aware."**
+**"Backup the Skill Library Safest Way Possible — Efficient, Compatible, and Conflict-Aware. Auto-Manifest Updates."**
 
 This skill exists to protect our custom skills by backing them up to git in the **safest, most reliable way** while remaining efficient. It prioritizes:
 - Safety over speed
 - Compatibility checking over blind self-improvement
 - Clear conflict handling
 - Traceable version history (SHA + content hash + date)
+- **Automatic manifest updates** after every successful backup
 
 **Backup Targets:**
 
@@ -27,7 +28,8 @@ This skill exists to protect our custom skills by backing them up to git in the 
 3. **Compatibility First** — Before any self-improvement, check compatibility with dependencies (github-tools, project-pusher, etc.).
 4. **Conflict Handling** — Detect and clearly report when remote and local have diverged.
 5. **User Confirmation** — Always ask before pushing (no auto-push ever).
-6. **Limited Self-Improvement** — Only improve if compatibility is confirmed. Never break core safety.
+6. **Automatic Manifest Update** — After successful backup, automatically update `skills-manifest.json` with new SHAs and timestamps.
+7. **Limited Self-Improvement** — Only improve if compatibility is confirmed. Never break core safety.
 
 ---
 
@@ -66,6 +68,7 @@ This skill exists to protect our custom skills by backing them up to git in the 
 - Stage only approved changes
 - Generate smart commit message
 - Push to `skills-prototype` branch
+- **Automatically update manifest** with new SHAs and backup timestamp
 
 **Phase 6 — Limited Self-Improvement (Compatibility First)**
 - Log what was backed up + any patterns
@@ -75,14 +78,16 @@ This skill exists to protect our custom skills by backing them up to git in the 
 **Phase 7 — Verification**
 - Confirm success
 - Log backup metadata (date, files changed, commit SHA)
+- Confirm manifest was updated
 
 ---
 
-**Current Capabilities (v1.0)**
+**Current Capabilities (v1.3)**
 - Backup current skills folder
 - Smart diff detection
 - User confirmation before push
 - Clean commit messages
+- **Automatic manifest update** after successful backup
 - Future support for Grok OS Skill path (ready when needed)
 
 **Recommended Future Upgrades**
@@ -100,6 +105,6 @@ This skill exists to protect our custom skills by backing them up to git in the 
 - backup grok skills
 - backup skills --target grok-os
 
-This skill makes sure we never lose our custom skills work.
+This skill makes sure we never lose our custom skills work and keeps the manifest in sync automatically.
 
-**End of skills-backup v1.2 — Stronger philosophy, SHA+hash tracking, conflict handling, compatibility-first limited self-improvement. Safest possible skill library backup.**
+**End of skills-backup v1.3 — Stronger philosophy, SHA+hash tracking, conflict handling, compatibility-first limited self-improvement, automatic manifest updates. Safest possible skill library backup.**
