@@ -1,57 +1,77 @@
 ---
 name: consolidator
-description: Consolidates an entire project into one clean, optimized text file. Git-aware, supports 30+ languages, automatic .gitignore respect, size protection, and stats. Use whenever the user wants to analyze, share, review, or feed a full codebase to an LLM.
+description: "Smart Consolidator. Consolidates, condenses, and compresses files in an intelligent manner while preserving original intent, clarity, and fidelity. Use when you need to analyze, share, review, or feed a full codebase to an LLM without losing context."
 ---
 
-# Consolidator
+# Consolidator — Smart Context-Preserving Compressor
 
-**Trigger when:** User asks to "consolidate the project", "dump the whole codebase", "put everything in one file", "analyze the full repo", or similar.
+**Core Philosophy (Locked):**
+**"Consolidate Smart. Compress Intelligently. Never Lose Intent, Clarity, or Fidelity."**
 
-## Instructions
+This skill exists to **consolidate, condense, and compress** entire projects or codebases in a smart, context-aware way. It is designed for situations where you need to feed large amounts of code/context to an LLM (or human) while keeping the original meaning, structure, and intent intact.
 
-Always use this skill for project consolidation tasks. It is faster, safer, and more consistent than manual commands.
+**Non-Negotiable Rules:**
+1. **Preserve Intent First** — Never summarize or compress in a way that changes or loses the original purpose of the code.
+2. **Maintain Clarity** — Output must remain readable and well-structured.
+3. **Protect Fidelity** — Key logic, comments, architecture, and relationships must be preserved.
+4. **Smart Compression Only** — Use intelligent selection, hierarchical organization, and smart summarization where safe. Never blindly truncate.
+5. **Context is Sacred** — When in doubt, keep more context rather than less.
 
-### Steps
-1. Change directory to the project root (where `.git` or main source files live).
-2. Execute the consolidator script with desired options.
-3. Review the output file (default: `codebase.txt` or custom name).
+---
 
-### Script location
-`scripts/consolidator.sh` (executable, self-contained).
+**Primary Use Cases**
+- Feeding large codebases to LLMs for analysis, refactoring, or review
+- Creating clean, condensed project overviews
+- Preparing context for long-running agent tasks
+- Sharing project snapshots without losing critical details
 
-### Recommended usage
-```bash
-./scripts/consolidator.sh --md
-```
+---
 
-This produces clean Markdown with language-aware code blocks — ideal for pasting into chats or LLMs.
+**Execution Approach (Flexible & Smart)**
 
-### Full option reference
-- `-o FILE` / `--output FILE` — Output filename (default: codebase.txt)
-- `--md` — Markdown mode with ```language fences
-- `--max-size KB` — Skip files larger than this (default: 2048)
-- `-e DIRS` / `--exclude DIRS` — Comma-separated extra paths to skip
-- `--no-git` — Force classic find mode (ignore .gitignore)
-- `-v` / `--verbose` — Show skipped files in output
-- `-h` / `--help` — Show usage
+The consolidator can use multiple strategies depending on the request:
 
-### Examples
-```bash
-# Best default for most projects
-./scripts/consolidator.sh --md
+**Strategy 1: Smart Hierarchical Consolidation (Default)**
+- Organize by directory structure
+- Keep high-level architecture + key files in full
+- Use smart summarization only for repetitive/low-value sections
+- Preserve all critical logic and intent
 
-# Custom output + size limit
-./scripts/consolidator.sh -o review.txt --max-size 1024
+**Strategy 2: Context-Preserving Compression**
+- Identify and keep core files (entry points, main logic, config, architecture)
+- Condense repetitive modules while preserving their purpose
+- Maintain relationships and data flow
 
-# Non-git or legacy project
-./scripts/consolidator.sh --no-git -o full-dump.txt -v
-```
+**Strategy 3: Full + Intelligent Filtering**
+- Include everything important
+- Apply smart filtering for size (skip generated files, node_modules, build artifacts, etc.)
+- Add clear structure and navigation
 
-The script automatically:
-- Uses `git ls-files` when available (respects .gitignore)
-- Falls back to smart `find` otherwise
-- Skips binaries, images, node_modules, dist, build, __pycache__, minified files, etc.
-- Adds header with git commit, file count, and total lines
-- Sorts output deterministically
+---
 
-**Last synced**: 2026-05-12
+**Output Format (Recommended)**
+- Clean Markdown with proper language fences
+- Hierarchical structure (directories → files → content)
+- Header with: project name, total files, lines, git commit, timestamp
+- Clear separation between architecture overview and detailed code
+
+---
+
+**Anti-Patterns (Hard Rules)**
+- Never blindly truncate important logic
+- Never lose the "why" behind code decisions
+- Never remove comments that explain intent
+- Never assume something is "unimportant" without strong justification
+- Never sacrifice clarity for smaller file size
+
+**Trigger Phrases**
+- consolidate the project
+- condense the codebase
+- compress the repo smartly
+- create context for LLM
+- full project overview with intent preserved
+- smart consolidate
+
+This skill turns large, messy codebases into **clean, intelligent, context-rich** representations — perfect for analysis and LLM consumption.
+
+**End of consolidator v2.0 — Smart. Context-aware. Fidelity-first.**
