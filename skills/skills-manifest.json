@@ -1,12 +1,12 @@
 {
   "version": "2.0",
-  "last_updated": "2026-05-14T03:33:00Z",
-  "description": "COMPLETE Skills Manifest — All skills pushed + bootstrap updated to v2.1 with real uninstall support.",
+  "last_updated": "2026-05-14T03:55:00Z",
+  "description": "github-tools upgraded to v4.5 with Safe Push System (batching + size limits + warnings). All other skills unchanged.",
   "pushed_skills": [
+    { "name": "github-tools", "version": "4.5", "sha": "9128af4dfcd55bd6f392c6fe46c643112e6ea178", "commit": "01689094173650e59bd1aafcff600a5ece10ba9a" },
     { "name": "bootstrap-skills", "version": "2.1", "sha": "e5a040547d070a9156b6a6d18c69211a01f1692e", "commit": "08ae8d7e8814096435cc4dd2f12b4aa0cf1c884f" },
     { "name": "github-connectors", "version": "1.0", "sha": "cb24124e2158a760a5fbf0ddaba2799eb7de736a", "commit": "6fae0c2b8ee71402919a089e572fbbac3f00e043" },
     { "name": "skills-backup", "version": "1.2", "sha": "96767c906e96e98d5bc009ede2324e668e729521", "commit": "c7df56d86ce1fc92758f39773f5cdfe677cf86d8" },
-    { "name": "github-tools", "version": "4.4", "sha": "154cf87c1e124bdb6c9266f21b9bb96f5ec36a20", "commit": "59303e58062fa49183453dcab0ac754428126d27" },
     { "name": "truth-blade", "version": "1.6", "sha": "772a63f42c6d551f12c3a055aef1a01b0028834a", "commit": "dc81b0bc38bc107cb737acac04a08ad432524f56" },
     { "name": "project-pusher", "version": "2.0", "sha": "065c0a4678f8965853f83c3c83b0f55a5907d10f", "commit": "9b5798c20e4cde7637f953f4c8716cc333f98dda" },
     { "name": "auditor", "version": "1.0", "sha": "0e018c2ab11ccfa5c9ebb83308b75d40ca115c51", "commit": "2669de4aaed165d98bef864bc30a41db6a2f3ccc" },
@@ -19,5 +19,5 @@
     { "name": "web-probe", "version": "1.0", "sha": "d7af8821d3e78b97ca372e5fd8a58318dbb9cbdf", "commit": "099b079651cdd33bea3cd7707e41825ac117eeb9" }
   ],
   "pre_existing_on_remote": ["consolidator"],
-  "notes": "COMPLETE — All 15 skills pushed. bootstrap-skills updated to v2.1 with real uninstall support. Full SHAs and commits recorded."
+  "notes": "github-tools upgraded to v4.5 with Safe Push System. All other skills unchanged."
 }
