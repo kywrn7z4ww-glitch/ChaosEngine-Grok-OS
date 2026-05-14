@@ -1,9 +1,9 @@
 {
   "version": "2.0",
-  "last_updated": "2026-05-14T03:14:00Z",
-  "description": "COMPLETE FINAL Skills Manifest — All locally installed skills now pushed to skills-prototype branch with full SHAs, commits, and metadata for version control and future cross-reference.",
+  "last_updated": "2026-05-14T03:33:00Z",
+  "description": "COMPLETE Skills Manifest — All skills pushed + bootstrap updated to v2.1 with real uninstall support.",
   "pushed_skills": [
-    { "name": "bootstrap-skills", "version": "2.0", "sha": "b323e9b34ab22e7a766b41d6b2552504368c1f58", "commit": "54a36e9ad72e49e33ec39d328f7a0f3a60b39d4c" },
+    { "name": "bootstrap-skills", "version": "2.1", "sha": "e5a040547d070a9156b6a6d18c69211a01f1692e", "commit": "08ae8d7e8814096435cc4dd2f12b4aa0cf1c884f" },
     { "name": "github-connectors", "version": "1.0", "sha": "cb24124e2158a760a5fbf0ddaba2799eb7de736a", "commit": "6fae0c2b8ee71402919a089e572fbbac3f00e043" },
     { "name": "skills-backup", "version": "1.2", "sha": "96767c906e96e98d5bc009ede2324e668e729521", "commit": "c7df56d86ce1fc92758f39773f5cdfe677cf86d8" },
     { "name": "github-tools", "version": "4.4", "sha": "154cf87c1e124bdb6c9266f21b9bb96f5ec36a20", "commit": "59303e58062fa49183453dcab0ac754428126d27" },
@@ -19,5 +19,5 @@
     { "name": "web-probe", "version": "1.0", "sha": "d7af8821d3e78b97ca372e5fd8a58318dbb9cbdf", "commit": "099b079651cdd33bea3cd7707e41825ac117eeb9" }
   ],
   "pre_existing_on_remote": ["consolidator"],
-  "notes": "COMPLETE — All 15 local skills + manifest now on skills-prototype branch. Full SHAs and commits recorded for version control."
+  "notes": "COMPLETE — All 15 skills pushed. bootstrap-skills updated to v2.1 with real uninstall support. Full SHAs and commits recorded."
 }
