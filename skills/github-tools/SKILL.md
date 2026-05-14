@@ -1,9 +1,9 @@
 ---
 name: github-tools
-description: v4.4 — Multi-Repo/Branch + Executable Self-Consistency Contract. Dynamic library, 5-question rubric, migration system, fail-closed security.
+description: v4.5 — Multi-Repo/Branch + Executable Self-Consistency Contract + Safe Push System. Dynamic library, 5-question rubric, migration system, fail-closed security, automatic batching and size limits.
 ---
 
-# GitHub Tools — v4.4 (Multi-Repo + Self-Consistent Edition)
+# GitHub Tools — v4.5 (Multi-Repo + Self-Consistent + Safe Push Edition)
 
 **Trigger when:** "use github-tools", "select repo", "set working branch", "init-stage", "validate-stage", "push", "harden skill", etc.
 
@@ -17,7 +17,7 @@ description: v4.4 — Multi-Repo/Branch + Executable Self-Consistency Contract. 
 
 **Self-Consistency Contract (5-Question Rubric — Mandatory)**:
 
-This is the core enforcement mechanism of v4.4.
+This is the core enforcement mechanism of v4.5.
 
 **The 5 Questions (must all be answerable with "Yes")**:
 1. **Tool Mapping** — Does every single action in this document map directly to a currently discoverable `github___*` connector tool (via `search_connected_tools("github")`)?
@@ -34,7 +34,7 @@ A Python validator is available at `validate_rubric.py`. Use it.
 
 ---
 
-## DYNAMIC CONNECTOR LIBRARY (v4.4)
+## DYNAMIC CONNECTOR LIBRARY (v4.5)
 
 Run `search_connected_tools("github")` at the start of any session.
 
@@ -50,7 +50,7 @@ Full schemas live in `CONNECTOR_LIBRARY.json`.
 
 ---
 
-## 5-Phase Workflow (v4.4)
+## 5-Phase Workflow (v4.5)
 
 **Phase 0 — Setup (New)**
 ```bash
@@ -63,7 +63,8 @@ github-tools set-read-only-branch main
 
 **Phase 2 — Staging**
 ```bash
-github-tools init-stage          # creates v4.4 template with auto fields
+github-tools init-stage          # creates v4.5 template with auto fields
+# edit STAGE.md
 github-tools validate-stage      # runs 5-question rubric
 ```
 
@@ -81,7 +82,7 @@ github-tools self-update-stage   # now automated + rubric validated
 
 ---
 
-## map-repo-tree (v4.4+ One-Shot Full Repo Mapper)
+## map-repo-tree (v4.5+ One-Shot Full Repo Mapper)
 
 **Trigger:** `github-tools map-repo-tree`
 
@@ -104,7 +105,7 @@ github-tools map-repo-tree --branch main --max-depth 30 --resume
 **Output example (REPO_TREE_INDEX.json):**
 ```json
 {
-  "version": "v4.4-tree-map",
+  "version": "v4.5-tree-map",
   "repo": "kywrn7z4ww-glitch/ChaosEngine-Grok-OS",
   "branch": "skills-prototype",
   "stats": { "total_entries": 12487, "api_calls": 1842, "duration_seconds": 47.3 },
@@ -116,4 +117,49 @@ github-tools map-repo-tree --branch main --max-depth 30 --resume
 
 ---
 
-**Last synced**: 2026-05-13 (v4.4 — full multi-repo + executable self-consistency + map-repo-tree)
+## Safe Push System (v4.5 — New)
+
+**Purpose:** Prevent tool chokes, JSON parse errors, and failed pushes caused by large payloads or too many files at once.
+
+**Core Rules:**
+
+| Rule | Limit | Action |
+|------|-------|--------|
+| **Single File Size** | 700 KB recommended, 1 MB hard limit | Warn if > 600 KB, block if > 1 MB |
+| **Batch Size** | Max 4 MB total per batch | Automatically split larger operations |
+| **Number of Files** | Max 5 files per batch (recommended) | Force smaller batches if exceeded |
+
+**safe_push_file() Helper (Recommended Usage)**
+
+```python
+# Pseudocode — actual implementation uses call_connected_tool
+def safe_push_file(path, content, message="Update file"):
+    size = len(content)
+    
+    if size > 1000000:  # 1MB hard limit
+        raise ValueError("File too large (>1MB). Split or use Git LFS.")
+    
+    if size > 700000:  # 700KB warning
+        print(f"WARNING: Large file ({size} bytes). Consider splitting.")
+    
+    # Use github___create_or_update_file
+    return call_connected_tool("github___create_or_update_file", {
+        "owner": "...",
+        "repo": "...",
+        "path": path,
+        "content": content,
+        "message": message,
+        "branch": "skills-prototype"
+    })
+```
+
+**Size Warning System**
+- Automatically warn user when pushing files > 600 KB
+- Automatically suggest batching when total payload > 4 MB
+- Log all large push attempts for future optimization
+
+**Chunk + Stitch (Future Enhancement)**
+- For files > 700 KB: intelligently split content across multiple `create_or_update_file` calls
+- Append mode supported for large documentation or code files
+
+**Last synced**: 2026-05-14 (v4.5 — Safe Push System added)
